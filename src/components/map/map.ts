@@ -18,6 +18,7 @@ export class MapComponent implements OnInit {
 
   @Input() isPickupRequested: boolean;
   public map: google.maps.Map;
+  public isMapIdle: boolean;
   public currentLocation: google.maps.LatLng;
   @Input() destination: string;
 
@@ -27,6 +28,9 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     this.map = this.createMap();  
+
+    this.addMapEventListeners();
+
     this.platform.ready().then(
       a=>{
         this.geolocation.getCurrentPosition().then(resp=>{
@@ -42,6 +46,17 @@ export class MapComponent implements OnInit {
         });
       }
     );
+  }
+
+  addMapEventListeners() {
+    
+    google.maps.event.addListener(this.map, 'dragstart', () => {
+      this.isMapIdle = false;
+    })
+    google.maps.event.addListener(this.map, 'idle', () => {
+      this.isMapIdle = true;
+    })
+    
   }
 
   createMap(location = new google.maps.LatLng(-12.9648806,-38.4747462)) {
