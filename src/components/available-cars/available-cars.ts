@@ -1,4 +1,7 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
+
+import * as SlidingMarker from 'marker-animate-unobtrusive';
+
 import { CarProvider } from '../../providers/car/car';
 
 
@@ -6,7 +9,7 @@ import { CarProvider } from '../../providers/car/car';
   selector: 'available-cars',
   templateUrl: 'available-cars.html'
 })
-export class AvailableCarsComponent implements OnInit {
+export class AvailableCarsComponent implements OnInit, OnChanges {
 
   @Input() map: google.maps.Map;
   @Input() isPickupRequested: boolean;
@@ -20,12 +23,29 @@ export class AvailableCarsComponent implements OnInit {
     this.fetchAndRefreshCars();
   }
 
+  ngOnChanges() {
+    if(this.isPickupRequested) {
+      this.removeCarMarkers();
+    }
+  }
+
+  removeCarMarkers() {
+     let numOfCars = this.carMarkers.length;
+     while(numOfCars--) {
+       let car = this.carMarkers.pop();
+       car.setMap(null);
+     }
+  }
+
   addCarMarker(car) {
-    let carMarker = new google.maps.Marker({
+    let carMarker = new SlidingMarker({
       map: this.map,
       position: new google.maps.LatLng(car.coord.lat, car.coord.lng),
       icon: 'img/car-icon.png'  
     });
+    
+    carMarker.setDuration(2000);
+    carMarker.setEasing('linear');
     
     carMarker.set('id', car.id); // MVCObject()
     
