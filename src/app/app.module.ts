@@ -8,8 +8,11 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import {SimpleComponent} from '../components/simple/simple';
 import {MapComponent} from '../components/map/map';
+import {AvailableCarsComponent} from '../components/available-cars/available-cars';
 import {Geolocation} from '@ionic-native/geolocation';
 import {PontoComponent} from '../components/ponto/ponto';
+import { CarProvider } from '../providers/car/car';
+import { SimulateProvider } from '../providers/simulate/simulate';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,8 @@ import {PontoComponent} from '../components/ponto/ponto';
     HomePage,
     SimpleComponent,
     MapComponent,
-    PontoComponent
+    PontoComponent,
+    AvailableCarsComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +36,9 @@ import {PontoComponent} from '../components/ponto/ponto';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    Geolocation
+    Geolocation,
+    CarProvider,
+    SimulateProvider
   ]
 })
 export class AppModule {}

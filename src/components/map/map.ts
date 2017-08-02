@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Platform, LoadingController } from 'ionic-angular';
 import {Observable} from 'rxjs';
+import {AvailableCarsComponent} from '../available-cars/available-cars';
 
 
 /**
