@@ -4,10 +4,16 @@
   </div>
   <ponto 
   [map]="map"
-  [isPinSet]="isMapIdle">
+  [isPinSet]="isMapIdle"
+  (updatedPickupLocation)="updatePickupLocation($event)">
   </ponto>
   <available-cars
     [map]="map"
     [isPickupRequested]="isPickupRequested">
-  </available-cars>
+  </available-cars>  
+  <pickup-car
+    [map]="map"
+    [isPickupRequested]="isPickupRequested"
+    [pickupLocation]="currentLocation">
+  </pickup-car>
 </div>

@@ -17,5 +17,9 @@ export class CarProvider {
       .switchMap(()=> {return this.simulate.getCars(lat, lng);})
       .share();
   }
+  
+  findPickupCar(pickupLocation) {
+    return this.simulate.findPickupCar(pickupLocation);
+  }
 
 }

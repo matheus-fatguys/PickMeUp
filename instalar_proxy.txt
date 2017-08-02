@@ -1,0 +1,1 @@
+j:\nodejs\node-v6.11.1-win-x64\npm install --save-dev --save-exact @ionic/cli-plugin-proxy@latest
