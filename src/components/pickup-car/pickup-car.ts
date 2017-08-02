@@ -1,0 +1,102 @@
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
+
+import { CarProvider } from '../../providers/car/car';
+
+
+/**
+ * Generated class for the PickupCarComponent component.
+ *
+ * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
+ * for more info on Angular Components.
+ */
+@Component({
+  selector: 'pickup-car',
+  templateUrl: 'pickup-car.html'
+})
+export class PickupCarComponent implements OnInit, OnChanges {
+
+	@Input() map: google.maps.Map;
+  @Input() isPickupRequested: boolean;
+  @Input() pickupLocation: google.maps.LatLng;
+  public pickupCarMarker: any;
+  public polylinePath: google.maps.Polyline;
+
+  constructor(public carService: CarProvider) {
+  }
+  
+  ngOnInit() {
+    
+  }
+  
+  ngOnChanges() {
+    
+    if (this.isPickupRequested) {
+		this.requestCar();
+	}
+	else {
+		this.removeCar();
+    }
+    
+  }
+  
+  addCarMarker(position) {
+    this.pickupCarMarker = new google.maps.Marker({
+      map: this.map,
+      position: position,
+      icon: 'img/car-icon.png'
+    });
+    
+    this.pickupCarMarker.setDuration(1000);
+    this.pickupCarMarker.setEasing('linear');
+  }
+  
+  showDirections(path) {
+    this.polylinePath = new google.maps.Polyline({
+      path: path,
+      strokeColor: '#FF0000',
+      strokeWeight: 3
+    });
+    this.polylinePath.setMap(this.map);
+  }
+  
+  updateCar(cbDone) {
+    
+    this.carService.getPickupCar().subscribe(car => {
+      // animate car to next point
+      this.pickupCarMarker.setPosition(car.position);
+      // set direction path for car
+      this.polylinePath.setPath(car.path);
+      // update arrival time
+      //this.pickupPubSub.emitArrivalTime(car.time);
+      
+      // keep updating car 
+      if (car.path.length > 1) {
+        setTimeout(() => {
+          this.updateCar(cbDone);
+        }, 1000);
+      }
+      else {
+        // car arrived
+        cbDone();
+      } 
+    });
+  }
+  
+  requestCar() {
+		console.log('request car ' + this.pickupLocation);
+		this.carService.findPickupCar(this.pickupLocation)
+		  .subscribe(car => {
+			// show car marker
+			this.addCarMarker(car.position);
+			// show car path/directions to you
+			this.showDirections(car.path);
+			// keep updating car
+			//this.updateCar( ()=> this.checkForRiderPickup() );
+		  })
+	}
+	
+	removeCar() {
+	
+    }
+
+}

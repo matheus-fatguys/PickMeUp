@@ -48,6 +48,11 @@ export class MapComponent implements OnInit {
       }
     );
   }
+  
+  updatePickupLocation(location) {
+    this.currentLocation = location;
+    this.centerLocation(location);
+  }
 
   addMapEventListeners() {
     

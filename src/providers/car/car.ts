@@ -17,5 +17,19 @@ export class CarProvider {
       .switchMap(()=> {return this.simulate.getCars(lat, lng);})
       .share();
   }
+  
+  getPickupCar() {
+    return Observable.create(observable => {
+      
+      //let car = this.myRoute[this.myRouteIndex];
+      //observable.next(car);
+      //this.myRouteIndex++;
+      
+    })
+  }
+  
+  findPickupCar(pickupLocation) {
+    return this.simulate.findPickupCar(pickupLocation);
+  }
 
 }

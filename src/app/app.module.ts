@@ -9,10 +9,12 @@ import { HomePage } from '../pages/home/home';
 import {SimpleComponent} from '../components/simple/simple';
 import {MapComponent} from '../components/map/map';
 import {AvailableCarsComponent} from '../components/available-cars/available-cars';
+import { PickupCarComponent } from '../components/pickup-car/pickup-car';
 import {Geolocation} from '@ionic-native/geolocation';
 import {PontoComponent} from '../components/ponto/ponto';
 import { CarProvider } from '../providers/car/car';
 import { SimulateProvider } from '../providers/simulate/simulate';
+
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { SimulateProvider } from '../providers/simulate/simulate';
     SimpleComponent,
     MapComponent,
     PontoComponent,
-    AvailableCarsComponent
+    AvailableCarsComponent,
+	PickupCarComponent
   ],
   imports: [
     BrowserModule,

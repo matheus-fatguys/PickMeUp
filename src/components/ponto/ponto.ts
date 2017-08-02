@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
 
 /**
  * Generated class for the PontoComponent component.
@@ -14,6 +14,7 @@ export class PontoComponent implements OnInit, OnChanges{
   @Input() isPinSet: boolean;
   @Input() isPickupRequested: boolean;
   @Input() map: google.maps.Map;
+  @Output() updatedPickupLocation: EventEmitter<google.maps.LatLng> = new EventEmitter<google.maps.LatLng>();
   private pickupMarker: google.maps.Marker;
   private popup: google.maps.InfoWindow;
 
@@ -51,6 +52,9 @@ export class PontoComponent implements OnInit, OnChanges{
     }, 750);
 
     this.showPickupTime();
+	
+	// send pickup location
+    this.updatedPickupLocation.next(this.pickupMarker.getPosition());
     
   }
   
