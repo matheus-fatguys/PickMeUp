@@ -2,7 +2,6 @@ import { Component, Input, OnInit, OnChanges } from '@angular/core';
 
 import { CarProvider } from '../../providers/car/car';
 
-import * as SlidingMarker from 'marker-animate-unobtrusive';
 
 /**
  * Generated class for the PickupCarComponent component.
@@ -41,7 +40,7 @@ export class PickupCarComponent implements OnInit, OnChanges {
   }
   
   addCarMarker(position) {
-    this.pickupCarMarker = new SlidingMarker({
+    this.pickupCarMarker = new google.maps.Marker({
       map: this.map,
       position: position,
       icon: 'img/car-icon.png'
@@ -60,6 +59,29 @@ export class PickupCarComponent implements OnInit, OnChanges {
     this.polylinePath.setMap(this.map);
   }
   
+  updateCar(cbDone) {
+    
+    this.carService.getPickupCar().subscribe(car => {
+      // animate car to next point
+      this.pickupCarMarker.setPosition(car.position);
+      // set direction path for car
+      this.polylinePath.setPath(car.path);
+      // update arrival time
+      //this.pickupPubSub.emitArrivalTime(car.time);
+      
+      // keep updating car 
+      if (car.path.length > 1) {
+        setTimeout(() => {
+          this.updateCar(cbDone);
+        }, 1000);
+      }
+      else {
+        // car arrived
+        cbDone();
+      } 
+    });
+  }
+  
   requestCar() {
 		console.log('request car ' + this.pickupLocation);
 		this.carService.findPickupCar(this.pickupLocation)
@@ -69,7 +91,7 @@ export class PickupCarComponent implements OnInit, OnChanges {
 			// show car path/directions to you
 			this.showDirections(car.path);
 			// keep updating car
-			this.updateCar( ()=> this.checkForRiderPickup() );
+			//this.updateCar( ()=> this.checkForRiderPickup() );
 		  })
 	}
 	
