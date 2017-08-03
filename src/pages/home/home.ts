@@ -10,6 +10,7 @@ import {PickupPubSubProvider} from '../../providers/pickup-pub-sub/pickup-pub-su
 export class HomePage {
 
   public isPickupRequested: boolean;
+  public isRiderPickedUp: boolean;
   public destination: string;
   public pickupSubscription: any;
   public timeTillArrival: number;
@@ -18,6 +19,7 @@ export class HomePage {
               private pickupPubSub: PickupPubSubProvider) {
   
       this.isPickupRequested = false;
+      this.isRiderPickedUp = false;
       this.timeTillArrival = 5;
       this.pickupSubscription = this.pickupPubSub.watch().subscribe(e => {
         this.processPickupSubscription(e);
@@ -29,7 +31,18 @@ export class HomePage {
       case this.pickupPubSub.EVENTS.ARRIVAL_TIME:
         this.updateArrivalTime(e.data);
         break;
+      case this.pickupPubSub.EVENTS.PICKUP:
+        this.riderPickedUp();
+        break;
     }
+  }
+  
+  setDestination(destination) {
+    this.destination = destination;
+  }
+  
+  riderPickedUp() {
+    this.isRiderPickedUp = true;
   }
 
   updateArrivalTime(seconds) {

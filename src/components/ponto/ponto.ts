@@ -55,7 +55,9 @@ export class PontoComponent implements OnInit, OnChanges{
     })
     
     setTimeout( () => {
-      this.pickupMarker.setAnimation(null);
+		if (this.pickupMarker){
+			this.pickupMarker.setAnimation(null);
+		}	  
     }, 750);
 
     this.showPickupTime();

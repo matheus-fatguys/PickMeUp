@@ -57,7 +57,7 @@ export class PickupCarComponent implements OnInit, OnChanges {
     this.polylinePath.setMap(this.map);
   }
   
-  updateCar() {
+  updateCar(cbDone) {
     
     this.carService.getPickupCar().subscribe(car => {
       if(!this.pickupCarMarker) return;
@@ -66,16 +66,24 @@ export class PickupCarComponent implements OnInit, OnChanges {
       // set direction path for car
       this.polylinePath.setPath(car.path);
       // update arrival time
-
       this.pickupPubSub.emitArrivalTime(car.time);
       
       // keep updating car 
       if (car.path.length > 1) {
         setTimeout(() => {
-          this.updateCar();
-        }, 1000);
-      }
+          this.updateCar(cbDone);
+        }, 100);
+      }else {
+        // car arrived
+        cbDone();
+      } 
     });
+  }
+  
+   checkForRiderPickup() {
+    this.carService.pollForRiderPickup().subscribe(data => {
+      this.pickupPubSub.emitPickUp();
+    })
   }
   
   requestCar() {
@@ -87,7 +95,7 @@ export class PickupCarComponent implements OnInit, OnChanges {
 			// show car path/directions to you
 			this.showDirections(car.path);
 			// keep updating car
-			this.updateCar();
+			this.updateCar(()=> this.checkForRiderPickup());
 		  })
   }
     

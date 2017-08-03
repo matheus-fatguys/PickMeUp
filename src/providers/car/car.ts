@@ -18,14 +18,15 @@ export class CarProvider {
       .share();
   }
   
+  pollForRiderPickup() {
+    return this.simulate.riderPickedUp();
+  }
+  
+  pollForRiderDropoff() {
+    return this.simulate.riderDroppedOff();
+  }
+  
   getPickupCar() {
-    // return Observable.create(observable => {
-      
-    //   let car = this.myRoute[this.myRouteIndex];
-    //   observable.next(car);
-    //   this.myRouteIndex++;
-      
-    // })
     return this.simulate.getPickupCar();
   }
   
