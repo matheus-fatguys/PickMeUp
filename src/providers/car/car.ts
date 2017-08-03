@@ -19,13 +19,14 @@ export class CarProvider {
   }
   
   getPickupCar() {
-    return Observable.create(observable => {
+    // return Observable.create(observable => {
       
-      //let car = this.myRoute[this.myRouteIndex];
-      //observable.next(car);
-      //this.myRouteIndex++;
+    //   let car = this.myRoute[this.myRouteIndex];
+    //   observable.next(car);
+    //   this.myRouteIndex++;
       
-    })
+    // })
+    return this.simulate.getPickupCar();
   }
   
   findPickupCar(pickupLocation) {

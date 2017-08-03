@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -14,6 +15,7 @@ import {Geolocation} from '@ionic-native/geolocation';
 import {PontoComponent} from '../components/ponto/ponto';
 import { CarProvider } from '../providers/car/car';
 import { SimulateProvider } from '../providers/simulate/simulate';
+import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub';
 
 
 @NgModule({
@@ -28,6 +30,7 @@ import { SimulateProvider } from '../providers/simulate/simulate';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -41,7 +44,8 @@ import { SimulateProvider } from '../providers/simulate/simulate';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     Geolocation,
     CarProvider,
-    SimulateProvider
+    SimulateProvider,
+    PickupPubSubProvider
   ]
 })
 export class AppModule {}

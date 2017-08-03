@@ -2,13 +2,9 @@ import { Component, Input, OnInit, OnChanges } from '@angular/core';
 
 import { CarProvider } from '../../providers/car/car';
 
+import {PickupPubSubProvider} from '../../providers/pickup-pub-sub/pickup-pub-sub';
+import * as SlidingMarker from 'marker-animate-unobtrusive';
 
-/**
- * Generated class for the PickupCarComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
 @Component({
   selector: 'pickup-car',
   templateUrl: 'pickup-car.html'
@@ -21,7 +17,8 @@ export class PickupCarComponent implements OnInit, OnChanges {
   public pickupCarMarker: any;
   public polylinePath: google.maps.Polyline;
 
-  constructor(public carService: CarProvider) {
+  constructor(public carService: CarProvider,
+    private pickupPubSub: PickupPubSubProvider) {
   }
   
   ngOnInit() {
@@ -31,16 +28,17 @@ export class PickupCarComponent implements OnInit, OnChanges {
   ngOnChanges() {
     
     if (this.isPickupRequested) {
-		this.requestCar();
-	}
-	else {
-		this.removeCar();
+      this.requestCar();
+    }
+    else {
+      this.removeCar();
+      this.removeDirections();
     }
     
   }
   
   addCarMarker(position) {
-    this.pickupCarMarker = new google.maps.Marker({
+    this.pickupCarMarker = new SlidingMarker({
       map: this.map,
       position: position,
       icon: 'img/car-icon.png'
@@ -59,26 +57,24 @@ export class PickupCarComponent implements OnInit, OnChanges {
     this.polylinePath.setMap(this.map);
   }
   
-  updateCar(cbDone) {
+  updateCar() {
     
     this.carService.getPickupCar().subscribe(car => {
+      if(!this.pickupCarMarker) return;
       // animate car to next point
       this.pickupCarMarker.setPosition(car.position);
       // set direction path for car
       this.polylinePath.setPath(car.path);
       // update arrival time
-      //this.pickupPubSub.emitArrivalTime(car.time);
+
+      this.pickupPubSub.emitArrivalTime(car.time);
       
       // keep updating car 
       if (car.path.length > 1) {
         setTimeout(() => {
-          this.updateCar(cbDone);
+          this.updateCar();
         }, 1000);
       }
-      else {
-        // car arrived
-        cbDone();
-      } 
     });
   }
   
@@ -91,12 +87,22 @@ export class PickupCarComponent implements OnInit, OnChanges {
 			// show car path/directions to you
 			this.showDirections(car.path);
 			// keep updating car
-			//this.updateCar( ()=> this.checkForRiderPickup() );
+			this.updateCar();
 		  })
-	}
+  }
+    
+  removeDirections() {
+    if (this.polylinePath) {
+      this.polylinePath.setMap(null);
+      this.polylinePath = null;
+    }
+  }
 	
 	removeCar() {
-	
+    if (this.pickupCarMarker) {
+      this.pickupCarMarker.setMap(null);
+      this.pickupCarMarker = null;
     }
+  }
 
 }

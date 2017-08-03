@@ -1,11 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
+import {PickupPubSubProvider} from '../../providers/pickup-pub-sub/pickup-pub-sub';
 
-/**
- * Generated class for the PontoComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
+
 @Component({
   selector: 'ponto',
   templateUrl: 'ponto.html'
@@ -17,28 +13,39 @@ export class PontoComponent implements OnInit, OnChanges{
   @Output() updatedPickupLocation: EventEmitter<google.maps.LatLng> = new EventEmitter<google.maps.LatLng>();
   private pickupMarker: google.maps.Marker;
   private popup: google.maps.InfoWindow;
+  private pickupSubscription: any;
 
-  constructor() {
+  constructor(private pickupPubSub: PickupPubSubProvider) {
     
   }
 
   ngOnInit() {
-    
+    this.pickupSubscription = this.pickupPubSub.watch().subscribe(e => {
+      if (e.event === this.pickupPubSub.EVENTS.ARRIVAL_TIME) {
+        this.updateTime(e.data);
+      }
+    })
   }
 
   ngOnChanges(changes) {
     console.log(changes);
     
-    if (this.isPinSet) {
-      this.showPickupMarker();
-    }
-    else {
-      this.removePickupMarker();
+    // do not allow pickup pin/location
+    // to change if pickup is requested
+    if (!this.isPickupRequested) {
+      if (this.isPinSet) {
+        this.showPickupMarker();
+      }
+      else {
+        this.removePickupMarker();
+      }
     }
     
   }
 
   showPickupMarker() {
+
+    this.removePickupMarker();
     
     this.pickupMarker = new google.maps.Marker({
       map: this.map,
@@ -75,6 +82,11 @@ export class PontoComponent implements OnInit, OnChanges{
     google.maps.event.addListener(this.pickupMarker, 'click', () => {
       this.popup.open(this.map, this.pickupMarker);
     });
+  }
+
+  updateTime(seconds) {
+    let minutes = Math.floor(seconds/60);
+    this.popup.setContent(`<h5>${minutes} minutes</h5>`);
   }
 
 }
