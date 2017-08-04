@@ -1,0 +1,102 @@
+PRIMEIRA VERSÃO:
+módulo condutor
+1 - cadastro condutor: telefone, nome e senha
+2 - conduzido: telefone, nome(gera o ID para o condutor)
+3 - entrar em modo de condução: começa a enviar sua localização aos seus conduzidos
+4 - sair de modo de condução: para de enviar sua localização aos seus conduzidos
+5 - receber notificação do conduzido: recebe a notificação de o conduzido não irá comparecer
+6 - mapa: pode ver localização do condutor e dos conduzidos ativos
+
+módulo conduzido
+1 - registar: entrar o código informado pelo condutor para visualizar sua localização no mapa
+2 - mapa: ver localização do condutor, sua própria localização e o ponto de origem da condução
+3 - notificar ausencia: avisar ao condutor que não comparecerá ao ponto de origem da condução
+
+
+
+
+SEGUNDA VERSÃO:
+módulo condutor
+1 - cadastro condutor: telefone, nome e senha
+2 - conduzido: telefone, nome(gera o ID para o condutor)
+3 - viagens: dia e horário de saída da base
+4 - condução: conduzido, origem, destino, viagem
+5 - iniciar viagem: (sistema detecta viagem com dia e horário mais próximo ) começa a enviar sua localização aos conduzidos nas conduções daquela viagem
+6 - receber notificação do conduzido: recebe a notificação de que o conduzido não irá comparecer àquela viagem
+7 - mapa: pode ver localização do condutor, dos conduzidos ativos
+
+módulo conduzido
+1 - registar: entrar o código informado pelo condutor para visualizar sua localização no mapa
+2 - mapa: ver localização do condutor, sua própria localização e o ponto de origem da condução, rota e tempo estimado de chegada, caso o condutor venha direto a si
+3 - notificar ausencia: avisar ao condutor que não comparecerá ao ponto de origem da condução
+
+
+TERCEIRA VERSÃO(VERSÃO COMERCIALIZÁVEL, EM MINHA OPINIÃO):
+módulo condutor
+1 - cadastro condutor: telefone, nome e senha
+2 - conduzido: telefone, nome(gera o ID para o condutor)
+3 - viagens: dia e horário de saída da base
+4 - condução: conduzido, origem, destino, viagem
+5 - iniciar viagem: (sistema detecta viagem com dia e horário mais próximo ) começa a enviar sua localização aos conduzidos nas conduções daquela viagem
+6 - receber notificação do conduzido: recebe a notificação de que o conduzido não irá comparecer àquela viagem e ajusta rota
+7 - mapa: pode ver localização do condutor, dos conduzidos ativos e a rota de transito de acordo com a rota da viagem em curso
+8 - iniciar condução: condutor informa que conduzido embarcou e inicia condução
+9 - rota: viagem e conduções ordenadas
+10 - 
+
+módulo conduzido
+1 - registar: entrar o código informado pelo condutor para visualizar sua localização no mapa
+2 - mapa: ver localização do condutor, sua própria localização e o ponto de origem da condução, rota e tempo estimado de chegada, de acordo com a rota da viagem em curso
+3 - notificar ausencia: avisar ao condutor que não comparecerá ao ponto de origem da condução
+4 - EM CONDUÇÃO: é notificado de que viagem iniciou
+5 - classificar condução: conduzido classifica a condução
+
+
+PRIMEIRA VERSÃO BUSINESS:
+módulo CADASTRO
+1 - cadastro condutor: telefone, nome e senha(gera o ID para a empresa)
+2 - conduzido: telefone, nome(gera o ID para o condutor)
+3 - viagens: dia e horário de saída da base
+4 - condução: conduzido, origem, destino, viagem
+5 - Relatórios diversos: ausencias de condutor e conduzido, viagens realizadas, rotas, tempos médios, classificações do condutor
+
+módulo CONDUTOR
+1 - iniciar viagem: (sistema detecta viagem com dia e horário mais próximo ) começa a enviar sua localização aos conduzidos nas conduções daquela viagem
+2 - receber notificação do conduzido: recebe a notificação de que o conduzido não irá comparecer àquela viagem e ajusta rota
+3 - mapa: pode ver localização do condutor, dos conduzidos ativos e a rota de transito de acordo com a rota da viagem em curso
+4 - rota: viagem e conduções ordenadas
+5 - iniciar condução: condutor informa que conduzido embarcou e inicia condução
+6 - rota: viagem e conduções ordenadas
+
+módulo CONDUZIDO
+1 - registar: entrar o código informado pelo condutor para visualizar sua localização no mapa
+2 - mapa: ver localização do condutor, sua própria localização e o ponto de origem da condução, rota e tempo estimado de chegada, de acordo com a rota da viagem em curso
+3 - notificar ausencia: avisar ao condutor que não comparecerá ao ponto de origem da condução
+4 - EM CONDUÇÃO: é notificado de que viagem iniciou
+5 - classificar condução: conduzido classifica a condução
+
+
+SEGUNDA VERSÃO BUSINESS:
+módulo PAGAMENTO:
+	1 - gerenciar pagamentos pelas conduções: pagamento pelas conduções
+módulo CADASTRO
+1 - cadastro condutor: telefone, nome e senha(gera o ID para a empresa)
+2 - conduzido: telefone, nome(gera o ID para o condutor)
+3 - viagens: dia e horário de saída da base
+4 - condução: conduzido, origem, destino, viagem
+5 - Relatórios diversos: ausencias de condutor e conduzido, viagens realizadas, rotas, tempos médios, classificações do condutor
+
+módulo CONDUTOR
+1 - iniciar viagem: (sistema detecta viagem com dia e horário mais próximo ) começa a enviar sua localização aos conduzidos nas conduções daquela viagem
+2 - receber notificação do conduzido: recebe a notificação de que o conduzido não irá comparecer àquela viagem e ajusta rota
+3 - mapa: pode ver localização do condutor, dos conduzidos ativos e a rota de transito de acordo com a rota da viagem em curso
+4 - rota: viagem e conduções ordenadas
+5 - iniciar condução: condutor informa que conduzido embarcou e inicia condução
+6 - rota: viagem e conduções ordenadas
+
+módulo CONDUZIDO
+1 - registar: entrar o código informado pelo condutor para visualizar sua localização no mapa
+2 - mapa: ver localização do condutor, sua própria localização e o ponto de origem da condução, rota e tempo estimado de chegada, de acordo com a rota da viagem em curso
+3 - notificar ausencia: avisar ao condutor que não comparecerá ao ponto de origem da condução
+4 - EM CONDUÇÃO: é notificado de que viagem iniciou
+5 - classificar condução: conduzido classifica a condução
