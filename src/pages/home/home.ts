@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 
 import {PickupPubSubProvider} from '../../providers/pickup-pub-sub/pickup-pub-sub';
 
@@ -16,7 +16,8 @@ export class HomePage {
   public timeTillArrival: number;
 
   constructor(public navCtrl: NavController,
-              private pickupPubSub: PickupPubSubProvider) {
+              private pickupPubSub: PickupPubSubProvider,
+			  private alertCtrl: AlertController ) {
   
       this.isPickupRequested = false;
       this.isRiderPickedUp = false;
@@ -47,8 +48,41 @@ export class HomePage {
   riderPickedUp() {
     this.isRiderPickedUp = true;
   }
+  
+  rateDriver() {
+    let prompt = this.alertCtrl.create({
+      title: 'Classifique o condutor',
+      message: 'Selecione uma classificação',
+      inputs: [{
+        type: 'radio',
+        label: 'Ótimo',
+        value: 'perfect',
+        checked: true
+      },
+      {
+        type: 'radio',
+        label: 'Regular',
+        value: 'okay'
+      },
+      {
+        type: 'radio',
+        label: 'Ruim',
+        value: 'horrible'
+      }],
+      buttons: [{
+        text: 'Submit',
+        handler: rating => {
+          // TODO: send rating to server
+          console.log(rating);
+        }
+      }]
+    });
+    
+    prompt.present(prompt);
+  }
 
   riderDroppedOff() {
+	this.rateDriver();
     this.isRiderPickedUp = false;
     this.isPickupRequested = false;
     this.destination = null;

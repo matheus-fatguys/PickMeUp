@@ -67,7 +67,9 @@ export class PickupCarComponent implements OnInit, OnChanges {
     
     this.carService.getPickupCar().subscribe(car => {
       if(!this.pickupCarMarker) return;
-      if(!car)return;
+      if(!car){
+		return;
+	  }
       // animate car to next point
       this.pickupCarMarker.setPosition(car.position);
       // set direction path for car
