@@ -14,6 +14,7 @@ export class PontoComponent implements OnInit, OnChanges{
   private pickupMarker: google.maps.Marker;
   private popup: google.maps.InfoWindow;
   private pickupSubscription: any;
+  @Input() destination: string;
 
   constructor(private pickupPubSub: PickupPubSubProvider) {
     
@@ -39,6 +40,9 @@ export class PontoComponent implements OnInit, OnChanges{
       else {
         this.removePickupMarker();
       }
+    }
+    if (this.destination) {
+      this.removePickupMarker();
     }
     
   }

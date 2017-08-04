@@ -34,6 +34,9 @@ export class HomePage {
       case this.pickupPubSub.EVENTS.PICKUP:
         this.riderPickedUp();
         break;
+      case this.pickupPubSub.EVENTS.DROPOFF:
+        this.riderDroppedOff();
+        break;
     }
   }
   
@@ -43,6 +46,13 @@ export class HomePage {
   
   riderPickedUp() {
     this.isRiderPickedUp = true;
+  }
+
+  riderDroppedOff() {
+    this.isRiderPickedUp = false;
+    this.isPickupRequested = false;
+    this.destination = null;
+    this.timeTillArrival = 5;
   }
 
   updateArrivalTime(seconds) {

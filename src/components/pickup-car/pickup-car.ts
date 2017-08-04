@@ -14,6 +14,7 @@ export class PickupCarComponent implements OnInit, OnChanges {
 	@Input() map: google.maps.Map;
   @Input() isPickupRequested: boolean;
   @Input() pickupLocation: google.maps.LatLng;
+  @Input() destination: string;
   public pickupCarMarker: any;
   public polylinePath: google.maps.Polyline;
 
@@ -27,12 +28,17 @@ export class PickupCarComponent implements OnInit, OnChanges {
   
   ngOnChanges() {
     
-    if (this.isPickupRequested) {
-      this.requestCar();
+    if (this.destination) {
+      this.dropoffCar();
     }
     else {
-      this.removeCar();
-      this.removeDirections();
+      if (this.isPickupRequested) {
+        this.requestCar();
+      }
+      else {
+        this.removeCar();
+        this.removeDirections();
+      }
     }
     
   }
@@ -61,6 +67,7 @@ export class PickupCarComponent implements OnInit, OnChanges {
     
     this.carService.getPickupCar().subscribe(car => {
       if(!this.pickupCarMarker) return;
+      if(!car)return;
       // animate car to next point
       this.pickupCarMarker.setPosition(car.position);
       // set direction path for car
@@ -85,6 +92,12 @@ export class PickupCarComponent implements OnInit, OnChanges {
       this.pickupPubSub.emitPickUp();
     })
   }
+
+  checkForRiderDropoff() {
+    this.carService.pollForRiderDropoff().subscribe(data => {
+      this.pickupPubSub.emitDropOff();
+    })
+  }
   
   requestCar() {
 		console.log('request car ' + this.pickupLocation);
@@ -97,6 +110,14 @@ export class PickupCarComponent implements OnInit, OnChanges {
 			// keep updating car
 			this.updateCar(()=> this.checkForRiderPickup());
 		  })
+  }
+
+  dropoffCar() {
+    this.carService.dropoffCar(this.pickupLocation, this.destination)
+      .subscribe( car => {
+        // keep updating car
+        this.updateCar( ()=> this.checkForRiderDropoff() );
+      })
   }
     
   removeDirections() {

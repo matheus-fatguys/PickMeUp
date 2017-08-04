@@ -23,6 +23,10 @@ export class SimulateProvider {
     return Observable.timer(1000);
   }
 
+  dropoffPickupCar(pickupLocation, dropoffLocation) {
+    return this.simulateRoute(pickupLocation, dropoffLocation);
+  }
+
   getCars(lat, lng) {
     
     let carData = this.cars[this.carIndex];

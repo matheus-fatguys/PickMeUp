@@ -25,6 +25,10 @@ export class CarProvider {
   pollForRiderDropoff() {
     return this.simulate.riderDroppedOff();
   }
+
+  dropoffCar(pickupLocation, dropoffLocation) {
+    return this.simulate.dropoffPickupCar(pickupLocation, dropoffLocation);
+  }
   
   getPickupCar() {
     return this.simulate.getPickupCar();
