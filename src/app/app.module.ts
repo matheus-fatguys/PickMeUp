@@ -11,6 +11,7 @@ import {SimpleComponent} from '../components/simple/simple';
 import {MapComponent} from '../components/map/map';
 import {AvailableCarsComponent} from '../components/available-cars/available-cars';
 import { PickupCarComponent } from '../components/pickup-car/pickup-car';
+import { DestinationAddressComponent } from '../components/destination-address/destination-address';
 import {Geolocation} from '@ionic-native/geolocation';
 import {PontoComponent} from '../components/ponto/ponto';
 import { CarProvider } from '../providers/car/car';
@@ -26,7 +27,8 @@ import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub
     MapComponent,
     PontoComponent,
     AvailableCarsComponent,
-	PickupCarComponent
+	PickupCarComponent,
+	DestinationAddressComponent
   ],
   imports: [
     BrowserModule,

@@ -25,7 +25,10 @@
     <map #map  
     [isPickupRequested]="isPickupRequested"
     [destination]="destination"></map>
-    
+    <destination-address
+      [hidden]="!isRiderPickedUp"
+      (newDest)="setDestination($event)">
+   </destination-address>
   </div>
   <div class="bottom request-controls">
     <ion-row>
