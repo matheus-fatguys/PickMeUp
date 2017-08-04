@@ -76,7 +76,7 @@ export class PontoComponent implements OnInit, OnChanges{
 
   showPickupTime() {
     this.popup = new google.maps.InfoWindow({
-      content: '<h5>You Are Here</h5>'
+      content: '<h5>Você está aqui</h5>'
     });
     
     this.popup.open(this.map, this.pickupMarker);
