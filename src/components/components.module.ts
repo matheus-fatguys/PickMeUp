@@ -1,3 +1,4 @@
+import { IonicModule } from 'ionic-angular';
 import { NgModule } from '@angular/core';
 import { SimpleComponent } from './simple/simple';
 import { MapComponent } from './map/map';
@@ -12,7 +13,7 @@ import { DestinationAddressComponent } from './destination-address/destination-a
     AvailableCarsComponent,
     PickupCarComponent,
     DestinationAddressComponent],
-	imports: [],
+	imports: [IonicModule],
 	exports: [SimpleComponent,
     MapComponent,
     PontoComponent,

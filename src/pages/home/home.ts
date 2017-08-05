@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController, AlertController, IonicPage } from 'ionic-angular';
 
 import {PickupPubSubProvider} from '../../providers/pickup-pub-sub/pickup-pub-sub';
 
+@IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
