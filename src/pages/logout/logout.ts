@@ -23,13 +23,14 @@ export class LogoutPage {
     private msg : MensagemProvider) { 
       let ref = this.fatguysService.obterCondutorPeloUsuarioLogado();
       if(ref!=null){
-      ref.subscribe(r=>{
+      let sub=ref.subscribe(r=>{
         if(r[0]){
           this.condutor=r[0];
         }
         else{
           this.navCtrl.setRoot('LoginPage');
         }
+        sub.unsubscribe();
       });
       }
   }

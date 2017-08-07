@@ -3,5 +3,5 @@ export interface Conduzido{
     nome: string,
     telefone: string,
     condutor: string,
-    chave: number
+    chave: string
 }

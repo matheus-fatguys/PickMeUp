@@ -1,3 +1,6 @@
+import { Observable } from 'rxjs/Rx';
+import { Usuario } from './../../models/usuario';
+import { Chave } from './../../models/chave';
 import { AutenticacaoProvider } from './../autenticacao/autenticacao';
 import { Conduzido } from './../../models/conduzido';
 import { Condutor } from './../../models/condutor';
@@ -13,45 +16,74 @@ export class FatguysUberProvider {
   public condutor: Condutor;
   public condutores: FirebaseListObservable<Condutor[]>;
   public conduzidos: FirebaseListObservable<Conduzido[]>;
+  public chaves: FirebaseListObservable<Chave[]>;
 
   constructor(private afd: AngularFireDatabase,
   private auth : AutenticacaoProvider) {
     this.condutores=this.afd.list("condutores");
     this.conduzidos=this.afd.list("conduzidos");
+    this.chaves=this.afd.list("chaves");
   }
 
   
 
-  obterConduzidos (){    
-    return this.conduzidos;
+  obterConduzidos (condutor: Condutor){    
+    return this.afd.list(`/conduzidos/`, {
+      query: {
+        orderByChild: "condutor",
+        equalTo: condutor.id
+      }
+    });    
   }
 
   salvarConduzido (conduzido: Conduzido){
     conduzido.condutor=this.condutor.id;    
     if(!conduzido.id){
-      conduzido.chave=this.gerarChave();
-      return this.conduzidos.push(conduzido).then(
-        ref => {
-          conduzido.id=ref.key;
-          return this.conduzidos.update(conduzido.id, conduzido);
-        }
-      )      
+      let chaveGerada=this.gerarChave();
+      let chave={} as Chave;
+      chave.chave=chaveGerada;            
+      let ref = this.chaves.push(chave).then(r=>{
+        conduzido.chave=r.key;      
+        this.conduzidos.push(conduzido).then(
+          ref => {
+            conduzido.id=ref.key;
+            this.conduzidos.update(conduzido.id, conduzido);
+            chave.conduzido=conduzido.id;
+            this.chaves.update(r.key, chave);
+          }
+        );
+      });      
+      return ref;
     }
     else{
       return this.conduzidos.update(conduzido.id, conduzido);
     }    
   }
 
-  private gerarChave():number{
-    var chave:number;
-
-    chave=Math.round(Math.random()*10000);
-
+  private gerarChave():string{
+    const tamChave=4;
+    var chave:string="";
+    for(var i=0;i<tamChave;i++){
+      chave+=Math.round(Math.random()*9);  
+    }
     return chave;
   }
 
-  excluirConduzido (id){    
-    return this.conduzidos.remove(id);
+  excluirConduzido (conduzido){
+    let ret =this.conduzidos.remove(conduzido.id);
+    let sub = this.obterChaveDoConduzido(conduzido).subscribe(
+      chaves=>{
+        this.removerChaveDoConduzido(chaves[0].$key)
+        .then(()=>{
+          // this.conduzidos.remove(conduzido.id);
+        });
+        sub.unsubscribe();
+      });    
+    return ret;
+  }
+
+  removerChaveDoConduzido(id){
+    return this.chaves.remove(id);
   }
 
   obterCondutores (){
@@ -73,10 +105,10 @@ export class FatguysUberProvider {
   }
 
  
-  registrarCondutor (condutor: Condutor){
-    return this.auth.registrarUsuario(condutor.usuario)
+  registrarCondutor (condutor: Condutor, usuario: Usuario){
+    return this.auth.registrarUsuario(usuario)
     .then((ref) => {
-        condutor.usuario.uid=ref.uid;
+        condutor.usuario=ref.uid;
         return this.condutores.push(condutor).then(
           ref => {
             condutor.id=ref.key;
@@ -85,7 +117,20 @@ export class FatguysUberProvider {
         );
     });  
   }
+
+  obterChaveDoConduzido(conduzido: Conduzido){//:FirebaseListObservable<Chave[]>{
+    return this.afd.list(`/chaves/`, {
+      query: {
+        orderByChild: "conduzido",
+        equalTo: conduzido.id
+      }
+    });    
+  }
   
+  // obterChaveDoConduzido(conduzido: Conduzido){//:FirebaseListObservable<Chave[]>{
+  //   return this.afd.list("chaves/"+conduzido.chave);
+  // }
+
   obterCondutorPeloUsuarioLogado(){
 
     let user = this.auth.usuarioLogado();
@@ -96,7 +141,7 @@ export class FatguysUberProvider {
     
     let obs = this.afd.list("condutores", {
       query: {
-        orderByChild: "usuario/uid",
+        orderByChild: "usuario",
         equalTo: user.uid
       }
     })

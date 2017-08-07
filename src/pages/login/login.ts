@@ -49,6 +49,7 @@ export class LoginPage implements OnInit{
             else{
               this.msg.mostrarErro("Não foi possível obter dados do condutor!");
             }
+            ul.unsubscribe();
           });                    
         }
       ).catch(error => {

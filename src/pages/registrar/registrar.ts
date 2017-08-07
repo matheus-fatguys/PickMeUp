@@ -20,7 +20,6 @@ export class RegistrarPage {
     public navParams: NavParams,
     private fatguysService: FatguysUberProvider,
     private msg : MensagemProvider) {
-    this.condutor.usuario=this.usuario;
   }
 
   ionViewDidLoad() {
@@ -29,7 +28,7 @@ export class RegistrarPage {
 
   async registrar(){
     try {
-      let resultado = this.fatguysService.registrarCondutor(this.condutor).then(
+      let resultado = this.fatguysService.registrarCondutor(this.condutor, this.usuario).then(
         ref => {
           let toast = this.msg.mostrarMsg('Bem vindo, '+this.condutor.nome+'!');
           toast.onDidDismiss(() => {

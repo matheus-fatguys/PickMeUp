@@ -1,3 +1,4 @@
+import { Chave } from './../../models/chave';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { Conduzido } from './../../models/conduzido';
@@ -14,14 +15,19 @@ export class ConduzidoPage {
   
 
   private conduzido={} as Conduzido;
+  private chave={} as Chave;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
     let conduzido=this.navParams.get('conduzido');
+    let chave=this.navParams.get('chave');
     if(conduzido){
-      this.conduzido=conduzido;
+      this.conduzido=conduzido;      
+    }
+    if(chave){
+      this.chave=chave as Chave;      
     }
   }
 
