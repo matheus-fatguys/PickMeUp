@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Conduzidos</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let conduzido of conduzidos | async" 
+    (click)="onSelect(conduzido)"
+    [class.selected]="conduzido === conduzidoSelecionado"
+    >
+        {{conduzido.nome}}
+        <button (click)="excluir(conduzido)"  class="delete"><ion-icon name="remove-circle"></ion-icon></button>
+    </ion-item>
+  </ion-list>
+
+  <button ion-button (click)="novo()">Novo</button>
+  <button ion-button [disabled]="!conduzidoSelecionado" (click)="detalhe()">Detalhe</button>
+  <button ion-button [disabled]="!conduzidoSelecionado" (click)="excluir()">Excluir</button>
+</ion-content>

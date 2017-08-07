@@ -1,5 +1,3 @@
-import { ConducaoPage } from './../pages/conducao/conducao';
-
 
 import { firebaseConfig } from './firebase-config';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,6 +18,8 @@ import {Geolocation} from '@ionic-native/geolocation';
 import { CarProvider } from '../providers/car/car';
 import { SimulateProvider } from '../providers/simulate/simulate';
 import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub';
+import { MensagemProvider } from '../providers/mensagem/mensagem';
+import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
 
 
 @NgModule({
@@ -43,8 +43,7 @@ import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
-    //ConducaoPage
+    MyApp
   ],
   providers: [
     StatusBar,
@@ -54,7 +53,9 @@ import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub
     CarProvider,
     SimulateProvider,
     PickupPubSubProvider,
-    FatguysUberProvider
+    FatguysUberProvider,
+    MensagemProvider,
+    AutenticacaoProvider
   ]
 })
 export class AppModule {}

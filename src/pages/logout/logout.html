@@ -1,0 +1,17 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Sair</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item>Tem certeza que deseja sair, {{condutor.nome}}?</ion-item>
+  <button ion-button color="light" (click)="sair()">Sair</button>
+</ion-content>
