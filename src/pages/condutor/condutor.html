@@ -1,0 +1,16 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Condutor</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <detalhe-condutor [condutor]="condutor"></detalhe-condutor>
+    <button ion-button (click)="salvar()">Salvar</button>
+</ion-content>

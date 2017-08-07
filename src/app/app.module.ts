@@ -1,44 +1,49 @@
+
+import { firebaseConfig } from './firebase-config';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireModule } from 'angularfire2';
+import {AngularFireAuthModule} from 'angularfire2/auth';
+import { FatguysUberProvider } from '../providers/fatguys-uber/fatguys-uber';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import {SimpleComponent} from '../components/simple/simple';
-import {MapComponent} from '../components/map/map';
-import {AvailableCarsComponent} from '../components/available-cars/available-cars';
-import { PickupCarComponent } from '../components/pickup-car/pickup-car';
-import { DestinationAddressComponent } from '../components/destination-address/destination-address';
+
+
 import {Geolocation} from '@ionic-native/geolocation';
-import {PontoComponent} from '../components/ponto/ponto';
 import { CarProvider } from '../providers/car/car';
 import { SimulateProvider } from '../providers/simulate/simulate';
 import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub';
+import { MensagemProvider } from '../providers/mensagem/mensagem';
+import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
 
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    SimpleComponent,
-    MapComponent,
-    PontoComponent,
-    AvailableCarsComponent,
-	PickupCarComponent,
-	DestinationAddressComponent
+     //ConducaoPage,
+    // SimpleComponent,
+    // MapComponent,
+    // PontoComponent,
+    // AvailableCarsComponent,
+	  // PickupCarComponent,
+	  // DestinationAddressComponent
   ],
   imports: [
     BrowserModule,
     HttpModule,
+    AngularFireDatabaseModule,
+    AngularFireAuthModule,
+    AngularFireModule.initializeApp(firebaseConfig),
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
-    HomePage
+    MyApp
   ],
   providers: [
     StatusBar,
@@ -47,7 +52,10 @@ import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub
     Geolocation,
     CarProvider,
     SimulateProvider,
-    PickupPubSubProvider
+    PickupPubSubProvider,
+    FatguysUberProvider,
+    MensagemProvider,
+    AutenticacaoProvider
   ]
 })
 export class AppModule {}

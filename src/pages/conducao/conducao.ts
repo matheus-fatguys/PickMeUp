@@ -5,10 +5,10 @@ import {PickupPubSubProvider} from '../../providers/pickup-pub-sub/pickup-pub-su
 
 @IonicPage()
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html'
+  selector: 'page-conducao',
+  templateUrl: 'conducao.html'
 })
-export class HomePage {
+export class ConducaoPage {
 
   public isPickupRequested: boolean;
   public isRiderPickedUp: boolean;
