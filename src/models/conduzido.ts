@@ -1,5 +1,3 @@
-import { Condutor } from './condutor';
-import { Usuario } from './usuario';
 export interface Conduzido{
     id: string,
     nome: string,

@@ -1,0 +1,8 @@
+
+ISSUE 1 :
+quando dá build ou upload o firebase dá erro 
+Module not found: Error: Can't resolve 'promise-polyfill' in...
+Solução: npm install promise-polyfill --save-exact
+
+ISSUE 2:
+instalar firebase no projeto: npm install angularfire2 firebase --save

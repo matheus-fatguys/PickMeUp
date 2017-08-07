@@ -1,6 +1,5 @@
 import { AutenticacaoProvider } from './../autenticacao/autenticacao';
 import { Conduzido } from './../../models/conduzido';
-import { Usuario } from './../../models/usuario';
 import { Condutor } from './../../models/condutor';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';

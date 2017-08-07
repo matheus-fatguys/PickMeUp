@@ -3,7 +3,7 @@ import { Usuario } from './../../models/usuario';
 import { Condutor } from './../../models/condutor';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 
 @IonicPage()
