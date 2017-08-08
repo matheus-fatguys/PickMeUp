@@ -3,5 +3,6 @@ export interface Conduzido{
     nome: string,
     telefone: string,
     condutor: string,
-    chave: string
+    chave: string,
+    ativo: boolean
 }

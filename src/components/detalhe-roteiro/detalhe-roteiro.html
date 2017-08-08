@@ -1,6 +1,16 @@
 <div >
+    
       <ion-grid>
         <ion-row>
+          <ion-col col-12>
+            <ion-item>
+              <ion-label>Nome:</ion-label>
+              <ion-input  [(ngModel)]="roteiro.nome"></ion-input >
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-1><ion-icon name="time"></ion-icon></ion-col>
           <ion-col col-3>
             <ion-item>
               <ion-label floating>Hora:</ion-label>
@@ -15,6 +25,7 @@
           </ion-col>          
         </ion-row>
         <ion-row>
+          <ion-col col-1><ion-icon name="calendar"></ion-icon></ion-col>
           <ion-col col-1>D</ion-col>
           <ion-col col-1>S</ion-col>
           <ion-col col-1>T</ion-col>
@@ -24,6 +35,7 @@
           <ion-col col-1>S</ion-col>
         </ion-row>
         <ion-row>
+          <ion-col col-1></ion-col>
           <ion-col col-1><ion-checkbox [(ngModel)]="roteiro.domingo"></ion-checkbox></ion-col>
           <ion-col col-1><ion-checkbox [(ngModel)]="roteiro.segunda"></ion-checkbox></ion-col>
           <ion-col col-1><ion-checkbox [(ngModel)]="roteiro.terca"></ion-checkbox></ion-col>
@@ -33,9 +45,4 @@
           <ion-col col-1><ion-checkbox [(ngModel)]="roteiro.sabado"></ion-checkbox></ion-col>
         </ion-row>
       </ion-grid>
-      <ion-item>
-        <ion-label>Ativo:</ion-label>
-        <ion-toggle  [(ngModel)]="roteiro.ativo"></ion-toggle >
-      </ion-item>
-      
   </div>

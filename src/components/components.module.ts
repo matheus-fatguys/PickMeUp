@@ -10,6 +10,7 @@ import { DetalheConduzidoComponent } from './detalhe-conduzido/detalhe-conduzido
 import { MenuLateralComponent } from './menu-lateral/menu-lateral';
 import { DetalheCondutorComponent } from './detalhe-condutor/detalhe-condutor';
 import { DetalheRoteiroComponent } from './detalhe-roteiro/detalhe-roteiro';
+import { DetalheVeiculoComponent } from './detalhe-veiculo/detalhe-veiculo';
 @NgModule({
 	declarations: [SimpleComponent,
     MapComponent,
@@ -20,7 +21,8 @@ import { DetalheRoteiroComponent } from './detalhe-roteiro/detalhe-roteiro';
     DetalheConduzidoComponent,
     MenuLateralComponent,
     DetalheCondutorComponent,
-    DetalheRoteiroComponent],
+    DetalheRoteiroComponent,
+    DetalheVeiculoComponent],
 	imports: [IonicModule],
 	exports: [SimpleComponent,
     MapComponent,
@@ -31,6 +33,7 @@ import { DetalheRoteiroComponent } from './detalhe-roteiro/detalhe-roteiro';
     DetalheConduzidoComponent,
     MenuLateralComponent,
     DetalheCondutorComponent,
-    DetalheRoteiroComponent]
+    DetalheRoteiroComponent,
+    DetalheVeiculoComponent]
 })
 export class ComponentsModule {}

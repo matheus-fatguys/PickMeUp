@@ -1,14 +1,24 @@
 <ion-header>
 
   <ion-navbar>
+    <ion-buttons end>
+      <button ion-button icon-right (click)="salvar()"><ion-icon name="cloud-upload"></ion-icon></button>
+    </ion-buttons>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Roteiro</ion-title>
+    </button>    
+    <ion-title><span>Roteiro</span></ion-title>
   </ion-navbar>
 
 </ion-header>
 <ion-content padding>
-  <detalhe-roteiro [roteiro]="roteiro"></detalhe-roteiro>
-    <button ion-button (click)="salvar()">Salvar</button>
+  <detalhe-roteiro [roteiro]="roteiro"></detalhe-roteiro>    
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-right (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>  
+</ion-footer>

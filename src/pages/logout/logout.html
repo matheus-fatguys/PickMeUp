@@ -12,6 +12,12 @@
 
 
 <ion-content padding>
-  <ion-item>Tem certeza que deseja sair, {{condutor.nome}}?</ion-item>
-  <button ion-button color="light" (click)="sair()">Sair</button>
+  <ion-item>Tem certeza que deseja sair, {{condutor.nome}}?</ion-item>  
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>      
+      <button ion-button icon-right (click)="sair()">Sair<ion-icon name="log-out"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>  
+</ion-footer>

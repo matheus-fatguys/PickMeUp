@@ -34,6 +34,16 @@ export class CadastroRoteirosPage  implements OnInit {
         
   }
 
+  toggleAtivar(roteiro: Roteiro){
+    this.fatguys.salvarRoteiro(roteiro).then(
+      r=>{
+        
+      }
+    ).catch(error=>{
+        this.msg.mostrarMsg("Erro salvando : "+error);
+      });
+  }
+
   onSelect(roteiro){
     this.roteiroSelecionado=roteiro;
   }  

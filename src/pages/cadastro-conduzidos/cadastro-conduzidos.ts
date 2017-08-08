@@ -23,12 +23,23 @@ export class CadastroConduzidosPage implements OnInit {
 
   ngOnInit(): void {
     let ref=this.fatguys.obterCondutorPeloUsuarioLogado();
-    let sub = ref.subscribe(
-      conds=>{
-        this.conduzidos=this.fatguys.obterConduzidos(conds[0]);
+    if(ref!=null){
+      let sub = ref.subscribe(
+        conds=>{
+          this.conduzidos=this.fatguys.obterConduzidos(conds[0]);
+        }
+      );
+    }    
+  }
+
+  toggleAtivar(conduzido: Conduzido){
+    this.fatguys.salvarConduzido(conduzido).then(
+      r=>{
+        
       }
-    );
-    
+    ).catch(error=>{
+        this.msg.mostrarMsg("Erro salvando : "+error);
+      });
   }
 
   onSelect(conduzido){

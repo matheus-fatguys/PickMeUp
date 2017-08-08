@@ -1,5 +1,10 @@
 <ion-header>
   <ion-navbar>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="novo()"><ion-icon name="person-add"></ion-icon></button>
+      <button ion-button icon-only [disabled]="!conduzidoSelecionado" (click)="detalhe()"><ion-icon name="brush"></ion-icon></button>
+      <button ion-button icon-only [disabled]="!conduzidoSelecionado" (click)="excluir()"><ion-icon name="trash"></ion-icon></button>    
+    </ion-buttons>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -11,15 +16,25 @@
 <ion-content padding>
   <ion-list>
     <ion-item *ngFor="let conduzido of conduzidos | async" 
-    (click)="onSelect(conduzido)"
+    (click)="onSelect(conduzido);"
     [class.selected]="conduzido === conduzidoSelecionado"
+    [class.inativo]="conduzido != conduzidoSelecionado && !conduzido.ativo"
     >
-        {{conduzido.nome}}
-        <button (click)="excluir(conduzido)"  class="delete"><ion-icon name="remove-circle"></ion-icon></button>
+        <ion-label>{{conduzido.nome}}</ion-label>     
+        <ion-toggle  [(ngModel)]="conduzido.ativo" (ionChange)="toggleAtivar(conduzido)"></ion-toggle >
+        <button ion-button icon-right (click)="onSelect(roteiro);excluir()">Excluir<ion-icon name="trash"></ion-icon></button>
     </ion-item>
   </ion-list>
 
-  <button ion-button (click)="novo()">Novo</button>
-  <button ion-button [disabled]="!conduzidoSelecionado" (click)="detalhe()">Editar</button>
-  <button ion-button [disabled]="!conduzidoSelecionado" (click)="excluir()">Excluir</button>
+  
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-right (click)="novo()">Novo<ion-icon name="person-add"></ion-icon></button>
+      <button ion-button icon-right [disabled]="!conduzidoSelecionado" (click)="detalhe()">Editar<ion-icon name="brush"></ion-icon></button> 
+      <button ion-button icon-right [disabled]="!conduzidoSelecionado" (click)="excluir()">Excluir<ion-icon name="trash"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>  
+</ion-footer>

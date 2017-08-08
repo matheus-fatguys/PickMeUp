@@ -15,7 +15,7 @@ export class MyApp {
 
   rootPage:any;
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: any, icon:string}>;
 
   constructor(platform: Platform, 
     statusBar: StatusBar, 
@@ -46,11 +46,11 @@ export class MyApp {
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Condutor', component: 'CondutorPage' },
-      { title: 'Conduzidos', component: 'CadastroConduzidosPage' },
-      { title: 'Roteiros', component: 'CadastroRoteirosPage' },
-      { title: 'Condução', component: 'ConducaoPage' },
-      { title: 'Sair', component: 'LogoutPage' }
+      { title: 'Condutor', component: 'CondutorPage', icon:'person' },
+      { title: 'Conduzidos', component: 'CadastroConduzidosPage', icon:'people' },
+      { title: 'Roteiros', component: 'CadastroRoteirosPage', icon:'git-compare' },
+      { title: 'Condução', component: 'ConducaoPage', icon:'bus' },
+      { title: 'Sair', component: 'LogoutPage', icon:'log-out' }
     ];
 
   }

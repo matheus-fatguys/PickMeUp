@@ -100,3 +100,8 @@ módulo CONDUZIDO
 3 - notificar ausencia: avisar ao condutor que não comparecerá ao ponto de origem da condução
 4 - EM CONDUÇÃO: é notificado de que viagem iniciou
 5 - classificar condução: conduzido classifica a condução
+
+
+REDE SOCIAL
+ conduzido poderá publicar um roteiro e os condutores poderão se candidatar a conduzi-lo
+ da mesma forma, o condutor poderá publicar seus roteiros e os conduzidos poderão demonstrar interesse

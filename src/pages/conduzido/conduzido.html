@@ -12,3 +12,10 @@
   <detalhe-conduzido [conduzido]="conduzido" [chave]="chave"></detalhe-conduzido>
     <button ion-button (click)="salvar()">Salvar</button>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-right (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>  
+</ion-footer>

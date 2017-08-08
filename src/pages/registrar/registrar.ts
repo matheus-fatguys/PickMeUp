@@ -1,3 +1,4 @@
+import { Veiculo } from './../../models/veiculo';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Usuario } from './../../models/usuario';
 import { Condutor } from './../../models/condutor';
@@ -20,6 +21,7 @@ export class RegistrarPage {
     public navParams: NavParams,
     private fatguysService: FatguysUberProvider,
     private msg : MensagemProvider) {
+      this.condutor.veiculo={} as Veiculo;
   }
 
   ionViewDidLoad() {

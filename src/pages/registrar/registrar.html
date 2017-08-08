@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>registrar</ion-title>
+    <ion-title>Registrar</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -34,5 +34,13 @@
     <ion-input type="password" [(ngModel)]="usuario.senha"></ion-input>
   </ion-item>
 
-  <button ion-button (click)="registrar()">Registrar</button>
-</ion-content>
+      
+  <detalhe-veiculo [veiculo]="condutor.veiculo"></detalhe-veiculo>     
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-right (click)="registrar()">Salvar<ion-icon name="arrow-dropup"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>  
+</ion-footer>

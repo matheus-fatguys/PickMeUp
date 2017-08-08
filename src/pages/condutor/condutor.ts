@@ -1,3 +1,4 @@
+import { Veiculo } from './../../models/veiculo';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Condutor } from './../../models/condutor';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
@@ -14,8 +15,7 @@ export class CondutorPage {
 
 
 
-  private condutor={} as Condutor;
-  ;
+  condutor={} as Condutor;    
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -30,8 +30,18 @@ export class CondutorPage {
       if(ref!=null){
         ref.subscribe(r=>{
           this.condutor=r[0];
+          if(!this.condutor.veiculo){
+            this.condutor.veiculo={} as Veiculo;
+          }
         });        
       }
+    }
+    if(!this.condutor.veiculo){
+      this.condutor.veiculo={} as Veiculo;
+    }
+    else{
+      this.condutor.veiculo={} as Veiculo;
+      this.condutor.veiculo.modelo="DFGDFG";      
     }
   }
 
