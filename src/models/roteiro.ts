@@ -10,5 +10,6 @@ export interface Roteiro {
     sexta: boolean,   
     sabado: boolean,   
     domingo: boolean,
-    conducoes: Conducao[]
+    conducoes: Conducao[],
+    ativo: boolean
 }
