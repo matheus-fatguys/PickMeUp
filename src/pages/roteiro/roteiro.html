@@ -1,0 +1,14 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Roteiro</ion-title>
+  </ion-navbar>
+
+</ion-header>
+<ion-content padding>
+  <detalhe-roteiro [roteiro]="roteiro"></detalhe-roteiro>
+    <button ion-button (click)="salvar()">Salvar</button>
+</ion-content>

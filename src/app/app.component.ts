@@ -48,6 +48,7 @@ export class MyApp {
     this.pages = [
       { title: 'Condutor', component: 'CondutorPage' },
       { title: 'Conduzidos', component: 'CadastroConduzidosPage' },
+      { title: 'Roteiros', component: 'CadastroRoteirosPage' },
       { title: 'Condução', component: 'ConducaoPage' },
       { title: 'Sair', component: 'LogoutPage' }
     ];

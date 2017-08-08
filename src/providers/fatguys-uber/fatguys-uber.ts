@@ -1,3 +1,4 @@
+import { Roteiro } from './../../models/roteiro';
 import { Observable } from 'rxjs/Rx';
 import { Usuario } from './../../models/usuario';
 import { Chave } from './../../models/chave';
@@ -80,6 +81,31 @@ export class FatguysUberProvider {
         sub.unsubscribe();
       });    
     return ret;
+  }
+
+ salvarRoteiro (roteiro: Roteiro){
+       
+    if(!roteiro.id){
+      return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").push(roteiro).then(
+        ref => {
+          roteiro.id=ref.key;
+          return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").update(roteiro.id,roteiro);
+        }
+      ) 
+    }
+    else{
+      return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").update(roteiro.id, roteiro);
+    }    
+  }
+
+  excluirRoteiro (roteiro: Roteiro){
+    
+    return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").remove(roteiro.id);
+    
+  }
+
+  obterRoteiros(condutor: Condutor){
+    return this.afd.list(`/condutores/`+condutor.id+"/roteiros");
   }
 
   removerChaveDoConduzido(id){
