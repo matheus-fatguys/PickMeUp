@@ -5,13 +5,13 @@ export interface Roteiro {
     nome: string,
     hora: number,
     minuto: number,
+    domingo: boolean,
     segunda: boolean,   
     terca: boolean,   
     quarta: boolean,   
     quinta: boolean,   
     sexta: boolean,   
     sabado: boolean,   
-    domingo: boolean,
     conducoes: Conducao[],
     ativo: boolean
 }
