@@ -14,13 +14,13 @@
           <ion-col col-3>
             <ion-item>
               <ion-label floating>Hora:</ion-label>
-              <ion-input type="number" [(ngModel)]="roteiro.hora"></ion-input>
+              <ion-input type="number"  min="0" max="23" [(ngModel)]="roteiro.hora"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col col-4>
               <ion-item>
                 <ion-label floating>Minuto:</ion-label>
-                <ion-input type="number" [(ngModel)]="roteiro.minuto"></ion-input>
+                <ion-input type="number"  min="1" max="59" [(ngModel)]="roteiro.minuto"></ion-input>
               </ion-item>
           </ion-col>          
         </ion-row>
