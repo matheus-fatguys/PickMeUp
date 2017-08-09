@@ -48,8 +48,8 @@ export class MyApp {
     this.pages = [
       { title: 'Condutor', component: 'CondutorPage', icon:'person' },
       { title: 'Conduzidos', component: 'CadastroConduzidosPage', icon:'people' },
+      { title: 'Conduções', component: 'CadastroConducoesPage', icon:'git-network' },
       { title: 'Roteiros', component: 'CadastroRoteirosPage', icon:'git-compare' },
-      { title: 'Condução', component: 'ConducaoPage', icon:'bus' },
       { title: 'Sair', component: 'LogoutPage', icon:'log-out' }
     ];
 

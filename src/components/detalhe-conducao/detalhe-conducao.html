@@ -1,0 +1,25 @@
+<div >    
+      <ion-item>
+        <ion-label>Conduzido</ion-label>
+        <ion-select [(ngModel)]="conduzido"  okText="OK" cancelText="Cancelar" (ionChange)="conduzidoSelecionado($event)" interface="popover">
+          <ion-option *ngFor="let c of conduzidos | async" value="{{c.id}}">{{c.nome}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <form (ngSubmit)="onSubmitOrigem()">
+          <ion-list>            
+            <ion-item>
+              <ion-label floating>Origem:</ion-label>
+              <ion-input type="text" name="origem" [(ngModel)]="enderecoOrigem"></ion-input>
+            </ion-item>            
+            <ion-item *ngFor="let r of resultados" (click)="onOrigemSelecionada(r)">
+              {{r.formatted_address}}
+            </ion-item>
+          </ion-list>
+        </form>
+      </ion-item> 
+      <ion-item>
+        <ion-label floating>Destino:</ion-label>
+        <ion-input type="text" [(ngModel)]="destino"></ion-input>
+      </ion-item> 
+  </div>

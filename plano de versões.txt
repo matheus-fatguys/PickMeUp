@@ -105,3 +105,21 @@ módulo CONDUZIDO
 REDE SOCIAL
  conduzido poderá publicar um roteiro e os condutores poderão se candidatar a conduzi-lo
  da mesma forma, o condutor poderá publicar seus roteiros e os conduzidos poderão demonstrar interesse
+
+
+CONCEITOS
+1 - VEÍCULO é um meio de transporte automotor
+2 - LOCAL é um endereço, podendo contar com latitude e longitude
+3 - CONDUTOR é a pessoa que dirige um veiculo e é responsável pelo transporte de conduzidos
+4 - CONDUZIDO é a pessoa que é transportada por um condutor em um veículo
+5 - CONDUÇÃO é o plano de transporte de um conduzido de um local de origem para um local de destino
+6 - ROTEIRO é a programação de uma ou mais conduções com horário de início e dias da semana
+7 - TRANSPORTE é a realização da condução
+8 - VIAGEM  a realização de um roteiro, sendo formada por um ou mais transportes, através de um veículo percorrendo um trajeto determinado pelo google maps api
+9 - TRAJETO é a rota realizada pelo veículo durante a viagem, 
+			que será gerada no momento do início da viagem(realização do roteiro), 
+			esse trajeto será determinado pelo google maps api, 
+			tendo como entrada o local onde o condutor se encontra 
+			e os locais de origem e destino de cada condução.
+			A entrada gerada para o google maps api será gerada por um algoritmo
+			que irá fazer um distinct dos endereços de origem e destino das conduções

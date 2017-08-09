@@ -1,7 +1,8 @@
-import { Conduzido } from './conduzido';
 import { Local } from "./local";
 export interface Conducao {    
-    conduzidos: Conduzido,
+    id: string,
+    condutor: string,
+    conduzido: string,
     origem: Local,
     destino: Local
 }

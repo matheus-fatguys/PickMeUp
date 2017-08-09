@@ -1,3 +1,4 @@
+import { Conducao } from './../../models/conducao';
 import { Roteiro } from './../../models/roteiro';
 import { Observable } from 'rxjs/Rx';
 import { Usuario } from './../../models/usuario';
@@ -27,6 +28,15 @@ export class FatguysUberProvider {
   }
 
   
+
+  obterConducoes (condutor: Condutor){    
+    return this.afd.list("/condutores/"+condutor.id+"/conducoes/", {
+      query: {
+        orderByChild: "condutor",
+        equalTo: condutor.id
+      }
+    });    
+  }
 
   obterConduzidos (condutor: Condutor){    
     return this.afd.list(`/conduzidos/`, {

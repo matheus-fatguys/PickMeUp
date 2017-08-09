@@ -1,64 +1,20 @@
 <ion-header>
+
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-buttons start>
-      <button [hidden]="!isPickupRequested" (click)="cancelPickup()">
-        <ion-icon name="arrow-back"></ion-icon> Cancelar
-      </button>
-    </ion-buttons>
-
-    <ion-title>      
-      <span [hidden]="isPickupRequested">Modo de Condução</span>
-      <span [hidden]="!isPickupRequested">A Caminho...</span>
-    </ion-title>
-
-    <ion-buttons end>
-      <button (click)="map.centerLocation()">
-        <ion-icon name="navigate"></ion-icon>
-      </button>
-    </ion-buttons>
-
+    <ion-title>Conducao</ion-title>
   </ion-navbar>
+
 </ion-header>
-
-<ion-content padding>  
-  <div class="map-wrapper">
-    <map #map  
-    [isPickupRequested]="isPickupRequested"
-    [destination]="destination"></map>
-    <destination-address
-      [hidden]="!isRiderPickedUp"
-      (newDest)="setDestination($event)">
-   </destination-address>
-  </div>
-  <div class="bottom request-controls">
-    <ion-row>
-      <ion-col width-50>
-        <button block light>
-          <ion-icon name="card"></ion-icon>
-          VISA **34
-        </button>
-      </ion-col>
-      <ion-col width-50>
-        <button block light>
-          <ion-icon name="cash"></ion-icon>
-          DINHEIRO
-        </button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <button [hidden]="isPickupRequested" block primary (click)="confirmPickup()">SOLICITAR TRANSPORTE</button>
-        <button [hidden]="!isPickupRequested" block secondary (click)="cancelPickup()">CANCELAR TRANSPORTE</button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        CHEGADA EM APROXIMADAMENTE {{timeTillArrival}} MIN
-      </ion-col>
-    </ion-row>
-  </div>
-
+<ion-content padding>
+  <detalhe-conducao [conducao]="conducao" ></detalhe-conducao>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-right (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>  
+</ion-footer>

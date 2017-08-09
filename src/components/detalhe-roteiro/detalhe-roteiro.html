@@ -13,16 +13,10 @@
           <ion-col col-1><ion-icon name="time"></ion-icon></ion-col>
           <ion-col col-5>
             <ion-item>
-              <ion-label floating>Hora:</ion-label>
-              <ion-datetime displayFormat="HH" pickerFormat="HH" [(ngModel)]="roteiro.hora"></ion-datetime>
+              <ion-label floating>Início:</ion-label>
+              <ion-datetime displayFormat="HH:mm" pickerFormat="HH:mm" [(ngModel)]="roteiro.hora"></ion-datetime>
             </ion-item>
           </ion-col>
-          <ion-col col-6>
-              <ion-item>
-                <ion-label floating>Minuto:</ion-label>
-                <ion-datetime displayFormat="mm" pickerFormat="mm" [(ngModel)]="roteiro.minuto"></ion-datetime>
-              </ion-item>
-          </ion-col>          
         </ion-row>
         <ion-row>
           <ion-col col-1><ion-icon name="calendar"></ion-icon></ion-col>
