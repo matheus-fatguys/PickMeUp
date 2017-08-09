@@ -9,3 +9,6 @@ instalar firebase no projeto: npm install angularfire2 firebase --save
 
 ISSUE 3:
 queando uma IonicPage não reconhece um componente filho, insira em seu NgModule nos imports o ComponentsModule
+
+
+JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database

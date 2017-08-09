@@ -12,16 +12,16 @@ import { Component, Input } from '@angular/core';
 export class DetalheConducaoComponent {
 
   @Input() conducao= {} as Conducao;  
-  @Input() conduzido= {} as Conduzido;
+  // @Input() conduzido;//= {} as Conduzido;
+
+  private rotuloOrigem="Origem:";
+  private rotuloDestino="Destino:";
+
   conduzidos;
-  enderecoOrigem;
-  geocoder;
-  resultados;
+
 
   constructor(public fatguys: FatguysUberProvider,
-    public msg: MensagemProvider) {   
-    this.geocoder = new google.maps.Geocoder(); 
-    this.resultados=[];
+    public msg: MensagemProvider) {      
   }
 
   ngOnInit(): void {
@@ -35,27 +35,15 @@ export class DetalheConducaoComponent {
     }    
   }
 
-  conduzidoSelecionado(e){
-    console.log(e);
+  conduzidoSelecionado(idConduzido){
+    this.conducao.conduzido=idConduzido;
   }
 
-  onSubmitOrigem(){
-    this.resultados = [];
-    
-    this.geocoder.geocode( {address: this.enderecoOrigem}, (destinations, status) => {
-      
-      if (status === google.maps.GeocoderStatus.OK) {
-        this.resultados = destinations.slice(0,8); // show top 4 results
-      }
-      else if (status === google.maps.GeocoderStatus.ZERO_RESULTS) {
-        alert("Destino desconhecido");
-      }
-    });
+  onEnderecoOrigemSelecionado($event){
+    this.conducao.origem=$event;
   }
 
-  onOrigemSelecionada(r){
-    console.log(r);
-    this.resultados = [];
+  onEnderecoDestinoSelecionado($event){
+    this.conducao.destino=$event;
   }
-
 }

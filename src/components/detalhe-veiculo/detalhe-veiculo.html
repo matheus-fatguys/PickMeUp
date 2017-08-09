@@ -1,5 +1,9 @@
 <div >    
     <ion-item>
+      <ion-label floating>Marca:</ion-label>
+      <ion-input type="text" [(ngModel)]="veiculo.marca"></ion-input>
+    </ion-item>
+    <ion-item>
       <ion-label floating>Modelo:</ion-label>
       <ion-input type="text" [(ngModel)]="veiculo.modelo"></ion-input>
     </ion-item>
@@ -9,6 +13,6 @@
     </ion-item> 
     <ion-item >
       <ion-label floating>Placa:</ion-label>
-      <ion-input type="text" disabled [(ngModel)]="veiculo.placa"></ion-input>
+      <ion-input type="text" [(ngModel)]="veiculo.placa"></ion-input>
     </ion-item> 
   </div>

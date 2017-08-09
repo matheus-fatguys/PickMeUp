@@ -19,17 +19,22 @@ export class CadastroConducoesPage  implements OnInit{
     public navParams: NavParams, 
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
+      this.obterConducoes();
   }
 
-  ngOnInit(): void {
+  obterConducoes(){
     let ref=this.fatguys.obterCondutorPeloUsuarioLogado();
     if(ref!=null){
       let sub = ref.subscribe(
         conds=>{
-          this.conducoes=this.fatguys.obterConducoes(conds[0]);
+          // this.conducoes=this.fatguys.obterConducoes(conds[0]);
+          this.conducoes=this.fatguys.obterConducoesComConduzidos(conds[0]);
         }
       );
     }    
+  }
+
+  ngOnInit(): void {
   }
 
   toggleAtivar(conducao: Conducao){
@@ -48,17 +53,7 @@ export class CadastroConducoesPage  implements OnInit{
   }  
 
   detalhe(){
-    // let sub = this.fatguys.obterChaveDoConducao(this.conduzidoSelecionado)
-    // .subscribe(
-    //     r=>{
-    //       let chave={} as Chave;
-    //       //chave.chave=r[0].chave;
-    //       chave=r[0] as Chave;
-    //       chave.conducao=this.conduzidoSelecionado.id;
-    //       this.navCtrl.push('ConducaoPage',{conducao:this.conduzidoSelecionado, chave:chave});          
-    //       sub.unsubscribe();
-    //     }
-    //   );    
+    this.navCtrl.push('ConducaoPage',{conducao:this.conducaoSelecionada});
   }
 
   novo(){
@@ -66,19 +61,19 @@ export class CadastroConducoesPage  implements OnInit{
   }
 
   excluir(conducao){
-    // if(conducao!=null){
-    //   this.conduzidoSelecionado=conducao;
-    // }
-    // this.fatguys.excluirConducao(this.conduzidoSelecionado).then(
-    //   (r)=>{
-    //     this.msg.mostrarMsg("Exclusão realizada!");
-    //   },
-    //   e=>{
-    //     this.msg.mostrarErro("Erro excluindo: "+e.message);  
-    //   }
-    // ).catch(error=>{
-    //   this.msg.mostrarErro("Erro excluindo: "+error);
-    // });
+    if(conducao!=null){
+      this.conducaoSelecionada=conducao;
+    }
+    this.fatguys.excluirConducao(this.conducaoSelecionada).then(
+      (r)=>{
+        this.msg.mostrarMsg("Exclusão realizada!");
+      },
+      e=>{
+        this.msg.mostrarErro("Erro excluindo: "+e.message);  
+      }
+    ).catch(error=>{
+      this.msg.mostrarErro("Erro excluindo: "+error);
+    });
   }
 
 

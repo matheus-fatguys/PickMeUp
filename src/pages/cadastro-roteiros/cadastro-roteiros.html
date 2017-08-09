@@ -1,6 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-buttons end>
+      <button ion-button icon-only (click)="novo()"><ion-icon name="add-circle"></ion-icon></button>
       <button ion-button icon-only [disabled]="!roteiroSelecionado" (click)="compartilhar()"><ion-icon name="share-alt"></ion-icon></button>
       <button ion-button icon-only [disabled]="!roteiroSelecionado" (click)="novo()"><ion-icon name="navigate"></ion-icon></button>
     </ion-buttons>
@@ -29,7 +30,7 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons end>
-      <button ion-button icon-right (click)="novo()">Novo<ion-icon name="git-compare"></ion-icon></button>
+      <button ion-button icon-right (click)="novo()">Novo<ion-icon name="add-circle"></ion-icon></button>
       <button ion-button icon-right [disabled]="!roteiroSelecionado" (click)="detalhe()">Editar<ion-icon name="brush"></ion-icon></button> 
       <button ion-button icon-right [disabled]="!roteiroSelecionado" (click)="excluir()">Excluir<ion-icon name="trash"></ion-icon></button>
     </ion-buttons>

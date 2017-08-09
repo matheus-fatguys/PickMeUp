@@ -1,13 +1,13 @@
+import { Observable } from 'rxjs';
 import { Conducao } from './../../models/conducao';
 import { Roteiro } from './../../models/roteiro';
-import { Observable } from 'rxjs/Rx';
 import { Usuario } from './../../models/usuario';
 import { Chave } from './../../models/chave';
 import { AutenticacaoProvider } from './../autenticacao/autenticacao';
 import { Conduzido } from './../../models/conduzido';
 import { Condutor } from './../../models/condutor';
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
+
 import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database";
 
 
@@ -23,20 +23,79 @@ export class FatguysUberProvider {
   constructor(private afd: AngularFireDatabase,
   private auth : AutenticacaoProvider) {
     this.condutores=this.afd.list("condutores");
-    this.conduzidos=this.afd.list("conduzidos");
+    this.conduzidos=this.afd.list("conduzidos");    
     this.chaves=this.afd.list("chaves");
   }
 
   
 
   obterConducoes (condutor: Condutor){    
-    return this.afd.list("/condutores/"+condutor.id+"/conducoes/", {
+    let ref = this.afd.list("/condutores/"+condutor.id+"/conducoes/", {
       query: {
         orderByChild: "condutor",
         equalTo: condutor.id
       }
-    });    
+    }); 
+    return ref;  
   }
+  
+  obterConducoesComConduzidos (condutor: Condutor){    
+    
+    // Compose an observable based on the conducoes
+    let conducoesComConduzido = this.afd.list("/condutores/"+condutor.id+"/conducoes/", {
+      query: {
+        orderByChild: "condutor",
+        equalTo: condutor.id
+      }
+    })
+    /// Each time the conducoes emits, switch to unsubscribe/ignore
+    // any pending conduzido queries:
+    .switchMap(conducoes => {
+
+    // Map the conducoes to the array of observables that are to be
+    // combined.
+    let conduzidoObservables = conducoes.map(conducao => this.afd.object("/conduzidos/"+conducao.conduzido+"/"));
+    
+    // Combine the user observables, and match up the users with the
+    // projects, etc.
+
+    return conduzidoObservables.length === 0 ?
+      Observable.of(conducoes) :
+      Observable.combineLatest(...conduzidoObservables, (...conduzidos) => {
+        conducoes.forEach((conducao, index) => {
+          conducao.conduzidoVO = conduzidos[index];
+        });
+        return conducoes;          
+      });
+  });  
+
+
+
+    return conducoesComConduzido;  
+  }
+
+  salvarConducao (conducao: Conducao){
+    conducao.condutor=this.condutor.id;
+
+    if(!conducao.id){
+      let ref = this.afd.list("condutores/"+conducao.condutor+"/conducoes").push(conducao).then(
+        ref => {
+          conducao.id=ref.key;
+          return this.afd.list("condutores/"+conducao.condutor+"/conducoes").update(conducao.id,conducao);
+        }
+      ) 
+      return ref;
+    }
+    else{
+      return this.afd.list("condutores/"+conducao.condutor+"/conducoes").update(conducao.id, conducao);
+    }    
+  }
+
+  excluirConducao (conducao: Conducao){
+    let ret =this.afd.list("condutores/"+conducao.condutor+"/conducoes").remove(conducao.id);      
+    return ret;
+  }
+
 
   obterConduzidos (condutor: Condutor){    
     return this.afd.list(`/conduzidos/`, {

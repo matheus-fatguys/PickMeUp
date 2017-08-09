@@ -28,7 +28,7 @@ export class MyApp {
                 this.fatguysService.obterCondutorPeloUsuarioLogado().subscribe(
                   r=>{
                     this.rootPage = 'HomePage';
-                    //authObserver.unsubscribe();
+                    //authObserver.unsubscribe()y2gh;
                   }
                 );
               } else {

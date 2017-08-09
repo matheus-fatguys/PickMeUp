@@ -1,6 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-buttons end>
+      <button ion-button icon-only (click)="novo()"><ion-icon name="add-circle"></ion-icon></button>
       <button ion-button icon-only [disabled]="!conducaoSelecionada" (click)="detalhe()"><ion-icon name="brush"></ion-icon></button>
       <button ion-button icon-only [disabled]="!conducaoSelecionada" (click)="excluir()"><ion-icon name="trash"></ion-icon></button>    
     </ion-buttons>
@@ -19,7 +20,7 @@
     [class.selected]="conducao === conducaoSelecionada"
     [class.inativo]="conducao != conducaoSelecionada && !conducao.ativo"
     >
-        <h2>{{conducao.conduzido.nome}}</h2>
+        <h2>{{conducao.conduzidoVO?.nome}}</h2>
         <h3>{{conducao.origem.endereco}}</h3>
         <p>{{conducao.destino.endereco}}</p>
     </ion-item>
@@ -31,7 +32,7 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons end>
-      <button ion-button icon-right (click)="novo()">Nova<ion-icon name="person-add"></ion-icon></button>
+      <button ion-button icon-right (click)="novo()">Nova<ion-icon name="add-circle"></ion-icon></button>
       <button ion-button icon-right [disabled]="!conducaoSelecionada" (click)="detalhe()">Editar<ion-icon name="brush"></ion-icon></button> 
       <button ion-button icon-right [disabled]="!conducaoSelecionada" (click)="excluir()">Excluir<ion-icon name="trash"></ion-icon></button>
     </ion-buttons>
