@@ -1,6 +1,9 @@
 <ion-header>
 
   <ion-navbar>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="telefonar()"><ion-icon name="call"></ion-icon></button>
+    </ion-buttons>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -10,7 +13,6 @@
 </ion-header>
 <ion-content padding>
   <detalhe-conduzido [conduzido]="conduzido" [chave]="chave"></detalhe-conduzido>
-    <button ion-button (click)="salvar()">Salvar</button>
 </ion-content>
 <ion-footer>
   <ion-toolbar>

@@ -1,12 +1,13 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-buttons end>
-      <button ion-button icon-right (click)="salvar()"><ion-icon name="cloud-upload"></ion-icon></button>
-    </ion-buttons>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>    
+    <ion-buttons end>
+      <button ion-button icon-only (click)="compartilhar()"><ion-icon name="share-alt"></ion-icon></button>
+      <button ion-button icon-only (click)="novo()"><ion-icon name="navigate"></ion-icon></button>
+    </ion-buttons>
     <ion-title><span>Roteiro</span></ion-title>
   </ion-navbar>
 
@@ -18,6 +19,7 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons end>
+      <button ion-button icon-only (click)="novoConducao()">Nova Condução<ion-icon name="git-network"></ion-icon></button>
       <button ion-button icon-right (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
     </ion-buttons>
   </ion-toolbar>  

@@ -1,0 +1,33 @@
+JOGO GREED
+GENÉTICA, ECOLOGIA
+
+OBJETIVO: continuar jogando pra sempre, 
+pra isso é necessário usar uma estratégia que permita que gere descendentes antes de morrer.
+
+PREMISSAS:
+
+1 - MUNDO
+1.1 - seres inanimados
+1.1.1 - recursos renovaveis
+1.1.2 - recursos nao renovaveis
+1.2  - seres vivos
+1.2.1 - seres vivos podem ser um jogador ou uma IA
+
+2- INTERACAO COM OUTROS JOGADORES:
+2.1 - colaborar(defender, reproduzir, alimentar, trocar recursos, doar recursos)
+2.2 - trair(roubar recursos, atacar)
+2.3 - fuga e isolamento
+
+3 - GENES DETERMINAM CARACTERISTICAS
+3.1 - cor, forma, velocidade de interacao, longevidade, inicio fase reprodutiva, 
+capacidade de reprodução, compatibilidade de reproducao, 
+compatibilidade de absorcao(alimentar-se de seres vivos ou recuros), 
+efetividade e resistencia a ataques,
+resistencia a intemperies
+3.2 - mutações aleatórias
+
+4 - CICLO DE VIDA 
+4.1 - nasce, cresce, reproduz, morre - SEMPRE
+
+
+

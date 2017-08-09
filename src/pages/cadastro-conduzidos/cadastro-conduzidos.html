@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
-    <ion-buttons start>
-      <button ion-button icon-only (click)="novo()"><ion-icon name="person-add"></ion-icon></button>
+    <ion-buttons end>
+      <button ion-button icon-only [disabled]="!conduzidoSelecionado" (click)="telefonar()"><ion-icon name="call"></ion-icon></button>
       <button ion-button icon-only [disabled]="!conduzidoSelecionado" (click)="detalhe()"><ion-icon name="brush"></ion-icon></button>
       <button ion-button icon-only [disabled]="!conduzidoSelecionado" (click)="excluir()"><ion-icon name="trash"></ion-icon></button>    
     </ion-buttons>

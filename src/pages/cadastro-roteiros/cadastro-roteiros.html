@@ -1,9 +1,8 @@
 <ion-header>
   <ion-navbar>
-    <ion-buttons start>
-      <button ion-button icon-only (click)="novo()"><ion-icon name="git-compare"></ion-icon></button>
-      <button ion-button icon-only [disabled]="!roteiroSelecionado" (click)="detalhe()"><ion-icon name="brush"></ion-icon></button>
-      <button ion-button icon-only [disabled]="!roteiroSelecionado" (click)="excluir()"><ion-icon name="trash"></ion-icon></button>    
+    <ion-buttons end>
+      <button ion-button icon-only [disabled]="!roteiroSelecionado" (click)="compartilhar()"><ion-icon name="share-alt"></ion-icon></button>
+      <button ion-button icon-only [disabled]="!roteiroSelecionado" (click)="novo()"><ion-icon name="navigate"></ion-icon></button>
     </ion-buttons>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>

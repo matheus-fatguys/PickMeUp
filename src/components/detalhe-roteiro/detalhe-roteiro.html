@@ -11,16 +11,16 @@
         </ion-row>
         <ion-row>
           <ion-col col-1><ion-icon name="time"></ion-icon></ion-col>
-          <ion-col col-3>
+          <ion-col col-5>
             <ion-item>
               <ion-label floating>Hora:</ion-label>
-              <ion-input type="number"  min="0" max="23" [(ngModel)]="roteiro.hora"></ion-input>
+              <ion-datetime displayFormat="HH" pickerFormat="HH" [(ngModel)]="roteiro.hora"></ion-datetime>
             </ion-item>
           </ion-col>
-          <ion-col col-4>
+          <ion-col col-6>
               <ion-item>
                 <ion-label floating>Minuto:</ion-label>
-                <ion-input type="number"  min="1" max="59" [(ngModel)]="roteiro.minuto"></ion-input>
+                <ion-datetime displayFormat="mm" pickerFormat="mm" [(ngModel)]="roteiro.minuto"></ion-datetime>
               </ion-item>
           </ion-col>          
         </ion-row>
@@ -43,6 +43,60 @@
           <ion-col col-1><ion-checkbox [(ngModel)]="roteiro.quinta"></ion-checkbox></ion-col>
           <ion-col col-1><ion-checkbox [(ngModel)]="roteiro.sexta"></ion-checkbox></ion-col>
           <ion-col col-1><ion-checkbox [(ngModel)]="roteiro.sabado"></ion-checkbox></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-12>
+            <ion-list>
+              <ion-list-header>
+                Conduções 
+              </ion-list-header>
+              <ion-item-sliding>
+                <ion-item>
+                  <h2>Guilherme</h2>
+                  <h3>Rua Nossa Sra de Brotas, 166, Brotas, Salvador-BA</h3>
+                  <p>Rua Silveira Martins, 95, Cabula, Salvador-BA</p>
+                </ion-item>               
+                <ion-item-options side="right">
+                    <button ion-button color="primary">
+                      <ion-icon name="brush"></ion-icon>                      
+                    </button>
+                    <button ion-button color="primary">
+                      <ion-icon name="trash"></ion-icon>                      
+                    </button>
+                </ion-item-options>
+              </ion-item-sliding>            
+              <ion-item-sliding>
+                <ion-item>
+                  <h2>Brandon</h2>
+                  <h3>Rua das Umburanas, 166, Imbuí, Salvador-BA</h3>
+                  <p>Rua do Marista, 95, Piatã, Salvador-BA</p>
+                </ion-item>               
+                <ion-item-options side="right">
+                    <button ion-button color="primary">
+                      <ion-icon name="brush"></ion-icon>                      
+                    </button>
+                    <button ion-button color="primary">
+                      <ion-icon name="trash"></ion-icon>                      
+                    </button>
+                </ion-item-options>
+              </ion-item-sliding>            
+              <ion-item-sliding>
+                <ion-item>
+                  <h2>Gustavo</h2>
+                  <h3>Tv. Texeira Barros, 13, Stiep, Salvador-BA</h3>
+                  <p>Rua do Sartre, 95, Piatã, Salvador-BA</p>
+                </ion-item>               
+                <ion-item-options side="right">
+                    <button ion-button color="primary">
+                      <ion-icon name="brush"></ion-icon>                      
+                    </button>
+                    <button ion-button color="primary">
+                      <ion-icon name="trash"></ion-icon>                      
+                    </button>
+                </ion-item-options>
+              </ion-item-sliding>            
+            </ion-list>
+          </ion-col>
         </ion-row>
       </ion-grid>
   </div>
