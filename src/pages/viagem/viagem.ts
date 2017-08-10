@@ -169,7 +169,7 @@ export class ViagemPage {
     if(minutos>59){
       strHr=horas+" hr ";
       ret=ret+strHr;
-      var m=Math.round(n-horas*60*60)/60;
+      var m=Math.round((n-horas*60*60)/60);
       minutos=m;
     }
     var strMin=minutos+" min";
