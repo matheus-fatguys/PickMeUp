@@ -12,7 +12,6 @@ import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angul
 })
 export class ConducoesNaoAssociadasModalPage{
 
-
   private roteiro:Roteiro;
   private conducoes:Conducao[]=new Array();
   private conducaoSelecionada:Conducao;
@@ -38,13 +37,19 @@ export class ConducoesNaoAssociadasModalPage{
           // this.conducoes=this.fatguys.obterConducoes(conds[0]);
           let sub2 = this.fatguys.obterConducoesComConduzidos(conds[0]).subscribe(
               conducoes=>{
-                var cs=[];
+                // var cs=[];
                 conducoes.forEach(c => {
-                  var ci = this.roteiro.conducoes.findIndex(cr=>{
-                    return cr.id==c.id;
-                  });
-                  if(ci<0){
-                    cs.push(c);
+                  var ci;
+                  if(this.roteiro.conducoes){
+                    ci = this.roteiro.conducoes.findIndex(cr=>{
+                      return cr.id==c.id;
+                    });
+                    if(ci<0){
+                      // cs.push(c);
+                      this.conducoes.push(c);
+                    }
+                  }
+                  else{
                     this.conducoes.push(c);
                   }
                 });
@@ -67,7 +72,6 @@ export class ConducoesNaoAssociadasModalPage{
 
   ngOnInit(): void {
   }
-
   
   onSelect(conducao){
     this.conducaoSelecionada=conducao;
@@ -80,6 +84,7 @@ export class ConducoesNaoAssociadasModalPage{
   ok(){
     this.viewCtrl.dismiss({conducao: this.conducaoSelecionada});
   }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad ConducoesNaoAssociadasModalPage');
   }

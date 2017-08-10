@@ -39,18 +39,11 @@ export class CadastroConducoesPage  implements OnInit{
   }
 
   toggleAtivar(conducao: Conducao){
-    // this.fatguys.salvarConducao(conducao).then(
-    //   r=>{
-        
-    //   }
-    // ).catch(error=>{
-    //     this.msg.mostrarMsg("Erro salvando : "+error);
-    //   });
+    
   }
 
   onSelect(conducao){
     this.conducaoSelecionada=conducao;
-    //this.detalhe();
   }  
 
   detalhe(){

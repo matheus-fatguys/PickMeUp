@@ -35,7 +35,7 @@ export class RoteiroPage {
   }
 
   salvarRoteiro(){
-    this.fatguys.salvarRoteiro(this.roteiro).then(
+    let sub = this.fatguys.salvarRoteiro(this.roteiro).then(
       r=>{
         this.msg.mostrarMsg("Dados salvos!").onDidDismiss(d=>{
           if(this.navCtrl.canGoBack()){
