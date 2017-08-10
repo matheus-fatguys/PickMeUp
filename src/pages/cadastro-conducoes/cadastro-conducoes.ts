@@ -2,7 +2,7 @@ import { Conducao } from './../../models/conducao';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -17,6 +17,7 @@ export class CadastroConducoesPage  implements OnInit{
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
+    public viewCtrl: ViewController,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
       this.obterConducoes();
@@ -74,6 +75,11 @@ export class CadastroConducoesPage  implements OnInit{
     ).catch(error=>{
       this.msg.mostrarErro("Erro excluindo: "+error);
     });
+  }
+
+  dismiss() {
+   let data = { conducao: this.conducaoSelecionada };
+   this.viewCtrl.dismiss(data);
   }
 
 

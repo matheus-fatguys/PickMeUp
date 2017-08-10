@@ -43,12 +43,17 @@
             <ion-list>
               <ion-list-header>
                 Conduções 
+                <button ion-button color="secondary" (click)="mostrarConducoesNaoAssociadas()">
+                  <ion-icon name="add"></ion-icon>                      
+                </button>
+                <button ion-button color="secondary" [disabled]="!conducaoSelecionada" (click)="desassociarConducao()">
+                  <ion-icon name="trash"></ion-icon>                      
+                </button>
               </ion-list-header>
               <ion-item-sliding>
-                <ion-item>
-                  <h2>Guilherme</h2>
-                  <h3>Rua Nossa Sra de Brotas, 166, Brotas, Salvador-BA</h3>
-                  <p>Rua Silveira Martins, 95, Cabula, Salvador-BA</p>
+                <ion-item  *ngFor="let conducao of conducoes | async"                
+                  [class.selected]="conducao === conducaoSelecionada">                  
+                  <detalhe-conducao [conducao]="conducao"></detalhe-conducao> 
                 </ion-item>               
                 <ion-item-options side="right">
                     <button ion-button color="primary">
@@ -58,37 +63,7 @@
                       <ion-icon name="trash"></ion-icon>                      
                     </button>
                 </ion-item-options>
-              </ion-item-sliding>            
-              <ion-item-sliding>
-                <ion-item>
-                  <h2>Brandon</h2>
-                  <h3>Rua das Umburanas, 166, Imbuí, Salvador-BA</h3>
-                  <p>Rua do Marista, 95, Piatã, Salvador-BA</p>
-                </ion-item>               
-                <ion-item-options side="right">
-                    <button ion-button color="primary">
-                      <ion-icon name="brush"></ion-icon>                      
-                    </button>
-                    <button ion-button color="primary">
-                      <ion-icon name="trash"></ion-icon>                      
-                    </button>
-                </ion-item-options>
-              </ion-item-sliding>            
-              <ion-item-sliding>
-                <ion-item>
-                  <h2>Gustavo</h2>
-                  <h3>Tv. Texeira Barros, 13, Stiep, Salvador-BA</h3>
-                  <p>Rua do Sartre, 95, Piatã, Salvador-BA</p>
-                </ion-item>               
-                <ion-item-options side="right">
-                    <button ion-button color="primary">
-                      <ion-icon name="brush"></ion-icon>                      
-                    </button>
-                    <button ion-button color="primary">
-                      <ion-icon name="trash"></ion-icon>                      
-                    </button>
-                </ion-item-options>
-              </ion-item-sliding>            
+              </ion-item-sliding>           
             </ion-list>
           </ion-col>
         </ion-row>

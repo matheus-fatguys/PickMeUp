@@ -74,6 +74,40 @@ export class FatguysUberProvider {
     return conducoesComConduzido;  
   }
 
+  obterConducoesDoRoteiroComConduzidos(roteiro: Roteiro){
+      // Compose an observable based on the conducoes
+    let conducoesComConduzido = this.afd.list("/condutores/"+roteiro.condutor+"/conducoes/", {
+      query: {
+        orderByChild: "condutor",
+        equalTo: roteiro.condutor
+      }
+    })
+    /// Each time the conducoes emits, switch to unsubscribe/ignore
+    // any pending conduzido queries:
+    .switchMap(conducoes => {
+
+    // Map the conducoes to the array of observables that are to be
+    // combined.
+    let conduzidoObservables = conducoes.map(conducao => this.afd.object("/conduzidos/"+conducao.conduzido+"/"));
+    
+    // Combine the user observables, and match up the users with the
+    // projects, etc.
+
+    return conduzidoObservables.length === 0 ?
+      Observable.of(conducoes) :
+      Observable.combineLatest(...conduzidoObservables, (...conduzidos) => {
+        conducoes.forEach((conducao, index) => {
+          conducao.conduzidoVO = conduzidos[index];
+        });
+        return conducoes;          
+      });
+  });  
+
+
+
+    return conducoesComConduzido;  
+  }
+
   salvarConducao (conducao: Conducao){
     conducao.condutor=this.condutor.id;
 

@@ -1,3 +1,5 @@
+import { ConducoesNaoAssociadasModalPageModule } from './../pages/conducoes-nao-associadas-modal/conducoes-nao-associadas-modal.module';
+import { ConducoesNaoAssociadasModalPage } from './../pages/conducoes-nao-associadas-modal/conducoes-nao-associadas-modal';
 
 import { firebaseConfig } from './firebase-config';
 import { BrowserModule } from '@angular/platform-browser';
@@ -34,6 +36,7 @@ import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
 	  // DestinationAddressComponent
   ],
   imports: [
+    ConducoesNaoAssociadasModalPageModule,
     BrowserModule,
     HttpModule,
     AngularFireDatabaseModule,
@@ -43,7 +46,8 @@ import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp
+    MyApp,
+    ConducoesNaoAssociadasModalPage
   ],
   providers: [
     StatusBar,
