@@ -76,7 +76,7 @@ export class FatguysUberProvider {
 
   obterConducoesDoRoteiroComConduzidos(roteiro: Roteiro){
       // Compose an observable based on the conducoes
-    let conducoesComConduzido = this.afd.list("/condutores/"+roteiro.condutor+"/conducoes/", {
+    let conducoesComConduzido = this.afd.list("/condutores/"+roteiro.condutor+"/roteiros/"+roteiro.id+"/conducoes/", {
       query: {
         orderByChild: "condutor",
         equalTo: roteiro.condutor

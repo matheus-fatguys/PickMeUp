@@ -51,8 +51,10 @@
                 </button>
               </ion-list-header>
               <ion-item-sliding>
-                <ion-item  *ngFor="let conducao of conducoes | async"                
-                  [class.selected]="conducao === conducaoSelecionada">                  
+                <ion-item  *ngFor="let conducao of roteiro.conducoes"
+                  (click)="onSelect(conducao);"
+                  [class.selected]="conducao === conducaoSelecionada"
+                  >                  
                   <!-- <detalhe-conducao [conducao]="conducao"></detalhe-conducao>  -->
                   <h2>{{conducao.conduzidoVO?.nome}}</h2>
                   <h3>{{conducao.origem.endereco}}</h3>

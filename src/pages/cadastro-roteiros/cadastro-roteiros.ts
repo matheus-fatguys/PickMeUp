@@ -1,3 +1,4 @@
+import { Conducao } from './../../models/conducao';
 import { Roteiro } from './../../models/roteiro';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
@@ -13,7 +14,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class CadastroRoteirosPage  implements OnInit {
 
   private roteiros;
-  private roteiroSelecionado;
+  private roteiroSelecionado:Roteiro;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -28,6 +29,7 @@ export class CadastroRoteirosPage  implements OnInit {
       let sub=ref.subscribe(
           r=>{
             this.roteiros=this.fatguys.obterRoteiros(r[0]);
+            sub.unsubscribe();
           }
         )
     }
@@ -49,7 +51,16 @@ export class CadastroRoteirosPage  implements OnInit {
   }  
 
   detalhe(){
-   this.navCtrl.push('RoteiroPage',{roteiro:this.roteiroSelecionado});;    
+    if(this.roteiroSelecionado.conducoes==null){
+      this.roteiroSelecionado.conducoes=[] as Conducao[];
+    }
+    let sub = this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiroSelecionado).subscribe(
+      conducoes=>{
+        this.roteiroSelecionado.conducoes=conducoes;
+        this.navCtrl.push('RoteiroPage',{roteiro:this.roteiroSelecionado});    
+        sub.unsubscribe();
+      }
+    );
   }
 
   novo(){

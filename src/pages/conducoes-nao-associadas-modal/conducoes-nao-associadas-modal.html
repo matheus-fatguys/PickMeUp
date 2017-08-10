@@ -1,6 +1,6 @@
 <ion-content padding>
   <ion-list>
-    <ion-item *ngFor="let conducao of conducoes | async" 
+    <ion-item *ngFor="let conducao of conducoes " 
     (click)="onSelect(conducao);"
     [class.selected]="conducao === conducaoSelecionada"
     [class.inativo]="conducao != conducaoSelecionada && !conducao.ativo"
