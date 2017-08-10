@@ -10,5 +10,8 @@ instalar firebase no projeto: npm install angularfire2 firebase --save
 ISSUE 3:
 queando uma IonicPage não reconhece um componente filho, insira em seu NgModule nos imports o ComponentsModule
 
+ISSUE 4: 
+VERIFICAR COMO SINCRONIZAR AS CONDUÇÕES ALTERADAS NA TELA DE CONDUÇÕES(do condutor) COM AS CONDUÇÕES NA TELA DE ROTEIRO(do roteiro)
+
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database

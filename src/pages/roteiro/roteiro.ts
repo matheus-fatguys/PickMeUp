@@ -17,7 +17,6 @@ export class RoteiroPage {
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
-      console.log("construtor RoteiroPage");
       let roteiro=this.navParams.get('roteiro');
       if(roteiro){
         this.roteiro=roteiro;      
@@ -49,11 +48,7 @@ export class RoteiroPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad RoteiroPage');
-    this.navCtrl.getViews().forEach((v,i)=>{
-      // console.log("paginas: "+v.name);
-      console.log("paginas["+i+"]: "+v.name);
-    });
+    console.log('ionViewDidLoad RoteiroPage');    
   }
 
 }

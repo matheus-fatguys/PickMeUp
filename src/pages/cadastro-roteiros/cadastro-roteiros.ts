@@ -67,6 +67,10 @@ export class CadastroRoteirosPage  implements OnInit {
     this.navCtrl.push('RoteiroPage',{roteiro:{conducoes: [] as Conducao[]} as Roteiro});
   }
 
+  iniciar(){
+    this.navCtrl.push('ViagemPage',{roteiro:this.roteiroSelecionado});
+  }
+
   excluir(roteiro){
     if(roteiro!=null){
       this.roteiroSelecionado=roteiro;

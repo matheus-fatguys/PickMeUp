@@ -21,7 +21,6 @@ export class ConducoesNaoAssociadasModalPage{
     public viewCtrl: ViewController,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
-      console.log("construtor ConducoesNaoAssociadasModalPage");
       let roteiro=this.navParams.get('roteiro') as Roteiro;
       if(roteiro){
         this.roteiro=roteiro;      
