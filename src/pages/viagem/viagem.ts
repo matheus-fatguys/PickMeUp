@@ -106,7 +106,7 @@ export class ViagemPage {
       this.locaisOrdenados.push(this.locais[d.indice]);
     });
     if(this.locaisOrdenados.length>1){
-      this.paradas=this.locaisOrdenados.slice(1,this.locaisOrdenados.length-2);
+      this.paradas=this.locaisOrdenados.slice(0,this.locaisOrdenados.length-1);
     }
     else{
       this.paradas=null;
@@ -156,7 +156,7 @@ export class ViagemPage {
       this.locaisOrdenados.push(this.locais[d.indice]);
     });
     if(this.locaisOrdenados.length>1){
-      this.paradas=this.locaisOrdenados.slice(1,this.locaisOrdenados.length-2);
+      this.paradas=this.locaisOrdenados.slice(1,this.locaisOrdenados.length);
     }
     else{
       this.paradas=null;
@@ -165,6 +165,10 @@ export class ViagemPage {
 
   calcularRota(origem:Local, destino:Local, intermediarias?:Local[]){
     var pontos=null;
+    var lista = [];
+    if(origem!=null){
+      lista.push(origem);
+    }
     if(intermediarias!=null){
       pontos=intermediarias.map(local=>new google.maps.LatLng(local.latitude, local.longitude));
     }
@@ -190,6 +194,8 @@ export class ViagemPage {
                                       });      
     }
 
+    
+
     this.directionsService.route({
         origin: inicio,
         destination: fim,
@@ -204,15 +210,24 @@ export class ViagemPage {
         if (status === google.maps.DirectionsStatus.OK) {
           console.log(response);
           var ordemGoogle=[];
-          response.routes[0].waypoint_order.forEach(
-            wpo=>{
-              ordemGoogle.push(this.locaisOrdenados[wpo]);
-            });
-          this.locaisOrdenados.splice(0,ordemGoogle.length,...ordemGoogle);
+          if(paradas!=null){
+            response.routes[0].waypoint_order.forEach(
+              wpo=>{
+                ordemGoogle.push(this.locaisOrdenados[wpo]);
+                lista.push(this.locaisOrdenados[wpo]);
+              });
+              if(destino!=null){
+                lista.push(destino);
+              }
+            this.locaisOrdenados.splice(0,ordemGoogle.length,...ordemGoogle);
+          }
+          else{
+            lista.push(destino);
+          }
           var opts=[];
           var duracaoTotal=0;
           var distanciaTotal=0;
-          this.locaisOrdenados.forEach((lo, i) => {
+          lista.forEach((lo, i) => {
               duracaoTotal+=response.routes[0].legs[i].duration.value;
               distanciaTotal+=response.routes[0].legs[i].distance.value;
               opts.push({
@@ -241,12 +256,13 @@ export class ViagemPage {
 
   calcularTrajetoComUnicaOrigem(){
     this.ordenarLocaisPorDistanciaComUnicaOrigem();
-    this.calcularRota(this.origens[0], null, this.paradas);
+    this.calcularRota(null, this.origens[0], null);
+    //this.calcularRota(this.origens[0], this.locaisOrdenados[this.locaisOrdenados.length-1], this.paradas);
   }
 
   calcularTrajetoPorDistancia(){
     this.ordenarLocaisPorDistancia();
-    this.calcularRota(this.origens[0], this.destinos[0], this.paradas);
+    this.calcularRota(null, this.locaisOrdenados[this.locaisOrdenados.length-1], this.paradas);
   }
 
   calcularTrajeto(){ 
