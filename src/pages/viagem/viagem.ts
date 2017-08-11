@@ -24,7 +24,10 @@ export class ViagemPage {
   private viagemIniciada:boolean=false;
   private roteiro={} as Roteiro;  
   private localizacao: google.maps.LatLng;
-  private marcaLocalizacao: google.maps.Marker;
+  private marcaCondutor: google.maps.Marker;
+  private marcasConduzidos: google.maps.Marker[]=[] as google.maps.Marker[];
+  private marcasLocaisTrajeto: google.maps.Marker[]=[] as google.maps.Marker[];
+  private marcas: google.maps.Marker[];
   private mapa: google.maps.Map;
   private trajeto: Trajeto;
   
@@ -70,6 +73,8 @@ export class ViagemPage {
                                       this.viagemIniciada=true;
                                       this.msg.mostrarMsg("Boa viagem, dirija com atenção!");
                                       this.mostrarMarcacoes();
+                                      this.centralizarMapa(this.marcas);
+                                      this.adcionarEventListener();
                                     }
                                   }
                                 );
@@ -119,6 +124,9 @@ export class ViagemPage {
   mostrarMarcacoes(){
     this.marcarLocalizacaoCondutor();
     this.marcarLocaisTrajeto();
+    let marcas=[] as google.maps.Marker[];
+    this.marcas=this.marcasConduzidos.concat(this.marcasLocaisTrajeto);
+    this.marcas.push(this.marcaCondutor);    
   }
 
   iniciarMapa(trajeto:Trajeto):Promise<any>{
@@ -129,7 +137,8 @@ export class ViagemPage {
             center: this.localizacao,
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            disableDefaultUI: true
+            disableDefaultUI: true,
+            draggable:true
           }          
           let divMapa = document.getElementById('mapa');
           let mapa = new google.maps.Map(divMapa, mapOptions);          
@@ -141,6 +150,15 @@ export class ViagemPage {
       }
     );
     return promessa;
+  }
+
+  adcionarEventListener(){
+    google.maps.event.addListener(this.mapa, 'dragstart', () => {
+
+    })
+    google.maps.event.addListener(this.mapa, 'idle', () => {
+
+    })
   }
   
   marcarLocaisTrajeto(){
@@ -156,9 +174,9 @@ export class ViagemPage {
       map: this.mapa,
       animation: google.maps.Animation.BOUNCE,
       position: localizacao,
-      // position: this.mapa.getCenter(),
       icon: 'img/person-icon.png'
     });
+    this.marcasLocaisTrajeto.push(marcaLocal);
     setTimeout( () => {
 		if (marcaLocal){
 			marcaLocal.setAnimation(null);
@@ -167,20 +185,38 @@ export class ViagemPage {
   }
 
   marcarLocalizacaoCondutor() {
-    this.marcaLocalizacao = new google.maps.Marker({
+    this.marcaCondutor = new google.maps.Marker({
       map: this.mapa,
       animation: google.maps.Animation.BOUNCE,
       position: this.localizacao,
-      // position: this.mapa.getCenter(),
       icon: 'img/car-icon.png'
     })
 
     setTimeout( () => {
-		if (this.marcaLocalizacao){
-			this.marcaLocalizacao.setAnimation(null);
+		if (this.marcaCondutor){
+			this.marcaCondutor.setAnimation(null);
 		}	  
     }, 750);
 
+  }
+
+  centralizarMapa(marcas:google.maps.Marker[]){
+    var bounds = new google.maps.LatLngBounds();
+    marcas.forEach(
+      m=>{
+        bounds.extend(m.getPosition());
+      }
+    )
+    this.mapa.fitBounds(bounds);
+    //this.mapa.panToBounds(bounds);
+    let mapOptions = {
+            // center: this.localizacao,
+            // zoom: 15,
+            // mapTypeId: google.maps.MapTypeId.ROADMAP,
+            // disableDefaultUI: true,
+            draggable:true
+          } 
+    this.mapa.setOptions(mapOptions);
   }
 
   ionViewDidLoad() {
