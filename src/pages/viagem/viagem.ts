@@ -17,6 +17,8 @@ export class ViagemPage {
   private roteiro={} as Roteiro;
   private locais = [] as Local[];
   private locaisOrdenados = [] as Local[];
+  private destinos = [] as Local[];
+  private origens = [] as Local[];
   private localizacao;
   public directionsService: google.maps.DirectionsService;
   constructor(public navCtrl: NavController, 
@@ -43,8 +45,7 @@ export class ViagemPage {
         this.geolocation.getCurrentPosition().then(resp=>{
           
           this.localizacao = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-          this.msg.mostrarMsg('Localização: ' + this.localizacao);
-          this.definirLocais(this.roteiro);
+          
           this.calcularTrajeto();
         }).catch(err=>{
           this.msg.mostrarErro('Erro obtendo localização: ' + err);
@@ -63,22 +64,17 @@ export class ViagemPage {
         if(lid<0){
           this.locais.push(c.destino);
         }
+        lio=this.origens.findIndex(l=>{return l.endereco==c.origem.endereco});
+        lid=this.destinos.findIndex(l=>{return l.endereco==c.destino.endereco});
+        if(lio<0){
+          this.origens.push(c.origem);
+        }
+        if(lid<0){
+          this.destinos.push(c.destino);
+        }
       });      
   }
 
-  ordenarLocaisPorDistancia(){
-      var distancias=[];
-
-      this.locais.forEach((lo, i) => {
-        distancias.push({indice: i, distancia: Math.sqrt(Math.pow(lo.latitude,2)+Math.pow(lo.longitude,2)) });        
-      });
-    
-      distancias.sort((a, b)=>{return a.distancia-b.distancia });
-
-      distancias.forEach(d=>{
-        this.locaisOrdenados.push(this.locais[d.indice]);
-      });
-  }
 
   mostrarTrajetoDoRoteiro(opts){
       let prompt = this.alertCtrl.create({
@@ -95,9 +91,69 @@ export class ViagemPage {
     prompt.present(prompt);
   }
 
+  ordenarLocaisPorDistancia(){
+    var distancias=[];
 
-  calcularTrajeto(){    
-    this.ordenarLocaisPorDistancia();
+    this.locais.forEach((lo, i) => {
+      distancias.push({indice: i, 
+        distancia: Math.sqrt(Math.pow(this.localizacao.lat()-lo.latitude,2)+Math.pow(this.localizacao.lng()-lo.longitude,2)) });        
+    });
+  
+    distancias.sort((a, b)=>{return a.distancia-b.distancia });
+
+    distancias.forEach(d=>{
+      this.locaisOrdenados.push(this.locais[d.indice]);
+    });
+  }
+
+  ordenarLocaisPorDistanciaComUnicoDestino(){
+    var distancias=[];
+    var id=this.locais.findIndex(l=>{return l.endereco==this.destinos[0].endereco})
+    var destino=this.locais[id];
+    this.locais.splice(id,1);
+
+    this.locais.forEach((lo, i) => {
+      distancias.push({indice: i, 
+        distancia: Math.sqrt(Math.pow(this.localizacao.lat()-lo.latitude,2)+Math.pow(this.localizacao.lng()-lo.longitude,2)) });        
+    });
+  
+    distancias.sort((a, b)=>{return a.distancia-b.distancia });
+
+    distancias.forEach(d=>{
+      this.locaisOrdenados.push(this.locais[d.indice]);
+    });
+    this.locaisOrdenados.push(destino);
+  }
+
+  ordenarLocaisPorDistanciaComUnicaOrigem(){
+    var distancias=[];
+    var io=this.locais.findIndex(l=>{return l.endereco==this.origens[0].endereco})
+    var origem=this.locais[io];
+    this.locais.splice(io,1);
+
+    this.locais.forEach((lo, i) => {
+      distancias.push({indice: i, 
+        distancia: Math.sqrt(Math.pow(origem.latitude-lo.latitude,2)+Math.pow(origem.longitude-lo.longitude,2)) });        
+    });
+  
+    distancias.sort((a, b)=>{return a.distancia-b.distancia });
+
+    this.locaisOrdenados.push(origem);
+    distancias.forEach(d=>{
+      this.locaisOrdenados.push(this.locais[d.indice]);
+    });
+  }
+
+  calcularTrajeto(){ 
+    
+    this.definirLocais(this.roteiro);
+    if(this.destinos.length==1)   {
+        this.ordenarLocaisPorDistanciaComUnicoDestino();
+    }else if(this.origens.length==1){
+        this.ordenarLocaisPorDistanciaComUnicaOrigem();
+    }else{
+      this.ordenarLocaisPorDistancia();
+    }
 
     var pontos=this.locaisOrdenados.map(local=>new google.maps.LatLng(local.latitude, local.longitude));
     let paradas=null;
@@ -124,6 +180,10 @@ export class ViagemPage {
         origin: inicio,
         destination: fim,
         travelMode: google.maps.TravelMode.DRIVING,
+        drivingOptions:{
+                          departureTime: new Date(),
+                          trafficModel: google.maps.TrafficModel.BEST_GUESS
+                      },
         waypoints: paradas,
         optimizeWaypoints: true
       }, (response, status) => {

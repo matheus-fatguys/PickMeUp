@@ -13,5 +13,7 @@ queando uma IonicPage não reconhece um componente filho, insira em seu NgModule
 ISSUE 4: 
 VERIFICAR COMO SINCRONIZAR AS CONDUÇÕES ALTERADAS NA TELA DE CONDUÇÕES(do condutor) COM AS CONDUÇÕES NA TELA DE ROTEIRO(do roteiro)
 
+ISSUE 5: encontrar um algoritmo para ordenar roteiros com diferentes destinos e origens
+
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database

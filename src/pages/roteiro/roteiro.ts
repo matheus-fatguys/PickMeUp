@@ -47,6 +47,10 @@ export class RoteiroPage {
       }); 
   }
 
+  iniciar(){
+    this.navCtrl.push('ViagemPage',{roteiro:this.roteiro});
+  }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad RoteiroPage');    
   }
