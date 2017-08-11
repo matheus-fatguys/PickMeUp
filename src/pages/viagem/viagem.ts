@@ -19,6 +19,7 @@ export class ViagemPage {
   private locaisOrdenados = [] as Local[];
   private destinos = [] as Local[];
   private origens = [] as Local[];
+  private paradas = [] as Local[];
   private localizacao;
   public directionsService: google.maps.DirectionsService;
   constructor(public navCtrl: NavController, 
@@ -104,6 +105,12 @@ export class ViagemPage {
     distancias.forEach(d=>{
       this.locaisOrdenados.push(this.locais[d.indice]);
     });
+    if(this.locaisOrdenados.length>1){
+      this.paradas=this.locaisOrdenados.slice(1,this.locaisOrdenados.length-2);
+    }
+    else{
+      this.paradas=null;
+    }
   }
 
   ordenarLocaisPorDistanciaComUnicoDestino(){
@@ -122,6 +129,12 @@ export class ViagemPage {
     distancias.forEach(d=>{
       this.locaisOrdenados.push(this.locais[d.indice]);
     });
+    if(this.locaisOrdenados.length>0){
+      this.paradas=this.locaisOrdenados.map(l=>l);
+    }
+    else{
+      this.paradas=null;
+    }
     this.locaisOrdenados.push(destino);
   }
 
@@ -142,31 +155,32 @@ export class ViagemPage {
     distancias.forEach(d=>{
       this.locaisOrdenados.push(this.locais[d.indice]);
     });
+    if(this.locaisOrdenados.length>1){
+      this.paradas=this.locaisOrdenados.slice(1,this.locaisOrdenados.length-2);
+    }
+    else{
+      this.paradas=null;
+    }
   }
 
-  calcularTrajeto(){ 
-    
-    this.definirLocais(this.roteiro);
-    if(this.destinos.length==1)   {
-        this.ordenarLocaisPorDistanciaComUnicoDestino();
-    }else if(this.origens.length==1){
-        this.ordenarLocaisPorDistanciaComUnicaOrigem();
-    }else{
-      this.ordenarLocaisPorDistancia();
+  calcularRota(origem:Local, destino:Local, intermediarias?:Local[]){
+    var pontos=null;
+    if(intermediarias!=null){
+      pontos=intermediarias.map(local=>new google.maps.LatLng(local.latitude, local.longitude));
     }
-
-    var pontos=this.locaisOrdenados.map(local=>new google.maps.LatLng(local.latitude, local.longitude));
     let paradas=null;
     let inicio = new google.maps.LatLng(this.localizacao.lat(), this.localizacao.lng());
-    console.log(inicio.lat());
-    console.log(inicio.lng());
-    let fim = pontos[pontos.length-1];
-    console.log(fim.lat());
-    console.log(fim.lng());
-    if(pontos.length>2){
+    var fim ;
+    if(destino!=null){
+      fim = new google.maps.LatLng(destino.latitude, destino.longitude);
+    }
+    else{
+      fim = pontos[pontos.length-1];
+    }
+    if(pontos!=null && pontos.length>0){
       paradas=[];
-      var ps=pontos.slice(0,pontos.length-1);
-      ps.forEach(
+      // var ps=pontos.slice(0,pontos.length-1);
+      pontos.forEach(
                                       p=> {
                                         var wp ={
                                                   location: p,
@@ -218,6 +232,34 @@ export class ViagemPage {
           console.error(status);
         }
       })
+  }
+
+  calcularTrajetoComUnicoDestino(){
+    this.ordenarLocaisPorDistanciaComUnicoDestino();
+    this.calcularRota(null, this.destinos[0], this.paradas);
+  }
+
+  calcularTrajetoComUnicaOrigem(){
+    this.ordenarLocaisPorDistanciaComUnicaOrigem();
+    this.calcularRota(this.origens[0], null, this.paradas);
+  }
+
+  calcularTrajetoPorDistancia(){
+    this.ordenarLocaisPorDistancia();
+    this.calcularRota(this.origens[0], this.destinos[0], this.paradas);
+  }
+
+  calcularTrajeto(){ 
+    
+    this.definirLocais(this.roteiro);
+    if(this.destinos.length==1)   {
+        // this.ordenarLocaisPorDistanciaComUnicoDestino();
+        this.calcularTrajetoComUnicoDestino();
+    }else if(this.origens.length==1){
+        this.calcularTrajetoComUnicaOrigem();
+    }else{
+      this.calcularTrajetoPorDistancia();
+    }    
   }
 
   formatar(n:number):string{
