@@ -22,18 +22,13 @@ import { SimulateProvider } from '../providers/simulate/simulate';
 import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub';
 import { MensagemProvider } from '../providers/mensagem/mensagem';
 import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
+import { TrajetoProvider } from '../providers/trajeto/trajeto';
+import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
 
 
 @NgModule({
   declarations: [
     MyApp,
-     //ConducaoPage,
-    // SimpleComponent,
-    // MapComponent,
-    // PontoComponent,
-    // AvailableCarsComponent,
-	  // PickupCarComponent,
-	  // DestinationAddressComponent
   ],
   imports: [
     ConducoesNaoAssociadasModalPageModule,
@@ -59,7 +54,9 @@ import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
     PickupPubSubProvider,
     FatguysUberProvider,
     MensagemProvider,
-    AutenticacaoProvider
+    AutenticacaoProvider,
+    TrajetoProvider,
+    LocalizacaoProvider
   ]
 })
 export class AppModule {}

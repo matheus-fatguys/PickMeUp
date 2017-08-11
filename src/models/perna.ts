@@ -1,6 +1,6 @@
 import { Local } from './local';
 export interface Perna{
-    tempo: string,
-    distancia: string,
+    tempo: {texto:string, numero:number},
+    distancia: {texto:string, numero:number},
     local: Local   
 }
