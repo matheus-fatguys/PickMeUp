@@ -1,3 +1,6 @@
+import { Perna } from './../../models/perna';
+import { Trajeto } from './../../models/trajeto';
+import { Observable } from 'rxjs';
 import { Local } from './../../models/local';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
@@ -36,18 +39,30 @@ export class ViagemPage {
       }
 
     this.directionsService = new google.maps.DirectionsService();
-     
-     this.iniciarGeolocalizcao();
+     if(roteiro!=null){
+       if(this.roteiro.conducoes!=null&&this.roteiro.conducoes.length>0){
+        this.iniciarGeolocalizcao();
+       }
+     }
   }
 
   iniciarGeolocalizcao(){
     this.platform.ready().then(
       a=>{
+        let loading = this.loadingCtrl.create({
+          content: 'Obtendo localização atual...'
+        });           
+        loading.present(loading);        
         this.geolocation.getCurrentPosition().then(resp=>{
           
           this.localizacao = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-          
-          this.calcularTrajeto();
+          loading.setContent('Calculanto trajeto da viagem...');
+          this.calcularTrajeto().subscribe(
+            trajeto=>{
+                  loading.dismiss();
+                  this.mostrarTrajetoDoRoteiro(trajeto);
+            }
+          );
         }).catch(err=>{
           this.msg.mostrarErro('Erro obtendo localização: ' + err);
         });
@@ -77,7 +92,23 @@ export class ViagemPage {
   }
 
 
-  mostrarTrajetoDoRoteiro(opts){
+  mostrarTrajetoDoRoteiro(trajeto:Trajeto){
+    var opts=[];
+      var duracaoTotal=0;
+      var distanciaTotal=0;
+      trajeto.pernas.forEach((perna, i) => {          
+          trajeto.pernas.push(perna);
+          opts.push({
+              type: 'check',
+              value: (1+i)+'- '+perna.local.endereco.substring(0,15)+'... ('+perna.tempo+') - '+perna.distancia,
+              checked: false
+            });
+        });  
+      opts.push({
+            type: 'check',
+            value: 'Tot.: ('+trajeto.tempoTotal+') - '+trajeto.distanciaTotal,
+            checked: false
+          });
       let prompt = this.alertCtrl.create({
       title: 'Iniciando Roteiro '+this.roteiro.nome,
       message: 'Locais da Viagem:',
@@ -87,8 +118,7 @@ export class ViagemPage {
         handler: r => {
         }
       }]
-    });
-    
+    });    
     prompt.present(prompt);
   }
 
@@ -156,14 +186,15 @@ export class ViagemPage {
       this.locaisOrdenados.push(this.locais[d.indice]);
     });
     if(this.locaisOrdenados.length>1){
-      this.paradas=this.locaisOrdenados.slice(1,this.locaisOrdenados.length);
+      this.paradas=this.locaisOrdenados.slice(1,this.locaisOrdenados.length-1);
     }
     else{
       this.paradas=null;
     }
   }
 
-  calcularRota(origem:Local, destino:Local, intermediarias?:Local[]){
+  calcularRota(origem:Local, destino:Local, intermediarias?:Local[]):Observable<Trajeto>{
+    
     var pontos=null;
     var lista = [];
     if(origem!=null){
@@ -173,7 +204,13 @@ export class ViagemPage {
       pontos=intermediarias.map(local=>new google.maps.LatLng(local.latitude, local.longitude));
     }
     let paradas=null;
-    let inicio = new google.maps.LatLng(this.localizacao.lat(), this.localizacao.lng());
+    let inicio : google.maps.LatLng;
+    if(origem!=null){
+      inicio = new google.maps.LatLng(origem.latitude, origem.longitude);
+    }
+    else{
+      inicio = new google.maps.LatLng(this.localizacao.lat(), this.localizacao.lng());
+    }
     var fim ;
     if(destino!=null){
       fim = new google.maps.LatLng(destino.latitude, destino.longitude);
@@ -185,97 +222,214 @@ export class ViagemPage {
       paradas=[];
       // var ps=pontos.slice(0,pontos.length-1);
       pontos.forEach(
-                                      p=> {
-                                        var wp ={
-                                                  location: p,
-                                                  stopover:true
-                                                };
-                                        paradas.push(wp);
-                                      });      
-    }
+              p=> {
+                var wp ={
+                          location: p,
+                          stopover:true
+                        };
+                paradas.push(wp);
+              });      
+    }    
+    let trajetoObservable:Observable<Trajeto>=Observable.create(
+      observable=>{
+        this.directionsService.route({
+            origin: inicio,
+            destination: fim,
+            travelMode: google.maps.TravelMode.DRIVING,
+            drivingOptions:{
+                              departureTime: new Date(),
+                              trafficModel: google.maps.TrafficModel.BEST_GUESS
+                          },
+            waypoints: paradas,
+            optimizeWaypoints: true
+          }, (response, status) => {
+              var trajeto:Trajeto = this.processarResposta(response, status, paradas, lista, destino);  
+              observable.next(trajeto);   
+          })
+      }
+    );
+    return trajetoObservable;
+  }
 
-    
-
-    this.directionsService.route({
-        origin: inicio,
-        destination: fim,
-        travelMode: google.maps.TravelMode.DRIVING,
-        drivingOptions:{
-                          departureTime: new Date(),
-                          trafficModel: google.maps.TrafficModel.BEST_GUESS
-                      },
-        waypoints: paradas,
-        optimizeWaypoints: true
-      }, (response, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          console.log(response);
-          var ordemGoogle=[];
-          if(paradas!=null){
-            response.routes[0].waypoint_order.forEach(
-              wpo=>{
-                ordemGoogle.push(this.locaisOrdenados[wpo]);
-                lista.push(this.locaisOrdenados[wpo]);
-              });
-              if(destino!=null){
-                lista.push(destino);
-              }
-            this.locaisOrdenados.splice(0,ordemGoogle.length,...ordemGoogle);
-          }
-          else{
+  processarResposta(response: google.maps.DirectionsResult,
+                    status: google.maps.DirectionsStatus,
+                    paradas: google.maps.DirectionsWaypoint[],
+                    lista:Local[],
+                    destino:Local):Trajeto{
+    let trajeto:Trajeto = null;
+    if (status === google.maps.DirectionsStatus.OK) {
+      console.log(response);
+      trajeto={} as Trajeto;
+      trajeto.pernas=[] as Perna[];
+      var ordemGoogle=[];
+      if(paradas!=null){
+        response.routes[0].waypoint_order.forEach(
+          wpo=>{
+            ordemGoogle.push(this.locaisOrdenados[wpo]);
+            lista.push(this.locaisOrdenados[wpo]);
+          });
+          if(destino!=null){
             lista.push(destino);
           }
-          var opts=[];
-          var duracaoTotal=0;
-          var distanciaTotal=0;
-          lista.forEach((lo, i) => {
-              duracaoTotal+=response.routes[0].legs[i].duration.value;
-              distanciaTotal+=response.routes[0].legs[i].distance.value;
-              opts.push({
-                          type: 'check',
-                          value: (1+i)+'- '+lo.endereco.substring(0,15)+'... ('+response.routes[0].legs[i].duration.text+') - '+response.routes[0].legs[i].distance.text,
-                          checked: false
-                        });
-            });          
-          opts.push({
-                          type: 'check',
-                          value: 'Tot.: ('+this.formatar(duracaoTotal)+') - '+Math.round(distanciaTotal/1000)+' km',
-                          checked: false
-                        });
-          this.mostrarTrajetoDoRoteiro(opts);
-        }
-        else {
-          console.error(status);
-        }
-      })
+        this.locaisOrdenados.splice(0,ordemGoogle.length,...ordemGoogle);
+      }
+      else{
+        lista.push(destino);
+      }
+      var duracaoTotal=0;
+      var distanciaTotal=0;
+      lista.forEach((lo, i) => {
+          var perna:Perna={} as Perna;
+          perna.local=lo;
+          perna.tempo=response.routes[0].legs[i].duration.text;
+          perna.distancia=response.routes[0].legs[i].distance.text;
+          trajeto.pernas.push(perna);
+          duracaoTotal+=response.routes[0].legs[i].duration.value;
+          distanciaTotal+=response.routes[0].legs[i].distance.value;          
+        });  
+      trajeto.tempoTotal=this.formatar(duracaoTotal);        
+      trajeto.distanciaTotal=Math.round(distanciaTotal/1000)+' km';  
+      return trajeto;
+    }
+    else {
+      console.error(status);
+      var msgErro=this.obterMesnagemErro(status);
+      this.msg.mostrarErro("Erro obtendo trajeto da viagem: "+msgErro);
+    }
+    return trajeto;
   }
 
-  calcularTrajetoComUnicoDestino(){
+  obterMesnagemErro(status: google.maps.DirectionsStatus):string{
+      var msgErro:string="";
+      switch(status){
+        case google.maps.DirectionsStatus.ZERO_RESULTS: 
+          msgErro="Nenhum trajeto encontrado!";
+          break;
+        case google.maps.DirectionsStatus.NOT_FOUND: 
+          msgErro="Local não encontrado!";
+          break;
+        case google.maps.DirectionsStatus.REQUEST_DENIED: 
+          msgErro="Requisição negada!";
+          break;
+        case google.maps.DirectionsStatus.INVALID_REQUEST: 
+          msgErro="Requisição inválida!";
+          break;
+        case google.maps.DirectionsStatus.MAX_WAYPOINTS_EXCEEDED: 
+          msgErro="Máximo de paradas excedido!";
+          break;
+        case google.maps.DirectionsStatus.OVER_QUERY_LIMIT: 
+          msgErro="Máximo de consultas excedido!";
+          break;
+        case google.maps.DirectionsStatus.UNKNOWN_ERROR: 
+          msgErro="Erro desconhecido!";
+          break;
+        case google.maps.DirectionsStatus.OK: 
+          msgErro="Nenhum erro!";
+          break;
+      }
+        return msgErro;
+  }
+  calcularTrajetoComUnicoDestinoEUnicaOrigem():Observable<Trajeto>{
+    let trajetoObservable:Observable<Trajeto>=Observable.create(
+      obervable=>{
+        this.calcularRota(this.origens[0], this.destinos[0], null).subscribe(
+          trajeto=>{
+            obervable.next(trajeto);
+          }
+        );
+      }
+    );
+    return trajetoObservable;
+  }
+  calcularTrajetoComUnicoDestino():Observable<Trajeto>{
     this.ordenarLocaisPorDistanciaComUnicoDestino();
-    this.calcularRota(null, this.destinos[0], this.paradas);
+    let trajetoObservable:Observable<Trajeto>=Observable.create(
+      obervable=>{
+        this.calcularRota(null, this.destinos[0], this.paradas).subscribe(
+          trajeto=>{
+            obervable.next(trajeto);
+          }
+        );
+      }
+    );
+    return trajetoObservable;
   }
 
-  calcularTrajetoComUnicaOrigem(){
+  calcularTrajetoComUnicaOrigem():Observable<Trajeto>{
     this.ordenarLocaisPorDistanciaComUnicaOrigem();
-    this.calcularRota(null, this.origens[0], null);
-    //this.calcularRota(this.origens[0], this.locaisOrdenados[this.locaisOrdenados.length-1], this.paradas);
+    let trajetoObservable:Observable<Trajeto>=Observable.create(
+      obervable=>{
+        this.calcularRota(null, this.origens[0], null).subscribe(
+          trajeto=>{
+            this.calcularRota(this.origens[0], this.locaisOrdenados[this.locaisOrdenados.length-1], this.paradas).subscribe(
+              trajeto2=>{
+                let trajetoConcatenado:Trajeto=this.concatenarTrajetos(trajeto, trajeto2);
+                obervable.next(trajetoConcatenado);
+              }
+            );
+          }
+        );
+      }
+    );
+    return trajetoObservable;
   }
 
-  calcularTrajetoPorDistancia(){
+  concatenarTrajetos(trajeto1:Trajeto, trajeto2:Trajeto):Trajeto{
+    let trajetoConcatenado:Trajeto={} as Trajeto;
+    trajetoConcatenado.pernas=[] as Perna[];    
+    trajeto1.pernas.forEach(
+      p=>{
+        trajetoConcatenado.pernas.push(p);
+      });
+    if(trajetoConcatenado.pernas[trajetoConcatenado.pernas.length-1].local.endereco==
+      trajeto2.pernas[0].local.endereco
+    ){
+      trajetoConcatenado.pernas.pop();
+    }
+    trajeto2.pernas.forEach(
+      p=>{
+        trajetoConcatenado.pernas.push(p);
+      });
+    return trajetoConcatenado;
+  }
+
+  calcularTrajetoPorDistancia():Observable<Trajeto>{
     this.ordenarLocaisPorDistancia();
-    this.calcularRota(null, this.locaisOrdenados[this.locaisOrdenados.length-1], this.paradas);
+    let trajetoObservable:Observable<Trajeto>=Observable.create(
+      obervable=>{
+        this.calcularRota(null, 
+          this.locaisOrdenados[this.locaisOrdenados.length-1], 
+          this.paradas).subscribe(
+          trajeto=>{
+            obervable.next(trajeto);
+          }
+        );
+      }
+    );
+    return trajetoObservable;
   }
 
-  calcularTrajeto(){ 
-    
+  calcularTrajeto():Observable<Trajeto>{ 
     this.definirLocais(this.roteiro);
-    if(this.destinos.length==1)   {
-        // this.ordenarLocaisPorDistanciaComUnicoDestino();
-        this.calcularTrajetoComUnicoDestino();
-    }else if(this.origens.length==1){
-        this.calcularTrajetoComUnicaOrigem();
-    }else{
-      this.calcularTrajetoPorDistancia();
-    }    
+    let trajetoObservable:Observable<Trajeto>=Observable.create(
+      obervable=>{
+        var sub;
+        if(this.destinos.length==1&&this.origens.length==1){
+          sub=this.calcularTrajetoComUnicoDestinoEUnicaOrigem();
+        }else if(this.destinos.length==1)   {
+          sub=this.calcularTrajetoComUnicoDestino();
+        }else if(this.origens.length==1){
+          sub=this.calcularTrajetoComUnicaOrigem();
+        }else{
+          sub=this.calcularTrajetoPorDistancia();
+        }
+        sub.subscribe(
+          trajeto=>{
+            obervable.next(trajeto);
+          }
+        );
+      });     
+    return trajetoObservable;
   }
 
   formatar(n:number):string{
