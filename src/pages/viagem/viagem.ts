@@ -29,7 +29,8 @@ export class ViagemPage {
   private marcasLocaisTrajeto: google.maps.Marker[]=[] as google.maps.Marker[];
   private marcas: google.maps.Marker[];
   private mapa: google.maps.Map;
-  private trajeto: Trajeto;
+  private trajeto: Trajeto;  
+  private polylinePath :google.maps.Polyline;
   
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -73,6 +74,7 @@ export class ViagemPage {
                                       this.viagemIniciada=true;
                                       this.msg.mostrarMsg("Boa viagem, dirija com atenção!");
                                       this.mostrarMarcacoes();
+                                      this.mostrarRotas();
                                       this.centralizarMapa(this.marcas);
                                       this.adcionarEventListener();
                                     }
@@ -159,6 +161,22 @@ export class ViagemPage {
     google.maps.event.addListener(this.mapa, 'idle', () => {
 
     })
+  }
+
+  mostrarRotas(){
+    var path = [];
+    path.push(this.localizacao);
+    this.trajeto.pernas.forEach(
+      p=>{
+        path.push(new google.maps.LatLng(p.local.latitude, p.local.longitude));
+      }
+    );
+    this.polylinePath = new google.maps.Polyline({
+      path: path,
+      strokeColor: '#FF0000',
+      strokeWeight: 3
+    });
+    this.polylinePath.setMap(this.mapa);
   }
   
   marcarLocaisTrajeto(){
