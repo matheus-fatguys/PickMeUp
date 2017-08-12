@@ -27,7 +27,7 @@ export class MyApp {
               if (user!=null) {
                 this.fatguysService.obterCondutorPeloUsuarioLogado().subscribe(
                   r=>{
-                    this.rootPage = 'HomePage';
+                    this.rootPage = 'CadastroRoteirosPage';
                     //authObserver.unsubscribe()y2gh;
                   }
                 );

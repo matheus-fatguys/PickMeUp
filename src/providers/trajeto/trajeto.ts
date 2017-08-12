@@ -30,7 +30,6 @@ export class TrajetoProvider {
           var duracaoTotal=0;
           var distanciaTotal=0;
           trajeto.pernas.forEach((perna, i) => {          
-              trajeto.pernas.push(perna);
               opts.push({
                   type: 'check',
                   value: (1+i)+'- '+perna.local.endereco.substring(0,15)+'... ('+perna.tempo.texto+') - '+perna.distancia.texto,
@@ -276,6 +275,16 @@ export class TrajetoProvider {
           perna.distancia.texto=response.routes[0].legs[i].distance.text;
           perna.tempo.numero=response.routes[0].legs[i].duration.value;
           perna.distancia.numero=response.routes[0].legs[i].distance.value;
+          perna.caminho=[] as google.maps.LatLng [];
+          response.routes[0].legs[i].steps.forEach(
+            step=>{
+              step.path.forEach(
+                p=>{
+                  perna.caminho.push(p);
+                }
+              );
+            }
+          )
           trajeto.pernas.push(perna);
           duracaoTotal+=response.routes[0].legs[i].duration.value;
           distanciaTotal+=response.routes[0].legs[i].distance.value;          

@@ -1,3 +1,4 @@
+import { Conduzido } from './../../models/conduzido';
 import { LocalizacaoProvider } from './../../providers/localizacao/localizacao';
 import { TrajetoProvider } from './../../providers/trajeto/trajeto';
 import { Perna } from './../../models/perna';
@@ -73,8 +74,8 @@ export class ViagemPage {
                                       this.mapa=mapa;
                                       this.viagemIniciada=true;
                                       this.msg.mostrarMsg("Boa viagem, dirija com atenção!");
-                                      this.mostrarMarcacoes();
-                                      this.mostrarRotas();
+                                      this.mostrarMarcacoes(trajeto);
+                                      this.mostrarCaminhoDoTrajeto(trajeto);
                                       this.centralizarMapa(this.marcas);
                                       this.adcionarEventListener();
                                     }
@@ -123,9 +124,9 @@ export class ViagemPage {
      }
   }
 
-  mostrarMarcacoes(){
+  mostrarMarcacoes(trajeto:Trajeto){
     this.marcarLocalizacaoCondutor();
-    this.marcarLocaisTrajeto();
+    this.marcarLocaisTrajeto(trajeto);
     let marcas=[] as google.maps.Marker[];
     this.marcas=this.marcasConduzidos.concat(this.marcasLocaisTrajeto);
     this.marcas.push(this.marcaCondutor);    
@@ -163,12 +164,15 @@ export class ViagemPage {
     })
   }
 
-  mostrarRotas(){
+  mostrarCaminhoDoTrajeto(trajeto:Trajeto){
     var path = [];
     path.push(this.localizacao);
-    this.trajeto.pernas.forEach(
-      p=>{
-        path.push(new google.maps.LatLng(p.local.latitude, p.local.longitude));
+    trajeto.pernas.forEach(
+      perna=>{
+        perna.caminho.forEach(
+          p=>{
+            path.push(p);
+          });
       }
     );
     this.polylinePath = new google.maps.Polyline({
@@ -179,21 +183,65 @@ export class ViagemPage {
     this.polylinePath.setMap(this.mapa);
   }
   
-  marcarLocaisTrajeto(){
-    this.trajeto.pernas.forEach(
+  marcarLocaisTrajeto(trajeto:Trajeto){
+    trajeto.pernas.forEach(
       perna=>{
-        this.marcarLocal(perna);
+        var conteudo="";
+        var qtdO=0;
+        var qtdD=0;
+        this.roteiro.conducoes.forEach(
+          conducao=>{
+            if(conducao.origem.endereco==perna.local.endereco){
+              if(conteudo.length>0){
+                conteudo+='<h7 style="color:blue;">,'+conducao.conduzidoVO.nome+'</h7>';
+              }
+              else{
+                conteudo='<h7 style="color:blue;">'+conducao.conduzidoVO.nome+'</h7>';
+              }
+              qtdO++;
+            }
+            if(conducao.destino.endereco==perna.local.endereco){
+              if(conteudo.length>0){
+                conteudo+='<h7 style="color:green;">,'+conducao.conduzidoVO.nome+'</h7>';
+              }
+              else{
+                conteudo='<h7 style="color:green;">'+conducao.conduzidoVO.nome+'</h7>';
+              }
+              qtdD++;
+            }
+          }
+        );
+        if(qtdO>0){
+          conteudo=conteudo+'<img src="img/origem-icon.png"></img>';
+        }
+        if(qtdD>0){
+          conteudo='<img src="img/destino-icon.png"></img>'+conteudo;
+        }
+        this.marcarLocal(perna,conteudo,(qtdD+qtdO>1));
       });
   }
 
-  marcarLocal(perna:Perna){
+  marcarLocal(perna:Perna, conteudo:string, grupo:boolean){
+    var icone='img/person-icon-blue.png';
+    if(grupo){
+      icone='img/person-group.png';
+    }
     let localizacao = new google.maps.LatLng(perna.local.latitude, perna.local.longitude);
     let marcaLocal = new google.maps.Marker({
       map: this.mapa,
       animation: google.maps.Animation.BOUNCE,
       position: localizacao,
-      icon: 'img/person-icon.png'
+      icon: icone
     });
+    
+    var popup = new google.maps.InfoWindow({
+      content: conteudo
+    });    
+    popup.open(this.mapa, marcaLocal);
+    google.maps.event.addListener(marcaLocal, 'click', () => {
+      popup.open(this.mapa, marcaLocal);
+    });
+
     this.marcasLocaisTrajeto.push(marcaLocal);
     setTimeout( () => {
 		if (marcaLocal){
@@ -207,8 +255,17 @@ export class ViagemPage {
       map: this.mapa,
       animation: google.maps.Animation.BOUNCE,
       position: this.localizacao,
-      icon: 'img/car-icon.png'
+      icon: 'img/bus-icon.png'
     })
+
+    var popup = new google.maps.InfoWindow({
+      content: '<h7  style="color:red;">Você</h7>'
+    });    
+    popup.open(this.mapa, this.marcaCondutor);
+
+    google.maps.event.addListener(this.marcaCondutor, 'click', () => {
+      popup.open(this.mapa, this.marcaCondutor);
+    });
 
     setTimeout( () => {
 		if (this.marcaCondutor){

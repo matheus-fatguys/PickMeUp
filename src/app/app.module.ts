@@ -17,6 +17,7 @@ import { MyApp } from './app.component';
 
 
 import {Geolocation} from '@ionic-native/geolocation';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { CarProvider } from '../providers/car/car';
 import { SimulateProvider } from '../providers/simulate/simulate';
 import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub';
@@ -48,7 +49,8 @@ import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    Geolocation,
+    Geolocation,    
+    BackgroundGeolocation,
     CarProvider,
     SimulateProvider,
     PickupPubSubProvider,
