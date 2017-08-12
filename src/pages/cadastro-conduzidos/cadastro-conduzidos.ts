@@ -13,7 +13,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class CadastroConduzidosPage implements OnInit {
   
   private conduzidos;
-  private conduzidoSelecionado;
+  private conduzidoSelecionado:Conduzido;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -83,6 +83,10 @@ export class CadastroConduzidosPage implements OnInit {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CadastroConduzidosPage');
+  }
+
+  telefonar(){
+    window.open('tel://' + this.conduzidoSelecionado.telefone);
   }
 
 }

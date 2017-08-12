@@ -10,13 +10,15 @@ export class LocalizacaoProvider {
 
   private localizacao: google.maps.LatLng;
   private localizacaoOserver;
-  public posicionamento;
 
   constructor(public msg: MensagemProvider,
               public platform: Platform,
               public geolocation: Geolocation,
               public zone: NgZone,
               public backgroundGeolocation: BackgroundGeolocation) {
+                this.zone.run(() => {
+                  this.localizacao =new google.maps.LatLng( 0, 0);
+                });
   }
 
   iniciarRastreamentoBackGround() {
@@ -33,7 +35,7 @@ export class LocalizacaoProvider {
       console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);  
       // Run update inside of Angular's zone
       this.zone.run(() => {
-        this.posicionamento.localizacao =new google.maps.LatLng( location.latitude, location.longitude);
+        this.localizacao =new google.maps.LatLng( location.latitude, location.longitude);
       });  
     }, (err) => {  
       console.log(err);  
@@ -59,7 +61,7 @@ export class LocalizacaoProvider {
   
     // Run update inside of Angular's zone
     this.zone.run(() => {
-      this.posicionamento.localizacao =new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      this.localizacao =new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     });  
   });
   }
