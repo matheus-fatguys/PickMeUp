@@ -1,3 +1,5 @@
+import { Conducao } from './../../models/conducao';
+import * as SlidingMarker from 'marker-animate-unobtrusive';
 import { Conduzido } from './../../models/conduzido';
 import { LocalizacaoProvider } from './../../providers/localizacao/localizacao';
 import { TrajetoProvider } from './../../providers/trajeto/trajeto';
@@ -25,8 +27,8 @@ export class ViagemPage {
   private viagemIniciada:boolean=false;
   private roteiro={} as Roteiro;  
   private localizacao: google.maps.LatLng;
-  private marcaCondutor: google.maps.Marker;
-  private marcasConduzidos: google.maps.Marker[]=[] as google.maps.Marker[];
+  private marcaCondutor: SlidingMarker;
+  private marcasConduzidos: ConduzidoMV[]=[] as ConduzidoMV[];// google.maps.Marker[]=[] as google.maps.Marker[];
   private marcasLocaisTrajeto: google.maps.Marker[]=[] as google.maps.Marker[];
   private marcas: google.maps.Marker[];
   private mapa: google.maps.Map;
@@ -53,13 +55,15 @@ export class ViagemPage {
           this.navCtrl.setRoot('ViagemPage');
           let loading = this.loadingCtrl.create({
             content: 'Obtendo localização atual...'
-          });           
+          });        
+          console.log("VAI PEDIR LOCALIZAÇÃO");   
           loading.present(loading);        
-          this.localizacaoService.iniciarGeolocalizcao().subscribe(
+          this.localizacaoService.iniciarGeolocalizacao().subscribe(
             localizacao=>{
               this.localizacao=localizacao;
               loading.setContent('Calculanto trajeto da viagem...');
-              this.trajetoService.calcularTrajeto(this.localizacao, this.roteiro).subscribe(
+              let obs = this.trajetoService.calcularTrajeto(this.localizacao, this.roteiro);
+              obs.subscribe(
                     trajeto=>{
                           
                           this.trajetoService.mostrarTrajetoDoRoteiro(trajeto).then(
@@ -78,6 +82,8 @@ export class ViagemPage {
                                       this.mostrarCaminhoDoTrajeto(trajeto);
                                       this.centralizarMapa(this.marcas);
                                       this.adcionarEventListener();
+                                      this.iniciarMonitoracaoDeLocalizacaoCondutor();
+                                      this.iniciarMonitoramentoConduzidos();
                                     }
                                   }
                                 );
@@ -91,44 +97,116 @@ export class ViagemPage {
                               error=>{                                
                                 loading.dismiss();
                                 this.msg.mostrarErro('Erro obtendo localização: ' + error);
-                                if(this.navCtrl.canGoBack()){
-                                  this.navCtrl.pop();
-                                }
+                                // if(this.navCtrl.canGoBack()){
+                                //   this.navCtrl.pop();
+                                // }
                               }  
-                            );
+                            );                      
                     },
                     error=>{
                       loading.dismiss();
                       this.msg.mostrarErro('Erro obtendo localização: ' + error);
-                      if(this.navCtrl.canGoBack()){
-                        this.navCtrl.pop();
-                      }
+                      // if(this.navCtrl.canGoBack()){
+                      //   this.navCtrl.pop();
+                      // }
                     }
                   );
             },
             error=>{
+              loading.dismiss();
               this.msg.mostrarErro(error);
-              if(this.navCtrl.canGoBack()){
-                this.navCtrl.pop();
-              }
+              // if(this.navCtrl.canGoBack()){
+              //   this.navCtrl.pop();
+              // }
             }
           );
          }
          catch(error){
           this.msg.mostrarErro(error);
-          if(this.navCtrl.canGoBack()){
-            this.navCtrl.pop();
-          }
+          // if(this.navCtrl.canGoBack()){
+          //   this.navCtrl.pop();
+          // }
          }
        }
      }
+  }
+
+  iniciarMonitoracaoDeLocalizacaoCondutor(){
+    // let o=this.localizacaoService.iniciarMonitoracaoDeLocalizacao();
+    // let o=this.localizacaoService.iniciarMonitoracaoDeLocalizacaoSimulada();
+    // let o=this.fatguys.obterLocalizacaoCondutor(this.fatguys.condutor);
+    let o=this.fatguys.obterLocalizacaoSimuladaCondutor(this.fatguys.condutor);
+    o.subscribe(
+      l=>{
+        this.atualizarCondutorNoMapa();
+      },
+      error=>{
+        console.error(error);
+        this.msg.mostrarErro(error);
+      }
+    )
+  }
+
+  alertarCancelamento(conduzidoVO){
+    this.msg.mostrarErro(conduzidoVO.nome+" acaba de notificar cancelamento");
+    var mv = this.marcasConduzidos.find(mv=>{return mv.conduzido.nome==conduzidoVO.nome});
+    if(mv.cancelado){
+      return;
+    }
+    mv.cancelado=false;
+    mv.marca.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(()=>{mv.marca.setAnimation(null)},6000);
+    mv.marca.setIcon("img/person-grey.png");
+  }
+  informaConducaoMantida(conduzidoVO){
+    this.msg.mostrarMsg(conduzidoVO.nome+" está confirmado");
+    var mv = this.marcasConduzidos.find(mv=>{return mv.conduzido.nome==conduzidoVO.nome}); 
+    if(!mv.cancelado){
+      return;
+    } 
+    mv.cancelado=true;  
+    mv.marca.setIcon("img/person-icon-blue.png");
+  }
+
+  iniciarMonitoramentoConduzidos(){
+    let o=this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiro);
+    o.subscribe(
+      cs=>{
+        cs.forEach(c => {
+            if(c.cancelada){
+              this.alertarCancelamento(c.conduzidoVO);
+            }
+            else{
+              this.informaConducaoMantida(c.conduzidoVO);
+            }          
+        });
+      },
+      error=>{
+        console.error(error);
+        this.msg.mostrarErro(error);
+      }
+    )
+  }
+
+  atualizarCondutorNoMapa(localizacao?:google.maps.LatLng){
+    if(localizacao==null){
+      localizacao=new google.maps.LatLng(this.fatguys.condutor.localizacao.latitude,
+        this.fatguys.condutor.localizacao.longitude);
+    }
+    this.marcaCondutor.setPosition(localizacao);
+    this.marcaCondutor.setEasing('linear');
+    this.centralizarMapa();
   }
 
   mostrarMarcacoes(trajeto:Trajeto){
     this.marcarLocalizacaoCondutor();
     this.marcarLocaisTrajeto(trajeto);
     let marcas=[] as google.maps.Marker[];
-    this.marcas=this.marcasConduzidos.concat(this.marcasLocaisTrajeto);
+    this.marcas=[] as google.maps.Marker[];
+    this.marcasConduzidos.forEach(m=>{
+      this.marcas.push(m.marca);
+    })
+    // this.marcas=this.marcasConduzidos.concat(this.marcasLocaisTrajeto);
     this.marcas.push(this.marcaCondutor);    
   }
 
@@ -189,18 +267,23 @@ export class ViagemPage {
         var conteudo="";
         var qtdO=0;
         var qtdD=0;
+        var conduzidos=[];
+        var conduzidosDestino=[];
         this.roteiro.conducoes.forEach(
           conducao=>{
             if(conducao.origem.endereco==perna.local.endereco){
+              conduzidos.push(conducao.conduzidoVO);
               if(conteudo.length>0){
                 conteudo+='<h7 style="color:blue;">,'+conducao.conduzidoVO.nome+'</h7>';
               }
               else{
                 conteudo='<h7 style="color:blue;">'+conducao.conduzidoVO.nome+'</h7>';
               }
+              conteudo+='<a href="tel: '+conducao.conduzidoVO.telefone+'"><img src="img/call.png"></img></a>';
               qtdO++;
             }
             if(conducao.destino.endereco==perna.local.endereco){
+              conduzidosDestino.push(conducao.conduzidoVO);
               if(conteudo.length>0){
                 conteudo+='<h7 style="color:green;">,'+conducao.conduzidoVO.nome+'</h7>';
               }
@@ -211,19 +294,18 @@ export class ViagemPage {
             }
           }
         );
-        if(qtdO>0){
-          conteudo=conteudo+'<img src="img/origem-icon.png"></img>';
-        }
+        // if(qtdO>0){
+        //   conteudo=conteudo+'<img src="img/origem-icon.png"></img>';
+        // }
         if(qtdD>0){
-          conteudo='<img src="img/destino-icon.png"></img>'+conteudo;
+          conteudo='<img src="img/finish_flag.png"></img>'+conteudo;
         }
-        this.marcarLocal(perna,conteudo,(qtdD+qtdO>1));
+        this.marcarLocal(perna,conteudo,conduzidos, conduzidosDestino);
       });
   }
-
-  marcarLocal(perna:Perna, conteudo:string, grupo:boolean){
+  marcarLocal(perna:Perna, conteudo:string, conduzidos, conduzidosDestino){
     var icone='img/person-icon-blue.png';
-    if(grupo){
+    if(conduzidos.length+conduzidosDestino.length>1){
       icone='img/person-group.png';
     }
     let localizacao = new google.maps.LatLng(perna.local.latitude, perna.local.longitude);
@@ -242,6 +324,14 @@ export class ViagemPage {
       popup.open(this.mapa, marcaLocal);
     });
 
+    conduzidos.forEach(c => {
+      let mv={} as ConduzidoMV;
+      mv.marca=marcaLocal;
+      mv.conduzido=c;
+      this.marcasConduzidos.push(mv);
+    });
+
+
     this.marcasLocaisTrajeto.push(marcaLocal);
     setTimeout( () => {
 		if (marcaLocal){
@@ -251,7 +341,7 @@ export class ViagemPage {
   }
 
   marcarLocalizacaoCondutor() {
-    this.marcaCondutor = new google.maps.Marker({
+    this.marcaCondutor = new SlidingMarker({
       map: this.mapa,
       animation: google.maps.Animation.BOUNCE,
       position: this.localizacao,
@@ -275,7 +365,10 @@ export class ViagemPage {
 
   }
 
-  centralizarMapa(marcas:google.maps.Marker[]){
+  centralizarMapa(marcas?:google.maps.Marker[]){
+    if(marcas==null){
+      marcas=this.marcas;
+    }
     var bounds = new google.maps.LatLngBounds();
     marcas.forEach(
       m=>{
@@ -298,4 +391,14 @@ export class ViagemPage {
     console.log('ionViewDidLoad ViagemPage');
   }
 
+}
+
+interface ConduzidoMV{
+  conduzido: Conduzido,
+  marca:google.maps.Marker,
+  cancelado:boolean
+}
+interface ConducaoMV{
+  conducao: Conducao,
+  marca:google.maps.Marker
 }

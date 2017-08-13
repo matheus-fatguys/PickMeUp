@@ -17,3 +17,7 @@ ISSUE 5: encontrar um algoritmo para ordenar roteiros com diferentes destinos e 
 
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database
+
+
+tive que etrar na bios pra habilitar a virtualização da intel e instalar o intel haxm para emular o android
+localização do adb: C:\Users\Matheus\AppData\Local\Android\sdk\platform-tools

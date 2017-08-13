@@ -27,6 +27,22 @@ export class FatguysUberProvider {
     this.chaves=this.afd.list("chaves");
   }
 
+  atualizarLocalizacaoCondutor(condutor:Condutor){   
+    return this.afd.object("/condutores/"+condutor.id+"/localizacao/").set(condutor.localizacao);
+  }
+  atualizarLocalizacaoSimuladaCondutor(condutor:Condutor){   
+    return this.afd.object("/condutores/"+condutor.id+"/localizacaoSimulada/").set(condutor.localizacaoSimulada);
+  }
+  obterLocalizacaoSimuladaCondutor(condutor:Condutor){   
+    return this.afd.object("/condutores/"+condutor.id+"/localizacaoSimulada/");
+  }
+
+  obterConduzidosDoRoteiro(roteiro:Roteiro){
+    let refc=this.afd.object("/condutores/"+roteiro.condutor
+    +"/roteiros/conducoes/");
+
+  }
+
   
 
   obterConducoes (condutor: Condutor){    

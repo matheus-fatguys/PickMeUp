@@ -5,5 +5,7 @@ export interface Condutor{
     nome: string,
     telefone: string,
     usuario: string,
-    veiculo: Veiculo  
+    veiculo: Veiculo,
+    localizacao:{latitude:number, longitude:number, endereco?:string}  
+    localizacaoSimulada:{latitude:number, longitude:number, endereco?:string}  
 }

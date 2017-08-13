@@ -9,13 +9,12 @@ export class MensagemProvider {
 
   constructor(public http: Http, 
     private toastCtrl: ToastController) {
-    console.log('Hello MensagemProvider Provider');
   }
 
-  mostrarMsg(msg){
+  mostrarMsg(msg, tempo?:number){
     let toast = this.toastCtrl.create({
                   message: msg,
-                  duration: 3000,
+                  duration: tempo?tempo:3000,
                   position: 'top'
                 });          
     toast.present();  
@@ -23,9 +22,15 @@ export class MensagemProvider {
   }
   mostrarErro(error){
     console.error(error);
+    var msg="";
+    try {
+      msg=error.message?error.message:error;      
+    } catch (error) {
+      msg=error.msg?error.msg:error;      
+    }
       let toast = this.toastCtrl.create({
-                  message: error,
-                  duration: 3000,
+                  message: msg,
+                  duration: 6000,
                   position: 'top'
                 });
       toast.present();
