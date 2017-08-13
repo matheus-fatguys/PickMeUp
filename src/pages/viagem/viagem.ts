@@ -157,7 +157,22 @@ export class ViagemPage {
     mv.marca.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(()=>{mv.marca.setAnimation(null)},6000);
     mv.marca.setIcon("img/person-grey.png");
+    this.recalcularTrajeto();
   }
+
+  recalcularTrajeto(){
+    this.msg.mostrarErro("Recalculando trajeto", 4000);
+    let localizacao=new google.maps.LatLng(this.fatguys.condutor.localizacao.latitude, this.fatguys.condutor.localizacao.longitude);    
+    let obs = this.trajetoService.calcularTrajeto(localizacao, this.roteiro);
+    obs.subscribe(
+      trajeto=>{ 
+
+      },
+      error=>{
+          this.msg.mostrarErro("Erro recalculando trajeto: "+ error,6000);
+      });
+  }
+
   informaConducaoMantida(conduzidoVO){
     this.msg.mostrarMsg(conduzidoVO.nome+" está confirmado");
     var mv = this.marcasConduzidos.find(mv=>{return mv.conduzido.nome==conduzidoVO.nome}); 

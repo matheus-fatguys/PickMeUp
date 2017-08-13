@@ -14,13 +14,14 @@ export class MensagemProvider {
   mostrarMsg(msg, tempo?:number){
     let toast = this.toastCtrl.create({
                   message: msg,
-                  duration: tempo?tempo:3000,
-                  position: 'top'
+                  duration: tempo?tempo:null,
+                  position: 'top',
+                  showCloseButton:tempo?false:true
                 });          
     toast.present();  
     return toast; 
   }
-  mostrarErro(error){
+  mostrarErro(error, tempo?:number){
     console.error(error);
     var msg="";
     try {
@@ -30,8 +31,9 @@ export class MensagemProvider {
     }
       let toast = this.toastCtrl.create({
                   message: msg,
-                  duration: 6000,
-                  position: 'top'
+                  duration: tempo?tempo:null,
+                  position: 'top',
+                  showCloseButton: tempo?false:true
                 });
       toast.present();
   }
