@@ -6,5 +6,6 @@ export interface Conducao {
     conduzido: string,
     conduzidoVO: Conduzido,
     origem: Local,
-    destino: Local
+    destino: Local,
+    cancelada?:boolean
 }

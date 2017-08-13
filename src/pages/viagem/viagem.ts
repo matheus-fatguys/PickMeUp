@@ -58,7 +58,8 @@ export class ViagemPage {
           });        
           console.log("VAI PEDIR LOCALIZAÇÃO");   
           loading.present(loading);        
-          this.localizacaoService.iniciarGeolocalizacao().subscribe(
+          let obs=this.localizacaoService.iniciarGeolocalizacao()
+          obs.subscribe(
             localizacao=>{
               this.localizacao=localizacao;
               loading.setContent('Calculanto trajeto da viagem...');
@@ -77,7 +78,7 @@ export class ViagemPage {
                                     if(mapa){
                                       this.mapa=mapa;
                                       this.viagemIniciada=true;
-                                      this.msg.mostrarMsg("Boa viagem, dirija com atenção!");
+                                      this.msg.mostrarMsg("Boa viagem, dirija com atenção!", 2000);
                                       this.mostrarMarcacoes(trajeto);
                                       this.mostrarCaminhoDoTrajeto(trajeto);
                                       this.centralizarMapa(this.marcas);
@@ -111,6 +112,7 @@ export class ViagemPage {
                       // }
                     }
                   );
+                  obs.first();                
             },
             error=>{
               loading.dismiss();
@@ -120,6 +122,7 @@ export class ViagemPage {
               // }
             }
           );
+          obs.first()
          }
          catch(error){
           this.msg.mostrarErro(error);
@@ -147,36 +150,39 @@ export class ViagemPage {
     )
   }
 
-  alertarCancelamento(conduzidoVO){
+  alertarCancelamento(conduzidoVO):boolean{
     this.msg.mostrarErro(conduzidoVO.nome+" acaba de notificar cancelamento");
     var mv = this.marcasConduzidos.find(mv=>{return mv.conduzido.nome==conduzidoVO.nome});
-    if(mv.cancelado){
-      return;
+    if(mv==null||mv.cancelado){
+      return false;
     }
     mv.cancelado=false;
     mv.marca.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(()=>{mv.marca.setAnimation(null)},6000);
     mv.marca.setIcon("img/person-grey.png");
-    this.recalcularTrajeto();
+    return true;
   }
 
-  recalcularTrajeto(){
+  recalcularTrajeto(roteiro){
     this.msg.mostrarErro("Recalculando trajeto", 4000);
     let localizacao=new google.maps.LatLng(this.fatguys.condutor.localizacao.latitude, this.fatguys.condutor.localizacao.longitude);    
     let obs = this.trajetoService.calcularTrajeto(localizacao, this.roteiro);
     obs.subscribe(
       trajeto=>{ 
-
+        this.polylinePath.setMap(null);
+        this.mostrarCaminhoDoTrajeto(trajeto);
+        
       },
       error=>{
           this.msg.mostrarErro("Erro recalculando trajeto: "+ error,6000);
       });
+    obs.first();
   }
 
   informaConducaoMantida(conduzidoVO){
-    this.msg.mostrarMsg(conduzidoVO.nome+" está confirmado");
+    this.msg.mostrarMsg(conduzidoVO.nome+" está confirmado", 2000);
     var mv = this.marcasConduzidos.find(mv=>{return mv.conduzido.nome==conduzidoVO.nome}); 
-    if(!mv.cancelado){
+    if(mv==null||!mv.cancelado){
       return;
     } 
     mv.cancelado=true;  
@@ -187,14 +193,19 @@ export class ViagemPage {
     let o=this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiro);
     o.subscribe(
       cs=>{
+        var recalcular:boolean=false;
         cs.forEach(c => {
             if(c.cancelada){
-              this.alertarCancelamento(c.conduzidoVO);
+              recalcular=this.alertarCancelamento(c.conduzidoVO);
             }
             else{
-              this.informaConducaoMantida(c.conduzidoVO);
+              // this.informaConducaoMantida(c.conduzidoVO);
             }          
         });
+          if(recalcular){
+            this.roteiro.conducoes=cs;
+            this.recalcularTrajeto(this.roteiro);
+          }
       },
       error=>{
         console.error(error);
@@ -268,6 +279,7 @@ export class ViagemPage {
           });
       }
     );
+    // this.polylinePath.setMap(null);
     this.polylinePath = new google.maps.Polyline({
       path: path,
       strokeColor: '#FF0000',

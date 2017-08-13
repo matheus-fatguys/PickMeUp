@@ -80,21 +80,23 @@ export class TrajetoProvider {
 
   definirLocais(roteiro: Roteiro){
       roteiro.conducoes.forEach(c=>{
-        var lio=this.locais.findIndex(l=>{return l.endereco==c.origem.endereco});
-        var lid=this.locais.findIndex(l=>{return l.endereco==c.destino.endereco});
-        if(lio<0){
-          this.locais.push(c.origem);
-        }
-        if(lid<0){
-          this.locais.push(c.destino);
-        }
-        lio=this.origens.findIndex(l=>{return l.endereco==c.origem.endereco});
-        lid=this.destinos.findIndex(l=>{return l.endereco==c.destino.endereco});
-        if(lio<0){
-          this.origens.push(c.origem);
-        }
-        if(lid<0){
-          this.destinos.push(c.destino);
+        if(!c.cancelada){
+          var lio=this.locais.findIndex(l=>{return l.endereco==c.origem.endereco});
+          var lid=this.locais.findIndex(l=>{return l.endereco==c.destino.endereco});
+          if(lio<0){
+            this.locais.push(c.origem);
+          }
+          if(lid<0){
+            this.locais.push(c.destino);
+          }
+          lio=this.origens.findIndex(l=>{return l.endereco==c.origem.endereco});
+          lid=this.destinos.findIndex(l=>{return l.endereco==c.destino.endereco});
+          if(lio<0){
+            this.origens.push(c.origem);
+          }
+          if(lid<0){
+            this.destinos.push(c.destino);
+          }
         }
       });      
   }
@@ -336,12 +338,13 @@ export class TrajetoProvider {
         return msgErro;
   }
   calcularTrajetoComUnicoDestinoEUnicaOrigem():Observable<Trajeto>{
+    this.ordenarLocaisPorDistanciaComUnicoDestino();
     let trajetoObservable:Observable<Trajeto>=Observable.create(
       obervable=>{
         try{
-          this.calcularRota(this.origens[0], 
+          this.calcularRota(null, 
             this.destinos[0], 
-            null, 
+            [this.origens[0]], 
             this.locaisOrdenados).subscribe(
             trajeto=>{
               obervable.next(trajeto);
@@ -470,13 +473,13 @@ export class TrajetoProvider {
   }
 
   calcularTrajeto(localizacao:google.maps.LatLng, roteiro:Roteiro):Observable<Trajeto>{ 
+    this.roteiro=roteiro;
     this.locais = [] as Local[];
     this.locaisOrdenados = [] as Local[];
     this.destinos = [] as Local[];
     this.origens = [] as Local[];
     this.paradas = [] as Local[];
     this.localizacao=localizacao;
-    this.roteiro=roteiro;
     this.definirLocais(this.roteiro);
     let trajetoObservable:Observable<Trajeto>=Observable.create(
       obervable=>{
