@@ -5,7 +5,7 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { MensagemProvider } from './../mensagem/mensagem';
 import { Injectable, NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Injectable()
 export class LocalizacaoProvider {
@@ -13,6 +13,7 @@ export class LocalizacaoProvider {
   private localizacao: google.maps.LatLng;
   private localizacaoObserver;
   private condutor:Condutor;
+  public localizacaoCondutorSubscription:Subscription;
 
   constructor(public msg: MensagemProvider,
               public platform: Platform,

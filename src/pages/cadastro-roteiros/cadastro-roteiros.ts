@@ -68,7 +68,7 @@ export class CadastroRoteirosPage  implements OnInit {
   }
 
   iniciar(){
-    this.navCtrl.push('ViagemPage',{roteiro:this.roteiroSelecionado});
+    this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiroSelecionado});
   }
 
   excluir(roteiro){

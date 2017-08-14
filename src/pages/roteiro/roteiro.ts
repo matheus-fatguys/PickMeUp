@@ -48,7 +48,7 @@ export class RoteiroPage {
   }
 
   iniciar(){
-    this.navCtrl.push('ViagemPage',{roteiro:this.roteiro});
+    this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiro});
   }
 
   ionViewDidLoad() {
