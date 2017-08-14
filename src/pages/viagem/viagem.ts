@@ -34,6 +34,7 @@ export class ViagemPage {
   private mapa: google.maps.Map;
   private trajeto: Trajeto;  
   private polylinePath :google.maps.Polyline;
+  private conducoesObsever;
   
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -190,8 +191,10 @@ export class ViagemPage {
   }
 
   iniciarMonitoramentoConduzidos(){
-    let o=this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiro);
-    o.subscribe(
+    if(this.conducoesObsever!=null) return;
+    this.conducoesObsever=this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiro);
+    
+    this.conducoesObsever.subscribe(
       cs=>{
         var recalcular:boolean=false;
         cs.forEach(c => {
@@ -205,6 +208,7 @@ export class ViagemPage {
           if(recalcular){
             this.roteiro.conducoes=cs;
             this.recalcularTrajeto(this.roteiro);
+            this.centralizarMapaNovoTrajeto();
           }
       },
       error=>{
@@ -390,6 +394,19 @@ export class ViagemPage {
 		}	  
     }, 750);
 
+  }
+
+  centralizarMapaNovoTrajeto(){
+    var bounds = new google.maps.LatLngBounds();
+    var p = this.polylinePath.getPath().getArray();
+    p.forEach(
+      e=>{
+        bounds.extend(e);
+        console.log(e);
+        console.log(e.lat());
+      });
+    bounds.getCenter();
+    this.mapa.fitBounds(bounds);
   }
 
   centralizarMapa(marcas?:google.maps.Marker[]){
