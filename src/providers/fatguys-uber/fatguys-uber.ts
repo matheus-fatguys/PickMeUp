@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Conducao } from './../../models/conducao';
 import { Roteiro } from './../../models/roteiro';
 import { Usuario } from './../../models/usuario';
@@ -19,6 +19,7 @@ export class FatguysUberProvider {
   public condutores: FirebaseListObservable<Condutor[]>;
   public conduzidos: FirebaseListObservable<Conduzido[]>;
   public chaves: FirebaseListObservable<Chave[]>;
+  public conducoesSubscription:Subscription;
 
   constructor(private afd: AngularFireDatabase,
   private auth : AutenticacaoProvider) {
@@ -32,6 +33,9 @@ export class FatguysUberProvider {
   }
   atualizarLocalizacaoSimuladaCondutor(condutor:Condutor){   
     return this.afd.object("/condutores/"+condutor.id+"/localizacaoSimulada/").set(condutor.localizacaoSimulada);
+  }
+  obterLocalizacaoCondutor(condutor:Condutor){   
+    return this.afd.object("/condutores/"+condutor.id+"/localizacao/");
   }
   obterLocalizacaoSimuladaCondutor(condutor:Condutor){   
     return this.afd.object("/condutores/"+condutor.id+"/localizacaoSimulada/");

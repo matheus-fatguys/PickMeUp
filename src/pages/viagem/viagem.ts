@@ -5,12 +5,12 @@ import { LocalizacaoProvider } from './../../providers/localizacao/localizacao';
 import { TrajetoProvider } from './../../providers/trajeto/trajeto';
 import { Perna } from './../../models/perna';
 import { Trajeto } from './../../models/trajeto';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Local } from './../../models/local';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Roteiro } from './../../models/roteiro';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, Platform, LoadingController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 
@@ -21,8 +21,9 @@ import { Geolocation } from '@ionic-native/geolocation';
   selector: 'page-viagem',
   templateUrl: 'viagem.html',
 })
-export class ViagemPage {
-  private tituloInicio:string="Viagem";
+export class ViagemPage implements OnDestroy  {
+  
+  private tituloInicio: string = "Viagem";
   private tituloEmViagem:string="Viagem";
   private viagemIniciada:boolean=false;
   private roteiro={} as Roteiro;  
@@ -35,6 +36,7 @@ export class ViagemPage {
   private trajeto: Trajeto;  
   private polylinePath :google.maps.Polyline;
   private conducoesObsever;
+  private conducoesObservable:Observable<any>;
   
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -138,8 +140,8 @@ export class ViagemPage {
   iniciarMonitoracaoDeLocalizacaoCondutor(){
     // let o=this.localizacaoService.iniciarMonitoracaoDeLocalizacao();
     // let o=this.localizacaoService.iniciarMonitoracaoDeLocalizacaoSimulada();
-    // let o=this.fatguys.obterLocalizacaoCondutor(this.fatguys.condutor);
-    let o=this.fatguys.obterLocalizacaoSimuladaCondutor(this.fatguys.condutor);
+     let o=this.fatguys.obterLocalizacaoCondutor(this.fatguys.condutor);
+    //let o=this.fatguys.obterLocalizacaoSimuladaCondutor(this.fatguys.condutor);
     o.subscribe(
       l=>{
         this.atualizarCondutorNoMapa();
@@ -190,26 +192,44 @@ export class ViagemPage {
     mv.marca.setIcon("img/person-icon-blue.png");
   }
 
+  ngOnDestroy(): void {
+    if(this.fatguys.conducoesSubscription){
+      this.fatguys.conducoesSubscription.unsubscribe();
+      this.fatguys.conducoesSubscription=null;
+    }
+  }
+
+  ionViewWillLeave(){
+    if(this.fatguys.conducoesSubscription){
+      this.fatguys.conducoesSubscription.unsubscribe();
+    }
+  }
+
+  funcaoDeMonitoramento(cs){
+    
+    var recalcular:boolean=false;                     
+    cs.forEach(c => {
+        if(c.cancelada){
+          recalcular=this.alertarCancelamento(c.conduzidoVO);
+        }
+        else{
+          // this.informaConducaoMantida(c.conduzidoVO);
+        }          
+    });
+    if(recalcular){
+      this.roteiro.conducoes=cs;
+      this.recalcularTrajeto(this.roteiro);
+      this.centralizarMapaNovoTrajeto();
+    }
+  }
+
   iniciarMonitoramentoConduzidos(){
     if(this.conducoesObsever!=null) return;
-    this.conducoesObsever=this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiro);
-    
-    this.conducoesObsever.subscribe(
+    this.conducoesObservable=this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiro);
+    this.fatguys.conducoesSubscription =this.conducoesObservable
+    .subscribe(
       cs=>{
-        var recalcular:boolean=false;
-        cs.forEach(c => {
-            if(c.cancelada){
-              recalcular=this.alertarCancelamento(c.conduzidoVO);
-            }
-            else{
-              // this.informaConducaoMantida(c.conduzidoVO);
-            }          
-        });
-          if(recalcular){
-            this.roteiro.conducoes=cs;
-            this.recalcularTrajeto(this.roteiro);
-            this.centralizarMapaNovoTrajeto();
-          }
+        this.funcaoDeMonitoramento(cs);   
       },
       error=>{
         console.error(error);
@@ -434,6 +454,8 @@ export class ViagemPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad ViagemPage');
   }
+
+  
 
 }
 
