@@ -144,7 +144,7 @@ export class ViagemPage implements OnDestroy  {
     //let o=this.fatguys.obterLocalizacaoSimuladaCondutor(this.fatguys.condutor);
     o.subscribe(
       l=>{
-        this.atualizarCondutorNoMapa();
+        this.atualizarCondutorNoMapa(new google.maps.LatLng(l.latitude,l.longitude));
       },
       error=>{
         console.error(error);
@@ -239,6 +239,7 @@ export class ViagemPage implements OnDestroy  {
   }
 
   atualizarCondutorNoMapa(localizacao?:google.maps.LatLng){
+    var loc
     if(localizacao==null){
       localizacao=new google.maps.LatLng(this.fatguys.condutor.localizacao.latitude,
         this.fatguys.condutor.localizacao.longitude);
