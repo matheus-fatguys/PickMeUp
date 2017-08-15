@@ -1,18 +1,18 @@
 <div >    
     <ion-item>
       <ion-label floating>Marca:</ion-label>
-      <ion-input type="text" [(ngModel)]="veiculo.marca"></ion-input>
+      <ion-input type="text" required [(ngModel)]="veiculo.marca"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating>Modelo:</ion-label>
-      <ion-input type="text" [(ngModel)]="veiculo.modelo"></ion-input>
+      <ion-input type="text" required [(ngModel)]="veiculo.modelo"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label floating>Ano:</ion-label>
-      <ion-input type="number"  min="2000" max="2030" [(ngModel)]="veiculo.ano"></ion-input>
+      <ion-input type="number" required  min="2000" max="2030" [(ngModel)]="veiculo.ano"></ion-input>
     </ion-item> 
     <ion-item >
       <ion-label floating>Placa:</ion-label>
-      <ion-input type="text" [(ngModel)]="veiculo.placa"></ion-input>
+      <ion-input type="text" required [(ngModel)]="veiculo.placa" pattern='^[A-Z]{3}[-][0-9]{4}'></ion-input>
     </ion-item> 
   </div>
