@@ -39,8 +39,8 @@ import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
     HttpModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
-    FormsModule,    
-    TextMaskModule,
+    FormsModule,   
+    TextMaskModule, 
     AngularFireModule.initializeApp(firebaseConfig),
     IonicModule.forRoot(MyApp)
   ],

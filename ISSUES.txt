@@ -17,6 +17,8 @@ ISSUE 5: encontrar um algoritmo para ordenar roteiros com diferentes destinos e 
 
 ISSUE 6: problema com o build pro android, resolvido removendo conteúdo da pasta C:\Users\Matheus\.gradle e adcionando o gradle ao path e GRADLE_HOME às variáveis de ambiente
 
+ISSUE 7: usar a diretiva de mascara é sem colchetes no elemento e tem que importar o directivesModule no Pagemodule
+
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database
 

@@ -1,3 +1,5 @@
+import { DirectivesModule } from './../../directives/directives.module';
+// import { TextMaskModule } from 'angular2-text-mask';
 import { ComponentsModule } from './../../components/components.module';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
@@ -9,7 +11,8 @@ import { RegistrarPage } from './registrar';
   ],
   imports: [
     IonicPageModule.forChild(RegistrarPage),
-    ComponentsModule
+    ComponentsModule,
+    DirectivesModule,
   ],
 })
 export class RegistrarPageModule {}

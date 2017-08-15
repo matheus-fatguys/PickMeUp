@@ -18,10 +18,10 @@
         <span>Email é obrigatório</span>
       </ion-item>
     </ion-list> 
-
+    <!-- <p mascara>askfghjkasdhfgjksdfhgjk</p> -->
     <ion-item>
       <ion-label floating>Senha:</ion-label>
-      <ion-input formControlName="senha" type="password" required minlength="6" [(ngModel)]="usuario.senha"></ion-input>
+      <ion-input  formControlName="senha" type="password" required minlength="6" [(ngModel)]="usuario.senha"></ion-input>
     </ion-item>
     <ion-list *ngIf="loginForm.controls.senha.invalid && (loginForm.controls.senha.dirty || loginForm.controls.senha.touched)">
       <ion-item *ngIf="loginForm.controls.senha.errors.required">

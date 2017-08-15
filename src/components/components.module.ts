@@ -1,3 +1,5 @@
+import { DirectivesModule } from './../directives/directives.module';
+import { MascaraDirective } from './../directives/mascara/mascara';
 import { IonicModule } from 'ionic-angular';
 import { NgModule } from '@angular/core';
 import { SimpleComponent } from './simple/simple';
@@ -29,7 +31,7 @@ import { MapaCondutorComponent } from './mapa-condutor/mapa-condutor';
     DetalheConducaoComponent,
     CaixaBuscaEnderecoComponent,
     MapaCondutorComponent],
-	imports: [IonicModule],
+	imports: [IonicModule, DirectivesModule],
 	exports: [SimpleComponent,
     MapComponent,
     PontoComponent,
