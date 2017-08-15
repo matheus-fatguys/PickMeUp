@@ -31,14 +31,15 @@
 
     <ion-item>
       <ion-label floating>Nome:</ion-label>
-      <ion-input formControlName="nome" type="text" mascara="AAA-9999" required [(ngModel)]="condutor.nome"></ion-input>
+      <ion-input formControlName="nome" type="text"  required [(ngModel)]="condutor.nome"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Telefone:</ion-label>
-       <ion-input formControlName="telefone" type="tel" required [(ngModel)]="condutor.telefone" 
-      mascara="(99)9999-9999" 
-      textMask="{mask: mascaras.telefone}"></ion-input> 
+       <ion-input formControlName="telefone" type="tel" required 
+       [(ngModel)]="condutor.telefone" 
+        mascara="(99)9999-9999">
+    </ion-input> 
     </ion-item>
      <ion-list *ngIf="registrarForm.controls.telefone.invalid && (registrarForm.controls.telefone.dirty || registrarForm.controls.telefone.touched)">
       <ion-item *ngIf="registrarForm.controls.telefone.errors.required">

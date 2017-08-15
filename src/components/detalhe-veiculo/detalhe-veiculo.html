@@ -9,10 +9,10 @@
     </ion-item>
     <ion-item>
       <ion-label floating>Ano:</ion-label>
-      <ion-input type="number" required  min="2000" max="2030" [(ngModel)]="veiculo.ano"></ion-input>
+      <ion-input type="number" required  min="2000" max="2030" [(ngModel)]="veiculo.ano" mascara="9999"></ion-input>
     </ion-item> 
     <ion-item >
       <ion-label floating>Placa:</ion-label>
-      <ion-input type="text" required [(ngModel)]="veiculo.placa" pattern='^[A-Z]{3}[-][0-9]{4}' mascara="AAA-9999" ></ion-input>
+      <ion-input type="text" required [(ngModel)]="veiculo.placa" pattern='^[a-zA-Z]{3}[-][0-9]{4}' mascara="AAA-9999" ></ion-input>
     </ion-item> 
   </div>
