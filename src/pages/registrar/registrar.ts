@@ -44,6 +44,10 @@ export class RegistrarPage {
     console.log('ionViewDidLoad RegistrarPage');
   }
 
+  voltar(){
+    this.navCtrl.setRoot('LoginPage');
+  }
+
   async registrar(){
     try {
       let resultado = this.fatguysService.registrarCondutor(this.condutor, this.usuario).then(

@@ -70,6 +70,7 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons end>
+      <button ion-button icon-right (click)="voltar()">Voltar<ion-icon name="arrow-back"></ion-icon></button>
       <button ion-button [disabled]="registrarForm.invalid" icon-right (click)="registrar()">Salvar<ion-icon name="arrow-dropup"></ion-icon></button>
     </ion-buttons>
   </ion-toolbar>  
