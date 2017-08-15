@@ -29,8 +29,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
   private mapa: google.maps.Map;
   private polylinePath :google.maps.Polyline;
   @Output() onViagemIniciada= new EventEmitter<google.maps.Map>();
-  @Output() onOrigemProxima= new EventEmitter<Conducao>();
-  @Output() onDestinoProximo= new EventEmitter<Conducao>();
+  @Output() onOrigemProxima= new EventEmitter<Conducao[]>();
+  @Output() onDestinoProximo= new EventEmitter<Conducao[]>();
 
   constructor(public platform: Platform,
     public localizacaoService: LocalizacaoProvider,
@@ -56,86 +56,124 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     if(this.roteiro.conducoes!=null&&this.roteiro.conducoes.length>0){
         try{          
         
-        let loading = this.loadingCtrl.create({
-          content: 'Obtendo localização atual...'
-        });        
-        console.log("VAI PEDIR LOCALIZAÇÃO");   
-        loading.present(loading);        
-        let obs=this.localizacaoService.iniciarGeolocalizacao()
-        obs.subscribe(
-          localizacao=>{
-            this.localizacao=localizacao;
-            loading.setContent('Calculanto trajeto da viagem...');
-            let obs = this.trajetoService.calcularTrajeto(this.localizacao, this.roteiro);
-            obs.subscribe(
-                  trajeto=>{
-                        
-                        this.trajetoService.mostrarTrajetoDoRoteiro(trajeto).then(
-                          ret=>{
-                            if(ret){    
-                              this.trajeto=trajeto;                    
-                              loading.setContent('Iniciando mapa...');
-                              this.iniciarMapa(trajeto).then(
-                                mapa=>{
-                                  loading.dismiss();
-                                  if(mapa){
-                                    this.mapa=mapa;
-                                    this.msg.mostrarMsg("Boa viagem, dirija com atenção!", 2000);
-                                    this.mostrarMarcacoes(trajeto);
-                                    this.mostrarCaminhoDoTrajeto(trajeto);
-                                    this.centralizarMapa(this.marcas);
-                                    this.adcionarEventListener();
-                                    this.iniciarMonitoracaoDeLocalizacaoCondutor();
-                                    this.iniciarMonitoramentoConduzidos();
-                                    this.onViagemIniciada.emit(this.mapa);
+          let loading = this.loadingCtrl.create({
+            content: 'Salvando conduções...'
+          });  
+          this.roteiro.conducoes.forEach(
+            c=>{
+              if(!c.cancelada){
+                c.emAndamento=true;
+                c.embarcado=false;
+                c.realizada=false;
+              }
+            }
+          )      
+          this.fatguys.inciarRoteiro(roteiro)
+          .then(
+            r=>{
+              loading.setContent('Obtendo localização atual...');
+              console.log("VAI PEDIR LOCALIZAÇÃO");   
+              loading.present(loading);        
+              let obs=this.localizacaoService.iniciarGeolocalizacao()
+              obs.subscribe(
+                localizacao=>{
+                  this.localizacao=localizacao;
+                  loading.setContent('Calculanto trajeto da viagem...');
+                  let obs = this.trajetoService.calcularTrajeto(this.localizacao, this.roteiro);
+                  obs.subscribe(
+                        trajeto=>{
+                              
+                              this.trajetoService.mostrarTrajetoDoRoteiro(trajeto).then(
+                                ret=>{
+                                  if(ret){    
+                                    this.trajeto=trajeto;                    
+                                    loading.setContent('Iniciando mapa...');
+                                    this.iniciarMapa(trajeto).then(
+                                      mapa=>{
+                                        loading.dismiss();
+                                        if(mapa){
+                                          this.mapa=mapa;
+                                          this.mapa.addListener('click', (localizacao) => {
+                                            this.fatguys.condutor.localizacao.latitude=localizacao.latLng.lat();
+                                            this.fatguys.condutor.localizacao.longitude=localizacao.latLng.lng();
+                                            this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
+                                          });
+                                          this.msg.mostrarMsg("Boa viagem, dirija com atenção!", 2000);
+                                          this.mostrarMarcacoes(trajeto);
+                                          this.mostrarCaminhoDoTrajeto(trajeto);
+                                          this.centralizarMapa(this.marcas);
+                                          this.adcionarEventListener();
+                                          this.iniciarMonitoracaoDeLocalizacaoCondutor();
+                                          this.iniciarMonitoramentoConduzidos();
+                                          this.onViagemIniciada.emit(this.mapa);
+                                        }
+                                      }
+                                    );
                                   }
-                                }
-                              );
-                            }
-                          }).catch(
-                            error=>{                                
-                              loading.dismiss();
-                              this.msg.mostrarErro('Erro obtendo localização: ' + error);
-                            }  
-                          );                      
-                  },
-                  error=>{
-                    loading.dismiss();
-                    this.msg.mostrarErro('Erro obtendo localização: ' + error);
-                  }
-                );
-                obs.first();                
-          },
-          error=>{
-            loading.dismiss();
-            this.msg.mostrarErro(error);
-          }
-        );
-        obs.first()
+                                }).catch(
+                                  error=>{                                
+                                    loading.dismiss();
+                                    this.msg.mostrarErro('Erro obtendo localização: ' + error);
+                                  }  
+                                );                      
+                        },
+                        error=>{
+                          loading.dismiss();
+                          this.msg.mostrarErro('Erro obtendo localização: ' + error);
+                        }
+                      );
+                      obs.first();                
+                },
+                error=>{
+                  loading.dismiss();
+                  this.msg.mostrarErro(error);
+                }
+              );
+              obs.first()
+            }
+          )
+          .catch(
+            error=>{
+              loading.dismiss();
+              this.msg.mostrarErro('Erro salvando conduções');
+            }
+          );        
         }
         catch(error){
-        this.msg.mostrarErro(error);
+          this.msg.mostrarErro(error);
         }
       }  
   }
 
   verificarOrigemDestinoProximos(localizacao: google.maps.LatLng){
     var distanciaMaxima=0.05;
+    var origens=[] as Conducao[]
+    var destinos=[] as Conducao[]
     this.roteiro.conducoes.forEach(
       c=>{
         var co=new google.maps.LatLng(c.origem.latitude, c.origem.longitude);        
         var d =this.distanciaKm(co, localizacao);
         if(d<distanciaMaxima){
-          this.onOrigemProxima.emit(c);
+          if(!c.embarcado&&!c.realizada){
+            origens.push(c);
+          }          
         }
 
         var cd=new google.maps.LatLng(c.destino.latitude, c.destino.longitude);        
          d =this.distanciaKm(cd, localizacao);
         if(d<distanciaMaxima){
-          this.onDestinoProximo.emit(c);
+          if(c.embarcado){
+            destinos.push(c);
+          }          
         }
       }
     )
+    if(origens.length>0){
+      this.onOrigemProxima.emit(origens);
+    }
+    if(destinos.length>0){
+      this.onDestinoProximo.emit(destinos);
+    }
   }
   
 
@@ -164,7 +202,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     mv.cancelado=false;
     mv.marca.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(()=>{mv.marca.setAnimation(null)},6000);
-    mv.marca.setIcon("img/person-grey.png");
+    mv.marca.setIcon("assets/img/person-grey.png");
     return true;
   }
 
@@ -192,7 +230,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       return;
     } 
     mv.cancelado=true;  
-    mv.marca.setIcon("img/person-icon-blue.png");
+    mv.marca.setIcon("assets/img/person-icon-blue.png");
   }
 
   unsubscribeObservables(){
@@ -212,7 +250,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     
     var recalcular:boolean=false;                     
     cs.forEach(c => {
-        if(c.cancelada){
+        if(c.cancelada&&!c.cancelamentoNotificado&&!c.emAndamento&&!c.embarcado&&!c.realizada){
+          c.cancelamentoNotificado=true;
           recalcular=this.alertarCancelamento(c.conduzidoVO);
         }
         else{
@@ -249,7 +288,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       lat1=p1.lat()
       lat2=p2.lat()
       lon1=p1.lng()
-      lon2=p1.lng()
+      lon2=p2.lng()
       var rlat1 = Math.PI * lat1/180
       var rlat2 = Math.PI * lat2/180
       var rlon1 = Math.PI * lon1/180
@@ -392,7 +431,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
               else{
                 conteudo='<h7 style="color:blue;">'+conducao.conduzidoVO.nome+'</h7>';
               }
-              conteudo+='<a href="tel: '+conducao.conduzidoVO.telefone+'"><img src="img/call.png"></img></a>';
+              conteudo+='<a href="tel: '+conducao.conduzidoVO.telefone+'"><img src="assets/img/call.png"></img></a>';
               qtdO++;
             }
             if(conducao.destino.endereco==perna.local.endereco){
@@ -408,18 +447,28 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
           }
         );
         // if(qtdO>0){
-        //   conteudo=conteudo+'<img src="img/origem-icon.png"></img>';
+        //   conteudo=conteudo+'<img src="assets/img/origem-icon.png"></img>';
         // }
         if(qtdD>0){
-          conteudo='<img src="img/finish_flag.png"></img>'+conteudo;
+          conteudo='<img src="assets/img/finish_flag.png"></img>'+conteudo;
         }
         this.marcarLocal(perna,conteudo,conduzidos, conduzidosDestino);
       });
   }
-  marcarLocal(perna:Perna, conteudo:string, conduzidos, conduzidosDestino){
-    var icone='img/person-icon-blue.png';
+  marcarLocal(perna:Perna, conteudo:string, conduzidos, conduzidosDestino, embarcou?:boolean, desembarcou?:boolean){
+    var icone='assets/img/person-icon-blue.png';
+    if(embarcou){
+      icone='assets/img/person-orange.png';
+    }else if(desembarcou){
+      icone='assets/img/person-green.png';
+    }
     if(conduzidos.length+conduzidosDestino.length>1){
-      icone='img/person-group.png';
+      icone='assets/img/person-group.png';
+      if(embarcou){
+        icone='assets/img/person-group-orange.png';
+      }else if(desembarcou){
+        icone='assets/img/person-group-green.png';
+      }
     }
     let localizacao = new google.maps.LatLng(perna.local.latitude, perna.local.longitude);
     let marcaLocal = new google.maps.Marker({
@@ -435,6 +484,9 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     popup.open(this.mapa, marcaLocal);
     google.maps.event.addListener(marcaLocal, 'click', () => {
       popup.open(this.mapa, marcaLocal);
+      this.fatguys.condutor.localizacao.latitude=localizacao.lat();
+      this.fatguys.condutor.localizacao.longitude=localizacao.lng();
+      this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
     });
 
     conduzidos.forEach(c => {
@@ -458,7 +510,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       map: this.mapa,
       animation: google.maps.Animation.BOUNCE,
       position: this.localizacao,
-      icon: 'img/bus-icon.png'
+      icon: 'assets/img/bus-icon.png'
     })
 
     var popup = new google.maps.InfoWindow({
@@ -493,8 +545,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     var loc=new google.maps.LatLng(this.marcaCondutor.getPosition().lat(), this.marcaCondutor.getPosition().lng());
     this.mapa.panTo(this.marcaCondutor.getPosition());
     this.mapa.setZoom(15);
-    loc=new google.maps.LatLng(this.mapa.getBounds().getNorthEast().lat(), this.mapa.getCenter().lng());
-    this.mapa.panTo(loc);
+    // loc=new google.maps.LatLng(this.mapa.getBounds().getNorthEast().lat(), this.mapa.getCenter().lng());
+    // this.mapa.panTo(loc);
   }
 
   centralizarMapaNoTrajeto(){

@@ -28,91 +28,14 @@ export class LocalizacaoProvider {
   }
 
 
-  watchLocalizacaoSimulada(periodo:number):Observable<google.maps.LatLng>{
-    let obs:Observable<google.maps.LatLng>;
-    let thisObj=this;
-    obs=Observable.create(
-      observable=>{
-        let tm=0;
-        let f=function(){            
-            let localizacao = new google.maps.LatLng(thisObj.fatguys.condutor.localizacaoSimulada.latitude, 
-              thisObj.fatguys.condutor.localizacaoSimulada.longitude);
-            observable.next(localizacao);                    
-            tm=setTimeout(f,periodo);
-          };
-        tm=setTimeout(f,periodo);        
-      });    
-    return obs;
-  }
+  
 
   
-  watchLocalizacao(periodo:number):Observable<google.maps.LatLng>{
-    let obs:Observable<google.maps.LatLng>;
-    let thisObj=this;
-    obs=Observable.create(
-      observable=>{
-        let tm=0;
-        let f=function(){
-            thisObj.geolocation.getCurrentPosition()
-                .then(
-                  resp=>{
-                    let localizacao = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-                    observable.next(localizacao);                    
-                    tm=setTimeout(f,periodo);
-                  }
-                )
-                .catch(
-                  error=>{
-                    clearTimeout(tm);
-                    observable.error(error);
-                  }
-                );
-          };
-        tm=setTimeout(f,periodo);        
-      });
+ 
     
-    
-    return obs;
-  }
 
-  iniciarMonitoracaoDeLocalizacaoSimulada(){
-    let obs=this.watchLocalizacao(2000);
-    obs.subscribe(
-      l=>{
-        this.localizacao=l;
-        if(this.condutor!=null){
-          if(this.condutor.localizacao==null){
-            this.condutor.localizacao={latitude:l.lat(), longitude:l.lng()};
-          }
-          else{
-            this.condutor.localizacao.latitude=l.lat();
-            this.condutor.localizacao.longitude=l.lng();                  
-          }
-        }
-        this.fatguys.atualizarLocalizacaoCondutor(this.condutor);
-      }
-    );
-    return obs;
-  }
-  iniciarMonitoracaoDeLocalizacao(){
-    let obs=this.watchLocalizacao(2000);
-    obs.subscribe(
-      l=>{
-        this.localizacao=l;
-        if(this.condutor!=null){
-          if(this.condutor.localizacao==null){
-            this.condutor.localizacao={latitude:l.lat(), longitude:l.lng()};
-          }
-          else{
-            this.condutor.localizacao.latitude=l.lat();
-            this.condutor.localizacao.longitude=l.lng();                  
-          }
-        }
-        this.fatguys.atualizarLocalizacaoCondutor(this.condutor);
-      }
-    );
-    return obs;
-  }
+ 
+  
   
   iniciarGeolocalizacao():Observable<google.maps.LatLng>{
     let obs:Observable<google.maps.LatLng>;
@@ -212,5 +135,16 @@ export class LocalizacaoProvider {
     this.backgroundGeolocation.finish();
     this.localizacaoObserver.unsubscribe(); 
     console.log("RASTREAMENTO BACKGROUND PARADO");
+  }
+
+  iniciarRastreamento(){
+    if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
+      this.iniciarRastreamentoBackGround();
+    }
+  }
+  pararRastreamento(){
+    if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
+      this.pararRastreamentoBackGround();
+    }
   }
 }

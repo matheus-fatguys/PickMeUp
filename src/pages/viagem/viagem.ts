@@ -36,6 +36,8 @@ export class ViagemPage implements OnDestroy  {
   
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
+    public fatguys: FatguysUberProvider,
+    public localizacaoService: LocalizacaoProvider,
     public alertCtrl: AlertController
     ) {    
      let roteiro=this.navParams.get('roteiro');
@@ -55,6 +57,7 @@ export class ViagemPage implements OnDestroy  {
 
   onDestinoProximo($event){
     this.destinoProximo=true;
+    this.confirmarDeixouConduzidoNoDestino($event);
   }
 
   ngOnDestroy(): void {
@@ -79,6 +82,12 @@ export class ViagemPage implements OnDestroy  {
 
   pararViagem(){
     this.viagemIniciada=false;
+    this.localizacaoService.pararRastreamento();
+    this.fatguys.interromperRoteiro(this.roteiro).then(
+      r=>{
+        this.navCtrl.setRoot('CadastroRoteirosPage');
+      }
+    )
   }
 
   confirmarPararViagem(){
@@ -103,14 +112,68 @@ export class ViagemPage implements OnDestroy  {
     confirm.present();
   }
 
-  conduzidoABordo(conducao:Conducao){
-
+  conduzidoEmbarcou(conducoes:Conducao[]){
+    conducoes.forEach(
+      c=>{
+        c.cancelada=false;
+        c.emAndamento=false;
+        c.embarcado=true;
+        c.realizada=false;
+        c.inicio=new Date();
+        console.log(c);
+      }
+    );
+    this.fatguys.salvarConducoesDoRoteiro(this.roteiro);
+  }
+  conduzidoDesembarcou(conducoes:Conducao[]){
+    conducoes.forEach(
+      c=>{
+        c.cancelada=false;
+        c.emAndamento=false;
+        c.embarcado=false;
+        c.realizada=true;
+        c.fim=new Date();
+        console.log(c);
+      }
+    )
+    this.fatguys.salvarConducoesDoRoteiro(this.roteiro).then(
+      r=>{
+        var i=this.roteiro.conducoes.findIndex(
+          c=>{
+            return !c.realizada&&!c.cancelada;
+          }
+        )
+        if(i<0){
+          this.roteiroFinalizado();
+        }
+      }
+    );
   }
 
-  confirmarConduzidoABordo(conducao:Conducao){
+  roteiroFinalizado(){
+    this.fatguys.finalizarRoteiro(this.roteiro).then(
+      r=>{
+        let confirm = this.alertCtrl.create({
+          title: 'Roteiro Finalizado',
+          message: "Você finalizou o roteiro",
+          buttons: [          
+            {
+              text: 'OK',
+              handler: (opcoes) => {
+                this.navCtrl.setRoot('CadastroRoteirosPage');
+              }
+            }
+          ]
+        });
+        confirm.present();
+      }
+    )
+  }
+
+  confirmarDeixouConduzidoNoDestino(conducoes:Conducao[]){
     let confirm = this.alertCtrl.create({
-      title: 'Conduido a Bordo',
-      message: "Confirma que "+conducao.conduzidoVO.nome+" está a bordo?",
+      title: 'Conduzido a Bordo',
+      message: "Marque os conduzidos desembarcaram agora",
       buttons: [
         {
           text: 'Cancelar',
@@ -120,12 +183,81 @@ export class ViagemPage implements OnDestroy  {
         },
         {
           text: 'OK',
-          handler: () => {
-            this.conduzidoABordo(conducao);
+          handler: (opcoes) => {
+            var cs=[];
+            opcoes.forEach(o => {
+                var co=conducoes.find(
+                  c=>{
+                    return c.id==o;
+                  }
+                )
+              if(co!=null){
+                cs.push(co);
+              }
+            });
+            this.conduzidoDesembarcou(cs);
           }
         }
       ]
     });
+
+    conducoes.forEach(
+      c=>{
+        confirm.addInput({
+          type: 'checkbox',
+          label: c.conduzidoVO.nome,
+          value: c.id,
+          checked: true
+        });
+      }
+    )
+
+    confirm.present();
+  }
+
+  confirmarConduzidoABordo(conducoes:Conducao[]){
+
+    let confirm = this.alertCtrl.create({
+      title: 'Conduzido a Bordo',
+      message: "Marque os conduzidos embarcaram agora",
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+            
+          }
+        },
+        {
+          text: 'OK',
+          handler: (opcoes) => {
+            var cs=[];
+            opcoes.forEach(o => {
+              var co=conducoes.find(
+                c=>{
+                  return c.id==o;
+                }
+              )
+              if(co!=null){
+                cs.push(co);
+              }
+            });
+            this.conduzidoEmbarcou(cs);
+          }
+        }
+      ]
+    });
+
+    conducoes.forEach(
+      c=>{
+        confirm.addInput({
+          type: 'checkbox',
+          label: c.conduzidoVO.nome,
+          value: c.id,
+          checked: true
+        });
+      }
+    )
+
     confirm.present();
   }
 

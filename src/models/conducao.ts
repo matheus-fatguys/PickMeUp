@@ -8,4 +8,11 @@ export interface Conducao {
     origem: Local,
     destino: Local,
     cancelada?:boolean
+    emAndamento?:boolean
+    embarcado?:boolean
+    realizada?:boolean,
+    interrompida?:boolean,
+    inicio?:Date,
+    fim?:Date,
+    cancelamentoNotificado?:boolean
 }
