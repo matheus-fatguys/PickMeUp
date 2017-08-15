@@ -4,6 +4,8 @@ import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber
 import { Usuario } from './../../models/usuario';
 import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Validators, FormBuilder } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 
 
 @IonicPage()
@@ -19,12 +21,18 @@ export class LoginPage implements OnInit{
   }
 
   private usuario= {} as Usuario;
+  private loginForm:FormGroup;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
     private fatguysService: FatguysUberProvider,
     private auth : AutenticacaoProvider,
-    private msg : MensagemProvider) {
+    private msg : MensagemProvider,
+  public formBuilder: FormBuilder) {
+      this.loginForm = formBuilder.group({
+        email: ['', Validators.required],
+        senha: ['', Validators.compose([Validators.required, Validators.minLength(6)])]
+    });
   }
 
   ionViewDidLoad() {
@@ -35,6 +43,10 @@ export class LoginPage implements OnInit{
 
   async login(){
     try {
+      if(this.loginForm.invalid){
+        this.msg.mostrarErro("Verifique o preenchimmento dos campos");
+        return;
+      }
       this.auth.logar(this.usuario).then(
         res=>{          
           let ul =this.fatguysService.obterCondutorPeloUsuarioLogado()

@@ -25,6 +25,7 @@ import { MensagemProvider } from '../providers/mensagem/mensagem';
 import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
 import { TrajetoProvider } from '../providers/trajeto/trajeto';
 import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
+import { FormsModule } from "@angular/forms";
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
     HttpModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    FormsModule,
     AngularFireModule.initializeApp(firebaseConfig),
     IonicModule.forRoot(MyApp)
   ],
