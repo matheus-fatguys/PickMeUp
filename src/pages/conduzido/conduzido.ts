@@ -1,3 +1,6 @@
+import { Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Chave } from './../../models/chave';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
@@ -29,6 +32,7 @@ export class ConduzidoPage {
     if(chave){
       this.chave=chave as Chave;      
     }
+
   }
 
   salvar(){

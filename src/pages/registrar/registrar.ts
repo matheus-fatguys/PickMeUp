@@ -26,7 +26,7 @@ export class RegistrarPage {
     public navParams: NavParams,
     private fatguysService: FatguysUberProvider,
     private msg : MensagemProvider,
-  public formBuilder: FormBuilder) {
+    public formBuilder: FormBuilder) {
       this.condutor.veiculo={} as Veiculo;
       this.registrarForm = formBuilder.group({
         email: ['', Validators.compose([Validators.required, Validators.pattern('^\\\w+([\\\.-]?\w+)*@\\\w+([\\\.-]?\w+)*(\\\.\\\w{2,3})+$')])],
