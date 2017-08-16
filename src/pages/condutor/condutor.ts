@@ -1,8 +1,13 @@
+import { Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { DetalheVeiculoComponent } from './../../components/detalhe-veiculo/detalhe-veiculo';
+import { DetalheCondutorComponent } from './../../components/detalhe-condutor/detalhe-condutor';
 import { Veiculo } from './../../models/veiculo';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Condutor } from './../../models/condutor';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 
@@ -13,14 +18,21 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class CondutorPage {
 
+  valido=false;
 
+  condutor={} as Condutor;  
 
-  condutor={} as Condutor;    
+  @ViewChild(DetalheCondutorComponent)
+  detalheCondutor : DetalheCondutorComponent;
+
+  condutorValido:boolean;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
+
+
     let condutor=this.navParams.get('condutor');
     if(condutor!=null){
       this.condutor=condutor;
@@ -47,7 +59,7 @@ export class CondutorPage {
 
   salvar(){
       this.fatguys.salvarCondutor(this.condutor).then(r=>{
-        this.msg.mostrarMsg("Dados salvos!").onDidDismiss(r=>{
+        this.msg.mostrarMsg("Dados salvos!", 3000).onDidDismiss(r=>{
          if(this.navCtrl.canGoBack()){
             this.navCtrl.pop();
           }
@@ -55,6 +67,10 @@ export class CondutorPage {
       }).catch(error=>{
         this.msg.mostrarErro("Erro salvando: "+error);
       });     
+  }
+
+  onChangeCondutor(){
+    this.condutorValido=this.detalheCondutor.isValido();
   }
 
 

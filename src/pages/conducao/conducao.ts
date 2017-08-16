@@ -44,7 +44,7 @@ export class ConducaoPage {
     this.conducao.conduzido=this.detalheConducao.conducao.conduzido;
     this.fatguys.salvarConducao(this.conducao).then(
       r=>{
-        this.msg.mostrarMsg("Dados salvos!").onDidDismiss(d=>{
+        this.msg.mostrarMsg("Dados salvos!", 3000).onDidDismiss(d=>{
           if(this.navCtrl.canGoBack()){
             this.navCtrl.pop();
           }

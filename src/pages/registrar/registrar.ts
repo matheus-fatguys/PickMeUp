@@ -52,7 +52,7 @@ export class RegistrarPage {
     try {
       let resultado = this.fatguysService.registrarCondutor(this.condutor, this.usuario).then(
         ref => {
-          let toast = this.msg.mostrarMsg('Bem vindo, '+this.condutor.nome+'!');
+          let toast = this.msg.mostrarMsg('Bem vindo, '+this.condutor.nome+'!', 3000);
           toast.onDidDismiss(() => {
             this.navCtrl.setRoot('HomePage');
           });

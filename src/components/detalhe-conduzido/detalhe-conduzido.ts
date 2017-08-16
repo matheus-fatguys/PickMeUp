@@ -18,7 +18,7 @@ export class DetalheConduzidoComponent {
 
   @Input() conduzido= {} as Conduzido;  
   @Input() chave= {} as Chave;
-  private form:FormGroup;
+  public form:FormGroup;
   
 
   constructor(public formBuilder: FormBuilder) {   

@@ -1,3 +1,4 @@
+import { DetalheConduzidoComponent } from './../../components/detalhe-conduzido/detalhe-conduzido';
 import { Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
@@ -5,7 +6,7 @@ import { Chave } from './../../models/chave';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { Conduzido } from './../../models/conduzido';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 
@@ -19,6 +20,8 @@ export class ConduzidoPage {
 
   private conduzido={} as Conduzido;
   private chave={} as Chave;
+  @ViewChild(DetalheConduzidoComponent)
+  private detalheConduzido:DetalheConduzidoComponent
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -38,7 +41,7 @@ export class ConduzidoPage {
   salvar(){
     this.fatguys.salvarConduzido(this.conduzido).then(
       r=>{
-        this.msg.mostrarMsg("Dados salvos!").onDidDismiss(d=>{
+        this.msg.mostrarMsg("Dados salvos!", 3000).onDidDismiss(d=>{
           if(this.navCtrl.canGoBack()){
             this.navCtrl.pop();
           }

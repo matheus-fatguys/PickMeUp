@@ -10,15 +10,16 @@
 </ion-header>
 
 
-<ion-content padding>
-  <detalhe-condutor [condutor]="condutor"></detalhe-condutor>    
-   <detalhe-veiculo [veiculo]="condutor.veiculo"></detalhe-veiculo>     
+<ion-content padding>      
+
+  <detalhe-condutor [condutor]="condutor" (onChange)="onChangeCondutor()" ></detalhe-condutor>
+   <detalhe-veiculo [veiculo]="condutor.veiculo"></detalhe-veiculo>  
 
 </ion-content>
 <ion-footer>
   <ion-toolbar>
     <ion-buttons end>
-      <button ion-button icon-right (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
+      <button ion-button icon-right [disabled]="condutorValido" (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
     </ion-buttons>
   </ion-toolbar>  
 </ion-footer>

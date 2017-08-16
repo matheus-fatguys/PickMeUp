@@ -53,7 +53,7 @@ export class LoginPage implements OnInit{
           .subscribe(condutor=>{
             ul.unsubscribe();
             if(condutor[0]){
-              this.msg.mostrarMsg("Bem vindo, "+ condutor[0].nome +"!");
+              this.msg.mostrarMsg("Bem vindo, "+ condutor[0].nome +"!", 3000);
                       // .onDidDismiss(d=>{
                       //     this.navCtrl.setRoot('HomePage');
                       // });

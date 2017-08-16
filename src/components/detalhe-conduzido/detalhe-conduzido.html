@@ -15,6 +15,9 @@
   <ion-list *ngIf="form.controls.telefone.invalid && (form.controls.telefone.dirty || form.controls.telefone.touched)">
     <ion-item *ngIf="form.controls.telefone.errors.required">
       <span>Telefone é obrigatória</span>
+    <ion-item *ngIf="form.controls.telefone.errors.pattern">
+      <span>Telefone em formato inválido</span>
+    </ion-item>
     </ion-item>
   </ion-list> 
   <ion-item *ngIf="chave.chave" >

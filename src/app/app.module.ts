@@ -1,4 +1,4 @@
-import { TextMaskModule } from 'angular2-text-mask';
+// import { TextMaskModule } from 'angular2-text-mask';
 
 import { firebaseConfig } from './firebase-config';
 import { BrowserModule } from '@angular/platform-browser';
@@ -40,7 +40,7 @@ import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     FormsModule,   
-    TextMaskModule, 
+    // TextMaskModule, 
     AngularFireModule.initializeApp(firebaseConfig),
     IonicModule.forRoot(MyApp)
   ],
