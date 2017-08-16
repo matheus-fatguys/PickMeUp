@@ -19,6 +19,8 @@ ISSUE 6: problema com o build pro android, resolvido removendo conteúdo da past
 
 ISSUE 7: usar a diretiva de mascara é sem colchetes no elemento e tem que importar o directivesModule no Pagemodule
 
+ISSUE 8: mão de obra infeliz pra conseguir funcionar validação de formulário com childview no angular, tive que usar um delay[observable.debounce], só assim
+
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database
 
