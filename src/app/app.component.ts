@@ -1,3 +1,4 @@
+import { AudioProvider } from './../providers/audio/audio';
 import { FatguysUberProvider } from './../providers/fatguys-uber/fatguys-uber';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Component, ViewChild } from '@angular/core';
@@ -21,7 +22,8 @@ export class MyApp {
     statusBar: StatusBar, 
     splashScreen: SplashScreen,
     afAuth: AngularFireAuth,
-    public fatguysService: FatguysUberProvider) {
+    public fatguysService: FatguysUberProvider,
+    public audio:AudioProvider) {
 
     const authObserver = afAuth.authState.subscribe( user => {
               if (user!=null) {
@@ -53,6 +55,9 @@ export class MyApp {
       { title: 'Sair', component: 'LogoutPage', icon:'log-out' }
     ];
 
+    audio.preload('bem-vindo', 'assets/audio/399523__amateurj__banjo.ogg');
+    audio.preload('iniciar-roteiro', 'assets/audio/19025__han1__car-start-and-drive.mp3');
+    audio.play('bem-vindo');
   }
 
   openPage(page) {

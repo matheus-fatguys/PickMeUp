@@ -1,3 +1,4 @@
+import { AudioProvider } from './../../providers/audio/audio';
 import { DetalheRoteiroComponent } from './../../components/detalhe-roteiro/detalhe-roteiro';
 import { Condutor } from './../../models/condutor';
 import { Roteiro } from './../../models/roteiro';
@@ -23,7 +24,8 @@ export class RoteiroPage {
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
-    public msg: MensagemProvider) {
+    public msg: MensagemProvider,  
+    public audio:AudioProvider) {
       let roteiro=this.navParams.get('roteiro');
       if(roteiro){
         this.roteiro=roteiro;      
@@ -55,6 +57,7 @@ export class RoteiroPage {
   }
 
   iniciar(){
+    this.audio.play('iniciar-roteiro');
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiro});
   }
 

@@ -1,3 +1,4 @@
+import { NativeAudio } from '@ionic-native/native-audio';
 // import { TextMaskModule } from 'angular2-text-mask';
 
 import { firebaseConfig } from './firebase-config';
@@ -27,6 +28,7 @@ import { MensagemProvider } from '../providers/mensagem/mensagem';
 import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
 import { TrajetoProvider } from '../providers/trajeto/trajeto';
 import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
+import { AudioProvider } from '../providers/audio/audio';
 
 
 @NgModule({
@@ -61,7 +63,9 @@ import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
     MensagemProvider,
     AutenticacaoProvider,
     TrajetoProvider,
-    LocalizacaoProvider
+    LocalizacaoProvider,
+    NativeAudio,
+    AudioProvider
   ]
 })
 export class AppModule {}

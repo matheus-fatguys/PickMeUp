@@ -1,3 +1,4 @@
+import { AudioProvider } from './../../providers/audio/audio';
 import { Conducao } from './../../models/conducao';
 import { Roteiro } from './../../models/roteiro';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
@@ -19,7 +20,8 @@ export class CadastroRoteirosPage  implements OnInit {
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
     public fatguys: FatguysUberProvider,
-    public msg: MensagemProvider) {
+    public msg: MensagemProvider,
+    public audio:AudioProvider) {
   }
 
   ngOnInit(): void {
@@ -76,6 +78,7 @@ export class CadastroRoteirosPage  implements OnInit {
   }
 
   iniciar(){
+    this.audio.play('iniciar-roteiro');
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiroSelecionado});
   }
 
