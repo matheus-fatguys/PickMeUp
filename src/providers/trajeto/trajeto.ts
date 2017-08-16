@@ -17,6 +17,7 @@ export class TrajetoProvider {
   private roteiro={} as Roteiro;
   private localizacao:google.maps.LatLng;
   public directionsService: google.maps.DirectionsService;
+  public trajeto:Trajeto;
   constructor(
     public msg: MensagemProvider,
     private alertCtrl: AlertController) {
@@ -496,6 +497,7 @@ export class TrajetoProvider {
           }
           sub.subscribe(
             trajeto=>{
+              this.trajeto=trajeto;
               obervable.next(trajeto);
             },
             error=>{
