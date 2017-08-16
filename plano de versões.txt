@@ -1,3 +1,11 @@
+MENSAGENS SONORAS DURANTE VIAGEM: https://www.joshmorony.com/sound-effects-using-html5-and-native-audio-in-ionic/
+DESPERTADOR PARA AVISAR DO ROTEIRO: https://ionicframework.com/docs/native/local-notifications/
+PUSH NOTIFICATION NO IONIC: https://ionicframework.com/docs/native/push/
+DETECTAR PROXIMIDADE UM LOCAL : https://ionicframework.com/docs/native/geofence/
+IMPEDIR TELA DE HIBERNAR DURANTE NAVEGAÇÃO: https://ionicframework.com/docs/native/insomnia/
+
+
+
 PRIMEIRA VERSÃO:
 módulo condutor
 1 - cadastro condutor: telefone, nome e senha
