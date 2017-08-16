@@ -2,7 +2,7 @@ import { Validators } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { Condutor } from './../../models/condutor';
-import { Component, Input, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { Observable } from "rxjs";
 
 
@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
   selector: 'detalhe-condutor',
   templateUrl: 'detalhe-condutor.html'
 })
-export class DetalheCondutorComponent {
+export class DetalheCondutorComponent implements OnDestroy{
 
   @Input() condutor= {} as Condutor;
   @Output()

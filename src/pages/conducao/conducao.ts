@@ -20,6 +20,8 @@ export class ConducaoPage {
   @ViewChild(DetalheConducaoComponent)
   private detalheConducao: DetalheConducaoComponent;
 
+  conducaoValida:boolean;
+
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
@@ -53,6 +55,10 @@ export class ConducaoPage {
     ).catch(error=>{
         this.msg.mostrarMsg("Erro salvando : "+error);
       });
+  }
+
+  onChangeConducaoValida(){
+    this.conducaoValida=this.detalheConducao.isValida();
   }
 
 }

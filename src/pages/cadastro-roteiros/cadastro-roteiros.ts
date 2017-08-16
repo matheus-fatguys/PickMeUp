@@ -64,7 +64,15 @@ export class CadastroRoteirosPage  implements OnInit {
   }
 
   novo(){
-    this.navCtrl.push('RoteiroPage',{roteiro:{conducoes: [] as Conducao[]} as Roteiro});
+    this.navCtrl.push('RoteiroPage',{roteiro:{conducoes: [] as Conducao[],
+       domingo:false,
+       segunda:true,
+       terca:true,
+       quarta:true,
+       quinta:true,
+       sexta:true,
+       sabado:false,
+      } as Roteiro});
   }
 
   iniciar(){

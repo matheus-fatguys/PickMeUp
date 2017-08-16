@@ -1,8 +1,9 @@
+import { DetalheRoteiroComponent } from './../../components/detalhe-roteiro/detalhe-roteiro';
 import { Condutor } from './../../models/condutor';
 import { Roteiro } from './../../models/roteiro';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 
@@ -13,6 +14,12 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class RoteiroPage {  
   private roteiro={} as Roteiro;
+
+  @ViewChild(DetalheRoteiroComponent)
+  detalheRoteiro : DetalheRoteiroComponent;
+
+  roteiroValido:boolean;
+
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
@@ -36,7 +43,7 @@ export class RoteiroPage {
   salvarRoteiro(){
     let sub = this.fatguys.salvarRoteiro(this.roteiro).then(
       r=>{
-        this.msg.mostrarMsg("Dados salvos!").onDidDismiss(d=>{
+        this.msg.mostrarMsg("Dados salvos!", 3000).onDidDismiss(d=>{
           if(this.navCtrl.canGoBack()){
             this.navCtrl.pop();
           }
@@ -49,6 +56,10 @@ export class RoteiroPage {
 
   iniciar(){
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiro});
+  }
+
+  onChangeRoteiroValido(){
+    this.roteiroValido=this.detalheRoteiro.isValido();
   }
 
   ionViewDidLoad() {

@@ -22,6 +22,6 @@
   </ion-list> 
   <ion-item *ngIf="chave.chave" >
     <ion-label floating>Chave:</ion-label>
-    <ion-input type="text" disabled [(ngModel)]="chave.chave"></ion-input>
+    <ion-input formControlName="chave" type="text" disabled [(ngModel)]="chave.chave"></ion-input>
   </ion-item>   
 </form>

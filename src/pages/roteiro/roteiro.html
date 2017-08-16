@@ -13,14 +13,14 @@
 
 </ion-header>
 <ion-content padding>
-  <detalhe-roteiro [roteiro]="roteiro"></detalhe-roteiro>    
+  <detalhe-roteiro [roteiro]="roteiro"  (onChangeRoteiroValido)="onChangeRoteiroValido()"></detalhe-roteiro>    
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
     <ion-buttons end>
       <!-- <button ion-button icon-only (click)="novaConducao()">Nova Condução<ion-icon name="git-network"></ion-icon></button> -->
-      <button ion-button icon-right (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
+      <button ion-button icon-right [disabled]="!roteiroValido" (click)="salvar()">Salvar<ion-icon name="cloud-upload"></ion-icon></button>
     </ion-buttons>
   </ion-toolbar>  
 </ion-footer>

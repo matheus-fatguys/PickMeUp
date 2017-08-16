@@ -21,7 +21,8 @@ export class ConduzidoPage {
   private conduzido={} as Conduzido;
   private chave={} as Chave;
   @ViewChild(DetalheConduzidoComponent)
-  private detalheConduzido:DetalheConduzidoComponent
+  private detalheConduzido:DetalheConduzidoComponent;
+  conduzidoValido:boolean;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -50,6 +51,10 @@ export class ConduzidoPage {
     ).catch(error=>{
         this.msg.mostrarMsg("Erro salvando : "+error);
       });   
+  }
+
+  onChangeConduzidoValido(){
+    this.conduzidoValido=this.detalheConduzido.isValido();
   }
 
   ionViewDidLoad() {

@@ -1,8 +1,11 @@
+import { Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Conducao } from './../../models/conducao';
 import { Conduzido } from './../../models/conduzido';
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 
 
 @Component({
@@ -12,7 +15,10 @@ import { Component, Input } from '@angular/core';
 export class DetalheConducaoComponent {
 
   @Input() conducao= {} as Conducao;  
-  // @Input() conduzido;//= {} as Conduzido;
+  @Output()
+  onChangeConducaoValida = new EventEmitter<any>();  
+  public form:FormGroup;
+  private subscription;
 
   private rotuloOrigem="Origem:";
   private rotuloDestino="Destino:";
@@ -21,7 +27,21 @@ export class DetalheConducaoComponent {
 
 
   constructor(public fatguys: FatguysUberProvider,
-    public msg: MensagemProvider) {      
+    public msg: MensagemProvider,
+    public formBuilder: FormBuilder) {    
+      
+      this.form = formBuilder.group({
+                    conduzido: ['', Validators.compose([Validators.required])],
+                });
+      this.subscription = this.form.valueChanges
+      .debounceTime(500)
+      .distinctUntilChanged()
+      .subscribe(
+        s=>{
+          this.validar()
+        }
+      );
+      
   }
 
   ngOnInit(): void {
@@ -41,9 +61,30 @@ export class DetalheConducaoComponent {
 
   onEnderecoOrigemSelecionado($event){
     this.conducao.origem=$event;
+    this.validar();
   }
 
   onEnderecoDestinoSelecionado($event){
     this.conducao.destino=$event;
+    this.validar();
   }
+
+  isValida(){
+    return this.form.valid
+            &&this.conducao.origem!=null
+            &&this.conducao.destino!=null;
+  }
+
+  validar(){
+    this.onChangeConducaoValida.next(this.form.valid
+            &&this.conducao.origem!=null
+            &&this.conducao.destino!=null
+          );
+  }
+
+
+  ngOnDestroy(){
+    this.subscription.unsubscribe();
+  }
+
 }
