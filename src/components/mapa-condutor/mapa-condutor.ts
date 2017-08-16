@@ -1,3 +1,4 @@
+import { AudioProvider } from './../../providers/audio/audio';
 import { Perna } from './../../models/perna';
 import { Conducao } from './../../models/conducao';
 import { Conduzido } from './../../models/conduzido';
@@ -37,7 +38,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider,
     public trajetoService: TrajetoProvider,
-    public loadingCtrl: LoadingController) {
+    public loadingCtrl: LoadingController,
+    public audio:AudioProvider) {
 
       
   }
@@ -195,6 +197,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
 
   alertarCancelamento(conduzidoVO):boolean{
     this.msg.mostrarErro(conduzidoVO.nome+" acaba de notificar cancelamento");
+    this.audio.play('conducao-cancelada');
     var mv = this.marcasConduzidos.find(mv=>{return mv.conduzido.nome==conduzidoVO.nome});
     if(mv==null||mv.cancelado){
       return false;
@@ -207,6 +210,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
   }
 
   recalcularTrajeto(roteiro, localizacao?:google.maps.LatLng){
+    this.audio.play('recalculando-trajeto');
     if(localizacao==null){
       localizacao=new google.maps.LatLng(this.fatguys.condutor.localizacao.latitude, this.fatguys.condutor.localizacao.longitude);    
     }

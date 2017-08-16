@@ -1,3 +1,4 @@
+import { AudioProvider } from './../../providers/audio/audio';
 import { MapaCondutorComponent } from './../../components/mapa-condutor/mapa-condutor';
 import { Conducao } from './../../models/conducao';
 import * as SlidingMarker from 'marker-animate-unobtrusive';
@@ -38,7 +39,8 @@ export class ViagemPage implements OnDestroy  {
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
     public localizacaoService: LocalizacaoProvider,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public audio: AudioProvider
     ) {    
      let roteiro=this.navParams.get('roteiro');
       if(roteiro){
@@ -47,6 +49,7 @@ export class ViagemPage implements OnDestroy  {
   }  
 
   onViagemIniciada($event){
+    this.audio.play('iniciar-roteiro');
     this.viagemIniciada=true;
   }
   
@@ -85,6 +88,7 @@ export class ViagemPage implements OnDestroy  {
     this.localizacaoService.pararRastreamento();
     this.fatguys.interromperRoteiro(this.roteiro).then(
       r=>{
+        this.audio.play('interromper-roteiro');
         this.navCtrl.setRoot('CadastroRoteirosPage');
       }
     )
@@ -151,6 +155,7 @@ export class ViagemPage implements OnDestroy  {
   }
 
   roteiroFinalizado(){
+    this.audio.play('concluir-roteiro');
     this.fatguys.finalizarRoteiro(this.roteiro).then(
       r=>{
         let confirm = this.alertCtrl.create({

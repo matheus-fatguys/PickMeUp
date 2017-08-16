@@ -78,7 +78,6 @@ export class CadastroRoteirosPage  implements OnInit {
   }
 
   iniciar(){
-    this.audio.play('iniciar-roteiro');
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiroSelecionado});
   }
 

@@ -24,8 +24,7 @@ export class RoteiroPage {
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public fatguys: FatguysUberProvider,
-    public msg: MensagemProvider,  
-    public audio:AudioProvider) {
+    public msg: MensagemProvider) {
       let roteiro=this.navParams.get('roteiro');
       if(roteiro){
         this.roteiro=roteiro;      
@@ -57,7 +56,6 @@ export class RoteiroPage {
   }
 
   iniciar(){
-    this.audio.play('iniciar-roteiro');
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiro});
   }
 
