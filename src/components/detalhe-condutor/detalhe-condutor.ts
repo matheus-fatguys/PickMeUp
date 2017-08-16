@@ -14,7 +14,7 @@ export class DetalheCondutorComponent {
   validoChanged: Subject<boolean>;
 
   @Input() condutor= {} as Condutor;
-  @Output("change")
+  @Output()
   onChangeValido = new EventEmitter<any>();  
   public form:FormGroup;
 
