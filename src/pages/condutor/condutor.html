@@ -12,8 +12,8 @@
 
 <ion-content padding>      
 
-  <detalhe-condutor [condutor]="condutor" (onChange)="onChangeCondutor()" ></detalhe-condutor>
-   <detalhe-veiculo [veiculo]="condutor.veiculo"></detalhe-veiculo>  
+  <detalhe-condutor [condutor]="condutor" (onChangeCondutorValido)="onChangeCondutorValido()" ></detalhe-condutor>
+   <detalhe-veiculo [veiculo]="condutor.veiculo" (onChangeVeiculoValido)="onChangeVeiculoValido()"></detalhe-veiculo>  
 
 </ion-content>
 <ion-footer>

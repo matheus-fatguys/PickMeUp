@@ -24,6 +24,8 @@ export class CondutorPage {
 
   @ViewChild(DetalheCondutorComponent)
   detalheCondutor : DetalheCondutorComponent;
+  @ViewChild(DetalheVeiculoComponent)
+  detalheVeiculo : DetalheVeiculoComponent;
 
   condutorValido:boolean;
 
@@ -69,8 +71,11 @@ export class CondutorPage {
       });     
   }
 
-  onChangeCondutor(){
-    this.condutorValido=this.detalheCondutor.isValido();
+  onChangeCondutorValido(){
+    this.condutorValido=this.detalheCondutor.isValido()&&this.detalheVeiculo.isValido();
+  }
+  onChangeVeiculoValido(){
+    this.onChangeCondutorValido();
   }
 
 
