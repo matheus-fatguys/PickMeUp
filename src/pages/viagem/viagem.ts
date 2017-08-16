@@ -76,16 +76,16 @@ export class ViagemPage implements OnDestroy  {
   }
 
   navegar(){
-    var trajeto:Trajeto =this.mapaCtrl.trajetoService.;
+    var trajeto:Trajeto =this.mapaCtrl.trajetoService.trajeto;
     // https://www.google.com/maps/dir/?api=1&origin=Paris,France&destination=Cherbourg,France&travelmode=driving&waypoints=Versailles,France%7CChartres,France%7CLe+Mans,France%7CCaen,France&waypoint_place_ids=ChIJdUyx15R95kcRj85ZX8H8OAU%7CChIJKzGHdEgM5EcR_OBTT3nQoEA%7CChIJG2LvQNCI4kcRKXNoAsPi1Mc%7CChIJ06tnGbxCCkgRsfNjEQMwUsc
-    var t ='?api=1&origin='+trajeto.pernas[0]+'&destination='+trajeto.pernas[trajeto.pernas.length-1]+'&travelmode=driving';
+    var t ='https://www.google.com/maps/dir/?api=1&origin='+trajeto.pernas[0].local.endereco+'&destination='+trajeto.pernas[trajeto.pernas.length-1].local.endereco+'&travelmode=driving';
     if(trajeto.pernas.length>2){
       t+='&waypoints=';
       for(var i = 1;i<trajeto.pernas.length-1;i++){
-          t+=trajeto.pernas[i]+'e%7';
+          t+=trajeto.pernas[i].local.endereco+'e%7';
       }
     }
-    window.open('maps://'+t, '_system');
+    window.open(t, '_system');
   }
 
   centralizarMapaNoCondutor(){
