@@ -16,6 +16,7 @@ export class CadastroRoteirosPage  implements OnInit {
 
   private roteiros;
   private roteiroSelecionado:Roteiro;
+  private podeIniciarRoteiro:boolean=false;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -49,7 +50,19 @@ export class CadastroRoteirosPage  implements OnInit {
   }
 
   onSelect(roteiro){
+    console.log("roteiro.id="+roteiro.id);
+    if(this.roteiroSelecionado){
+      console.log(this.roteiroSelecionado.id);
+    }
+    else{
+      console.log("nulo");
+    }
+    console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
     this.roteiroSelecionado=roteiro;
+    console.log("roteiro.id="+roteiro.id);
+    console.log("this.roteiroSelecionado.id="+this.roteiroSelecionado.id);
+    console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
+    this.validaPodeInicar();
   }  
 
   detalhe(){
@@ -75,6 +88,17 @@ export class CadastroRoteirosPage  implements OnInit {
        sexta:true,
        sabado:false,
       } as Roteiro});
+  }
+
+  validaPodeInicar():boolean{
+    this.podeIniciarRoteiro= (this.fatguys.condutor.roteiroEmexecucao==null
+      ||!this.fatguys.condutor.roteiroEmexecucao.emAndamento
+      ||(this.fatguys.condutor.roteiroEmexecucao.emAndamento
+        &&this.roteiroSelecionado.id==this.fatguys.condutor.roteiroEmexecucao.id)
+    );
+      
+      console.log(this.podeIniciarRoteiro);
+      return  this.podeIniciarRoteiro;
   }
 
   iniciar(){

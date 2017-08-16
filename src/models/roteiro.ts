@@ -1,3 +1,4 @@
+import { Trajeto } from './trajeto';
 import { Conducao } from "./conducao";
 export interface Roteiro {
     id: string,
@@ -17,5 +18,6 @@ export interface Roteiro {
     emAndamento?:boolean,
     interrompido?:boolean,
     inicio?:Date,
-    fim?:Date
+    fim?:Date,
+    trajeto?:Trajeto
 }

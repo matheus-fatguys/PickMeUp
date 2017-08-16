@@ -497,7 +497,7 @@ export class TrajetoProvider {
           }
           sub.subscribe(
             trajeto=>{
-              this.trajeto=trajeto;
+              this.trajeto=trajeto;              
               obervable.next(trajeto);
             },
             error=>{

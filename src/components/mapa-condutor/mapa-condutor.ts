@@ -45,8 +45,18 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.unsubscribeObservables();
-    this.renderizarMapa(changes["roteiro"].currentValue);
+    var roteiro:Roteiro=changes["roteiro"].currentValue;
+    if(this.fatguys.condutor.roteiroEmexecucao==null
+      ||!this.fatguys.condutor.roteiroEmexecucao.emAndamento
+      ||(this.fatguys.condutor.roteiroEmexecucao.emAndamento
+        &&roteiro.id==this.fatguys.condutor.roteiroEmexecucao.id)
+      ){
+        this.unsubscribeObservables();
+        this.renderizarMapa(changes["roteiro"].currentValue);
+    }
+    else{
+      this.msg.mostrarErro("Você já tem outro roteiro em execução");
+    }
   }
 
   ngOnDestroy(): void {
@@ -55,6 +65,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
 
   renderizarMapa(roteiro:Roteiro){
     // this.roteiro=roteiro;
+    this.fatguys.condutor.roteiroEmexecucao=roteiro;
     if(this.roteiro.conducoes!=null&&this.roteiro.conducoes.length>0){
         try{          
         
@@ -83,12 +94,12 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
                   loading.setContent('Calculanto trajeto da viagem...');
                   let obs = this.trajetoService.calcularTrajeto(this.localizacao, this.roteiro);
                   obs.subscribe(
-                        trajeto=>{
-                              
+                        trajeto=>{                              
                               this.trajetoService.mostrarTrajetoDoRoteiro(trajeto).then(
                                 ret=>{
                                   if(ret){    
                                     this.trajeto=trajeto;                    
+                                    this.fatguys.condutor.roteiroEmexecucao.trajeto=trajeto;                    
                                     loading.setContent('Iniciando mapa...');
                                     this.iniciarMapa(trajeto).then(
                                       mapa=>{
@@ -217,6 +228,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     let obs = this.trajetoService.calcularTrajeto(localizacao, this.roteiro);
     obs.subscribe(
       trajeto=>{ 
+        this.fatguys.condutor.roteiroEmexecucao.trajeto=trajeto;
         this.polylinePath.setMap(null);
         this.mostrarCaminhoDoTrajeto(trajeto);
         
@@ -300,6 +312,12 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       var theta = lon1-lon2
       var rtheta = Math.PI * theta/180
       var dist = Math.sin(rlat1) * Math.sin(rlat2) + Math.cos(rlat1) * Math.cos(rlat2) * Math.cos(rtheta);
+      if(dist>1){
+        dist=1;
+      }
+      if(dist<-1){
+        dist=-1;
+      }
       dist = Math.acos(dist)
       dist = dist * 180/Math.PI
       dist = dist * 60 * 1.1515

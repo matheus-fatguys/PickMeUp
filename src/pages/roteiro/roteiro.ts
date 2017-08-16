@@ -20,6 +20,7 @@ export class RoteiroPage {
   detalheRoteiro : DetalheRoteiroComponent;
 
   roteiroValido:boolean;
+  private podeIniciarRoteiro:boolean=false;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -28,6 +29,7 @@ export class RoteiroPage {
       let roteiro=this.navParams.get('roteiro');
       if(roteiro){
         this.roteiro=roteiro;      
+        this.validaPodeInicar();
       }
   }
 
@@ -57,6 +59,17 @@ export class RoteiroPage {
 
   iniciar(){
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiro});
+  }
+
+   validaPodeInicar():boolean{
+    this.podeIniciarRoteiro= (this.fatguys.condutor.roteiroEmexecucao==null
+      ||!this.fatguys.condutor.roteiroEmexecucao.emAndamento
+      ||(this.fatguys.condutor.roteiroEmexecucao.emAndamento
+        &&this.roteiro.id==this.fatguys.condutor.roteiroEmexecucao.id)
+    );
+      
+      console.log(this.podeIniciarRoteiro);
+      return  this.podeIniciarRoteiro;
   }
 
   onChangeRoteiroValido(){

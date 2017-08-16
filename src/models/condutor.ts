@@ -1,3 +1,5 @@
+import { Trajeto } from './trajeto';
+import { Roteiro } from './roteiro';
 import { Veiculo } from './veiculo';
 import { Usuario } from './usuario';
 export interface Condutor{
@@ -7,5 +9,6 @@ export interface Condutor{
     usuario: string,
     veiculo: Veiculo,
     localizacao:{latitude:number, longitude:number, endereco?:string}  
-    localizacaoSimulada:{latitude:number, longitude:number, endereco?:string}  
+    localizacaoSimulada:{latitude:number, longitude:number, endereco?:string},
+    roteiroEmexecucao?:Roteiro
 }
