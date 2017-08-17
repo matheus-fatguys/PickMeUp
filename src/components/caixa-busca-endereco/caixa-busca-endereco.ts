@@ -30,6 +30,8 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
 
   buscar(local: Local){
     this.locais = [] as Local[];
+
+    console.log(local);
     
     this.geocoder.geocode( {address: local.endereco}, (destinations, status) => {
       

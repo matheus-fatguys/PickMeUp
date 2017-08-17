@@ -26,19 +26,19 @@ export class MyApp {
     public audio:AudioProvider) {
 
     const authObserver = afAuth.authState.subscribe( user => {
-              if (user!=null) {
-                this.fatguysService.obterCondutorPeloUsuarioLogado().subscribe(
-                  r=>{
-                    this.rootPage = 'CadastroRoteirosPage';
-                    //authObserver.unsubscribe()y2gh;
-                  }
-                );
-              } else {
-                this.rootPage = 'LoginPage';
-                //authObserver.unsubscribe();
-              }
+              // if (user!=null) {
+              //   this.fatguysService.obterCondutorPeloUsuarioLogado().subscribe(
+              //     r=>{
+              //       this.rootPage = 'CadastroRoteirosPage';
+              //       //authObserver.unsubscribe()y2gh;
+              //     }
+              //   );
+              // } else {
+              //   this.rootPage = 'LoginPage';
+              //   //authObserver.unsubscribe();
+              // }
+            this.rootPage='MapaSelecaoLocalPage'
             });
-
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
