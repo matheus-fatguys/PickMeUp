@@ -50,18 +50,18 @@ export class CadastroRoteirosPage  implements OnInit {
   }
 
   onSelect(roteiro){
-    console.log("roteiro.id="+roteiro.id);
-    if(this.roteiroSelecionado){
-      console.log(this.roteiroSelecionado.id);
-    }
-    else{
-      console.log("nulo");
-    }
-    console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
+    // console.log("roteiro.id="+roteiro.id);
+    // if(this.roteiroSelecionado){
+    //   console.log(this.roteiroSelecionado.id);
+    // }
+    // else{
+    //   console.log("nulo");
+    // }
+    // console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
     this.roteiroSelecionado=roteiro;
-    console.log("roteiro.id="+roteiro.id);
-    console.log("this.roteiroSelecionado.id="+this.roteiroSelecionado.id);
-    console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
+    // console.log("roteiro.id="+roteiro.id);
+    // console.log("this.roteiroSelecionado.id="+this.roteiroSelecionado.id);
+    // console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
     this.validaPodeInicar();
   }  
 

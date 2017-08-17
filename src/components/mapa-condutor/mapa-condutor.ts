@@ -58,6 +58,18 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       )
       ){
         this.unsubscribeObservables();
+        if(this.roteiro.fim!=null){
+          this.roteiro.conducoes.forEach(
+            c=>{
+              if(!c.cancelada&&!c.embarcado){
+                c.emAndamento=true;
+                c.embarcado=false;
+                c.interrompida=false;
+                c.realizada=false;
+              }
+            }
+          )
+        }
         var i=this.roteiro.conducoes.findIndex(
           (c,i)=>{
             return c.emAndamento||c.embarcado

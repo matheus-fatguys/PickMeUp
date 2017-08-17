@@ -91,7 +91,7 @@ export class TrajetoProvider {
             this.origens.push(c.origem);
           }
         }
-        if(c.embarcado){
+        if(c.emAndamento||c.embarcado){
           var lid=this.locais.findIndex(l=>{return l.endereco==c.destino.endereco});
           if(lid<0){
             this.locais.push(c.destino);

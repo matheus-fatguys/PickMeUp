@@ -140,9 +140,17 @@ export class ViagemPage implements OnDestroy  {
         c.embarcado=true;
         c.realizada=false;
         c.inicio=new Date();
-        console.log(c);
+        var cr=this.roteiro.conducoes.find(crr=>{
+          return crr.id==c.id;
+        })
+        cr.cancelada=false;
+        cr.emAndamento=false;
+        cr.embarcado=true;
+        cr.realizada=false;
+        cr.inicio=new Date();
       }
     );
+
     this.fatguys.salvarConducoesDoRoteiro(this.roteiro);
   }
   conduzidoDesembarcou(conducoes:Conducao[]){

@@ -56,9 +56,9 @@ export class LocalizacaoProvider {
                       this.condutor.localizacao.longitude=this.localizacao.lng();                  
                     }
                   }
-                  if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
-                    this.iniciarRastreamentoBackGround();
-                  }
+                  // if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
+                  //   this.iniciarRastreamentoBackGround();
+                  // }
                   let ref =this.fatguys.atualizarLocalizacaoCondutor(this.condutor)
                   .then(
                     r=>{                      
@@ -80,71 +80,71 @@ export class LocalizacaoProvider {
     return obs;
   }
 
-  iniciarRastreamentoBackGround() {
-    console.log("RASTREAMENTO BACKGROUND CHAMADO");
-    // Background Tracking 
-    let config = {
-      desiredAccuracy: 0,
-      stationaryRadius: 20,
-      distanceFilter: 10, 
-      debug: true,
-      interval: 2000 
-    };
+  // iniciarRastreamentoBackGround() {
+  //   console.log("RASTREAMENTO BACKGROUND CHAMADO");
+  //   // Background Tracking 
+  //   let config = {
+  //     desiredAccuracy: 0,
+  //     stationaryRadius: 20,
+  //     distanceFilter: 10, 
+  //     debug: true,
+  //     interval: 2000 
+  //   };
   
-    this.backgroundGeolocation.configure(config).subscribe((location) => {  
-      console.log("RASTREAMENTO BACKGROUND OBTEVE LOCALIZAÇÃO");
-      console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);  
-      // Run update inside of Angular's zone
-      this.zone.run(() => {
-        console.log("LOCALIZAÇÃO OBTIDA");
-        this.localizacao =new google.maps.LatLng( location.latitude, location.longitude);
-      });  
-    }, (err) => {  
-      console.log("RASTREAMENTO BACKGROUND ERRO");
-      console.log(err);  
-    });
+  //   this.backgroundGeolocation.configure(config).subscribe((location) => {  
+  //     console.log("RASTREAMENTO BACKGROUND OBTEVE LOCALIZAÇÃO");
+  //     console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);  
+  //     // Run update inside of Angular's zone
+  //     this.zone.run(() => {
+  //       console.log("LOCALIZAÇÃO OBTIDA");
+  //       this.localizacao =new google.maps.LatLng( location.latitude, location.longitude);
+  //     });  
+  //   }, (err) => {  
+  //     console.log("RASTREAMENTO BACKGROUND ERRO");
+  //     console.log(err);  
+  //   });
   
-    // Turn ON the background-geolocation system.
-    this.backgroundGeolocation.start();
-    console.log("RASTREAMENTO BACKGROUND INICIADO");
+  //   // Turn ON the background-geolocation system.
+  //   this.backgroundGeolocation.start();
+  //   console.log("RASTREAMENTO BACKGROUND INICIADO");
   
-    // Foreground Tracking
+  //   // Foreground Tracking
   
-  let options = {
-    frequency: 3000, 
-    enableHighAccuracy: true
-  };
+  // let options = {
+  //   frequency: 3000, 
+  //   enableHighAccuracy: true
+  // };
   
-  this.localizacaoObserver = this.geolocation
-  .watchPosition(options)
-  .filter((p: any) => p.code === undefined)
-  .subscribe((position: Geoposition) => {
+  // this.localizacaoObserver = this.geolocation
+  // .watchPosition(options)
+  // .filter((p: any) => p.code === undefined)
+  // .subscribe((position: Geoposition) => {
   
-    console.log(position);
+  //   console.log(position);
   
-    // Run update inside of Angular's zone
-    this.zone.run(() => {
-      console.log("RASTREAMENTO BACKGROUND LOCALIZAÇÃO OBTIDA");
-      this.localizacao =new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    });  
-  });
-  }
+  //   // Run update inside of Angular's zone
+  //   this.zone.run(() => {
+  //     console.log("RASTREAMENTO BACKGROUND LOCALIZAÇÃO OBTIDA");
+  //     this.localizacao =new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  //   });  
+  // });
+  // }
  
-  pararRastreamentoBackGround() {
-    console.log('stopTracking'); 
-    this.backgroundGeolocation.finish();
-    this.localizacaoObserver.unsubscribe(); 
-    console.log("RASTREAMENTO BACKGROUND PARADO");
-  }
+  // pararRastreamentoBackGround() {
+  //   console.log('stopTracking'); 
+  //   this.backgroundGeolocation.finish();
+  //   this.localizacaoObserver.unsubscribe(); 
+  //   console.log("RASTREAMENTO BACKGROUND PARADO");
+  // }
 
   iniciarRastreamento(){
-    if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
-      this.iniciarRastreamentoBackGround();
-    }
+    // if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
+    //   this.iniciarRastreamentoBackGround();
+    // }
   }
   pararRastreamento(){
-    if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
-      this.pararRastreamentoBackGround();
-    }
+    // if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
+    //   this.pararRastreamentoBackGround();
+    // }
   }
 }

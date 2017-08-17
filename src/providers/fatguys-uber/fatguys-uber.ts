@@ -83,8 +83,8 @@ export class FatguysUberProvider {
     roteiro.conducoes.forEach(
       c=>{
         if(!c.cancelada&&!c.fim==null&&!c.realizada){
-          c.emAndamento=false;
-          c.embarcado=false;
+          // c.emAndamento=false;
+          // c.embarcado=false;
           c.interrompida=true;
         }
       }
@@ -115,6 +115,7 @@ export class FatguysUberProvider {
       }
     )
     this.condutor.roteiroEmexecucao=roteiro;
+    this.condutor.roteiroEmexecucao=null;
     
     let ref=this.afd.object("/condutores/"+this.condutor.id+"/roteiroEmexecucao/").remove();
     ref.then(r=>{

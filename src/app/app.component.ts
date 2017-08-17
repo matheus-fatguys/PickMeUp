@@ -55,12 +55,12 @@ export class MyApp {
       { title: 'Sair', component: 'LogoutPage', icon:'log-out' }
     ];
 
-    audio.preload('bem-vindo', 'assets/audio/399523__amateurj__banjo.ogg');
-    audio.preload('iniciar-roteiro', 'assets/audio/338954__inspectorj__car-ignition-exterior-a.wav');
-    audio.preload('interromper-roteiro', 'assets/audio/185744__enric592__turning-off-engine.wav');
-    audio.preload('concluir-roteiro', 'assets/audio/353546__maxmakessounds__success.wav');
-    audio.preload('conducao-cancelada', 'assets/audio/167337__willy-ineedthatapp-com__pup-alert.mp3');
-    audio.preload('recalculando-trajeto', 'assets/audio/104026__rutgermuller__tires-squeaking.aif');
+    audio.preload('bem-vindo', 'assets/sound/399523__amateurj__banjo.ogg');
+    audio.preload('iniciar-roteiro', 'assets/sound/338954__inspectorj__car-ignition-exterior-a.wav');
+    audio.preload('interromper-roteiro', 'assets/sound/185744__enric592__turning-off-engine.wav');
+    audio.preload('concluir-roteiro', 'assets/sound/353546__maxmakessounds__success.wav');
+    audio.preload('conducao-cancelada', 'assets/sound/167337__willy-ineedthatapp-com__pup-alert.mp3');
+    audio.preload('recalculando-trajeto', 'assets/sound/104026__rutgermuller__tires-squeaking.aif');
     audio.play('bem-vindo');
   }
 
