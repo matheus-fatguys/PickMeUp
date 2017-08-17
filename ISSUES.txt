@@ -1,3 +1,6 @@
+FatguysUber
+35480bd2
+
 
 ISSUE 1 :
 quando dá build ou upload o firebase dá erro 
