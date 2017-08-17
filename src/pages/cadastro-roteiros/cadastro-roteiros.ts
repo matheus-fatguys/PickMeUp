@@ -3,8 +3,8 @@ import { Conducao } from './../../models/conducao';
 import { Roteiro } from './../../models/roteiro';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
-import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { IonicPage, NavController, NavParams, LoadingController, Loading, AlertController } from 'ionic-angular';
 
 
 @IonicPage()
@@ -12,31 +12,72 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   selector: 'page-cadastro-roteiros',
   templateUrl: 'cadastro-roteiros.html',
 })
-export class CadastroRoteirosPage  implements OnInit {
+export class CadastroRoteirosPage  implements OnInit, OnDestroy {
+  ngOnDestroy(): void {
+    this.unsbscribeobservables();
+    // this.loading.dismiss();
+  }
+  unsbscribeobservables(){
+    // this.condutorObserver.unsbscribe();
+  }
 
+  private condutorObserver;
+  private loading:Loading ;
   private roteiros;
   private roteiroSelecionado:Roteiro;
+  private roteiroEmExecucao:Roteiro;
   private podeIniciarRoteiro:boolean=false;
+  private podeReiniciarRoteiro:boolean=false;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider,
-    public audio:AudioProvider) {
+    public audio:AudioProvider,
+    public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController) {
   }
 
   ngOnInit(): void {
-    let ref=this.fatguys.obterCondutorPeloUsuarioLogado();
-    
-    if(ref!=null){
-      let sub=ref.subscribe(
-          r=>{
-            this.roteiros=this.fatguys.obterRoteiros(r[0]);
-            sub.unsubscribe();
-          }
-        )
+    if(this.loading==null){      
+      this.loading = this.loadingCtrl.create({
+            content: 'Buscando condutor...'
+          });
     }
-        
+    this.loading.present().then(
+      _=>{
+          let ref=this.fatguys.obterCondutorPeloUsuarioLogado().first();
+          if(ref!=null){
+            let sub=ref.subscribe(
+                r=>{       
+                  if(this.fatguys.condutor==null) {
+                    this.loading.dismiss();
+                    return;
+                  }
+                  this.roteiroEmExecucao=this.fatguys.condutor.roteiroEmexecucao;  
+                  this.loading.setContent("Buscando roteiros...");
+                  this.roteiros=this.fatguys.obterRoteiros(r[0])
+                  this.roteiros.subscribe(
+                    r=>{
+                      this.loading.dismiss();
+                    },
+                    e=>{
+                      this.loading.dismiss();
+                    }
+                  );
+                  sub.unsubscribe();
+                },
+                error=>{
+                  this.loading.dismiss();
+                  this.msg.mostrarErro("Erro buscando roteiros: "+error);
+                }
+              )
+          }
+          else{
+            this.loading.dismiss();
+          }
+      }
+    );
   }
 
   toggleAtivar(roteiro: Roteiro){
@@ -50,32 +91,34 @@ export class CadastroRoteirosPage  implements OnInit {
   }
 
   onSelect(roteiro){
-    // console.log("roteiro.id="+roteiro.id);
-    // if(this.roteiroSelecionado){
-    //   console.log(this.roteiroSelecionado.id);
-    // }
-    // else{
-    //   console.log("nulo");
-    // }
-    // console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
     this.roteiroSelecionado=roteiro;
-    // console.log("roteiro.id="+roteiro.id);
-    // console.log("this.roteiroSelecionado.id="+this.roteiroSelecionado.id);
-    // console.log("this.fatguys.condutor.roteiroEmexecucao.id="+this.fatguys.condutor.roteiroEmexecucao.id);
     this.validaPodeInicar();
+    this.validaPodeReinicar();
   }  
 
   detalhe(){
     if(this.roteiroSelecionado.conducoes==null){
       this.roteiroSelecionado.conducoes=[] as Conducao[];
     }
-    let sub = this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiroSelecionado).subscribe(
-      conducoes=>{
-        this.roteiroSelecionado.conducoes=conducoes;
-        this.navCtrl.push('RoteiroPage',{roteiro:this.roteiroSelecionado});    
-        sub.unsubscribe();
+    this.loading = this.loadingCtrl.create({
+            content: 'Buscando conduções do roteiro...'
+          });
+    this.loading.present(this.loading).then(
+      _=>{
+          let sub = this.fatguys.obterConducoesDoRoteiroComConduzidos(this.roteiroSelecionado).subscribe(
+          conducoes=>{
+            this.loading.dismiss();
+            this.roteiroSelecionado.conducoes=conducoes;
+            this.navCtrl.push('RoteiroPage',{roteiro:this.roteiroSelecionado});    
+            sub.unsubscribe();
+          },
+          error=>{
+            this.loading.dismiss();
+            this.msg.mostrarErro("Erro buscando roteiros: "+error);
+          });
       }
     );
+    
   }
 
   novo(){
@@ -100,6 +143,14 @@ export class CadastroRoteirosPage  implements OnInit {
       console.log(this.podeIniciarRoteiro);
       return  this.podeIniciarRoteiro;
   }
+  validaPodeReinicar():boolean{
+    this.podeReiniciarRoteiro= this.fatguys.condutor.roteiroEmexecucao!=null
+    &&((this.fatguys.condutor.roteiroEmexecucao.emAndamento||this.fatguys.condutor.roteiroEmexecucao.interrompido)
+        &&this.roteiroSelecionado.id==this.fatguys.condutor.roteiroEmexecucao.id);
+      
+      console.log(this.podeReiniciarRoteiro);
+      return  this.podeReiniciarRoteiro;
+  }
 
   iniciar(){
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiroSelecionado});
@@ -109,16 +160,66 @@ export class CadastroRoteirosPage  implements OnInit {
     if(roteiro!=null){
       this.roteiroSelecionado=roteiro;
     }
+    // this.loading = this.loadingCtrl.create({
+    //         content: 'Excluindo roteiro...'
+    //       });
+    this.loading.setContent("Excluindo roteiro...");
+    this.loading.present(this.loading);
     this.fatguys.excluirRoteiro(this.roteiroSelecionado).then(
       (r)=>{
+        this.loading.dismiss();
         this.msg.mostrarMsg("Exclusão realizada!");
       },
       e=>{
+        this.loading.dismiss();
         this.msg.mostrarErro("Erro excluindo: "+e.message);  
       }
     ).catch(error=>{
+      this.loading.dismiss();
       this.msg.mostrarErro("Erro excluindo: "+error);
     });
+  }
+
+  finalizarRoteiro(){     
+    this.fatguys.finalizarRoteiro(this.roteiroSelecionado).then(
+      r=>{
+        this.loading.dismiss().catch(error=>{this.msg.mostrarErro(error)});
+      })
+    .catch(
+      error=>{
+        this.loading.dismiss();
+        this.msg.mostrarErro("Erro finalizando roteiro: "+error);
+      }
+    )      
+  }
+
+  confirmarFinalizarRoteiro(){
+    let confirm = this.alertCtrl.create({
+      title: 'Finalizar Roteiro',
+      message: 'Confrma finalização do roteiro?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+            return false;
+          }
+        },
+        {
+          text: 'OK',
+          handler: () => {
+            confirm.dismiss().then(
+              r=>{
+              this.finalizarRoteiro();
+              this.validaPodeInicar();
+              this.validaPodeReinicar();
+              }
+            )
+            return false;
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 
   ionViewDidLoad() {

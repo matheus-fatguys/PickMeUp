@@ -21,6 +21,7 @@ export class RoteiroPage {
 
   roteiroValido:boolean;
   private podeIniciarRoteiro:boolean=false;
+  private podeReiniciarRoteiro:boolean=false;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
@@ -30,7 +31,27 @@ export class RoteiroPage {
       if(roteiro){
         this.roteiro=roteiro;      
         this.validaPodeInicar();
+        this.validaPodeReinicar();
       }
+  }
+
+  validaPodeInicar():boolean{
+    this.podeIniciarRoteiro= (this.fatguys.condutor.roteiroEmexecucao==null
+      ||!this.fatguys.condutor.roteiroEmexecucao.emAndamento
+      ||(this.fatguys.condutor.roteiroEmexecucao.emAndamento
+        &&this.roteiro.id==this.fatguys.condutor.roteiroEmexecucao.id)
+    );
+      
+      console.log(this.podeIniciarRoteiro);
+      return  this.podeIniciarRoteiro;
+  }
+  validaPodeReinicar():boolean{
+    this.podeReiniciarRoteiro= this.fatguys.condutor.roteiroEmexecucao!=null
+    &&((this.fatguys.condutor.roteiroEmexecucao.emAndamento||this.fatguys.condutor.roteiroEmexecucao.interrompido)
+        &&this.roteiro.id==this.fatguys.condutor.roteiroEmexecucao.id);
+      
+      console.log(this.podeReiniciarRoteiro);
+      return  this.podeReiniciarRoteiro;
   }
 
   salvar(){
@@ -59,17 +80,6 @@ export class RoteiroPage {
 
   iniciar(){
     this.navCtrl.setRoot('ViagemPage',{roteiro:this.roteiro});
-  }
-
-   validaPodeInicar():boolean{
-    this.podeIniciarRoteiro= (this.fatguys.condutor.roteiroEmexecucao==null
-      ||!this.fatguys.condutor.roteiroEmexecucao.emAndamento
-      ||(this.fatguys.condutor.roteiroEmexecucao.emAndamento
-        &&this.roteiro.id==this.fatguys.condutor.roteiroEmexecucao.id)
-    );
-      
-      console.log(this.podeIniciarRoteiro);
-      return  this.podeIniciarRoteiro;
   }
 
   onChangeRoteiroValido(){

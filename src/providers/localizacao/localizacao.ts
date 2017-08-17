@@ -10,9 +10,9 @@ import { Observable, Subscription } from 'rxjs';
 @Injectable()
 export class LocalizacaoProvider {
 
-  private localizacao: google.maps.LatLng;
+  // private localizacao: google.maps.LatLng;
   private localizacaoObserver;
-  private condutor:Condutor;
+  // private condutor:Condutor;
   public localizacaoCondutorSubscription:Subscription;
 
   constructor(public msg: MensagemProvider,
@@ -22,20 +22,7 @@ export class LocalizacaoProvider {
               public backgroundGeolocation: BackgroundGeolocation,
               public fatguys: FatguysUberProvider,
             ) {
-                this.zone.run(() => {
-                  this.localizacao =new google.maps.LatLng( 0, 0);
-                });
   }
-
-
-  
-
-  
- 
-    
-
- 
-  
   
   iniciarGeolocalizacao():Observable<google.maps.LatLng>{
     let obs:Observable<google.maps.LatLng>;
@@ -43,27 +30,19 @@ export class LocalizacaoProvider {
       observable=>{
           this.platform.ready().then(
           a=>{            
-            this.condutor=this.fatguys.condutor;
+            // this.condutor=this.fatguys.condutor;
             this.geolocation.getCurrentPosition()
             .then(resp=>{          
-                  this.localizacao = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-                  if(this.condutor!=null){
-                    if(this.condutor.localizacao==null){
-                      this.condutor.localizacao={latitude:this.localizacao.lat(), longitude:this.localizacao.lng()};
-                    }
-                    else{
-                      this.condutor.localizacao.latitude=this.localizacao.lat();
-                      this.condutor.localizacao.longitude=this.localizacao.lng();                  
-                    }
-                  }
+                  var localizacao = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+                  this.atualizarLocalizacaoCondutor(resp.coords.latitude, resp.coords.longitude);                   
                   if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
                     this.iniciarRastreamentoBackGround();
                   }
-                  let ref =this.fatguys.atualizarLocalizacaoCondutor(this.condutor)
+                  let ref =this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor)
                   .then(
                     r=>{                      
                       //observable.next(this.condutor.localizacaoSimulada);
-                      observable.next(this.localizacao);              
+                      observable.next(localizacao);              
                     },
                   ).catch(
                     error=>{
@@ -80,7 +59,32 @@ export class LocalizacaoProvider {
     return obs;
   }
 
+  atualizarLocalizacaoCondutor(lat, lng){
+    if(this.fatguys.condutor!=null){
+      if(this.fatguys.condutor.localizacao==null){
+        this.fatguys.condutor.localizacao={latitude:lat, longitude:lng};
+      }
+      else{
+        this.fatguys.condutor.localizacao.latitude=lat;
+        this.fatguys.condutor.localizacao.longitude=lng;                  
+      }
+      this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor).then(
+        p=>{
+          this.msg.mostrarMsg("Localização do condutor salva", 3000);
+          console.log("Localização do condutor salva");
+        }
+      )
+      .catch(
+        error=>{
+          this.msg.mostrarErro("Erro atualizando localização de condutor", 3000);
+          console.error(error);
+        }
+      );
+    }
+  }
+
   iniciarRastreamentoBackGround() {
+    this.msg.mostrarMsg("Inciar rastreamento background", 3000);
     console.log("RASTREAMENTO BACKGROUND CHAMADO");
     // Background Tracking 
     let config = {
@@ -97,7 +101,9 @@ export class LocalizacaoProvider {
       // Run update inside of Angular's zone
       this.zone.run(() => {
         console.log("LOCALIZAÇÃO OBTIDA");
-        this.localizacao =new google.maps.LatLng( location.latitude, location.longitude);
+        this.msg.mostrarMsg("Localização obtida em background", 3000);
+        // this.fatguys.condutor.localizacao =new google.maps.LatLng( location.latitude, location.longitude);
+        this.atualizarLocalizacaoCondutor(location.latitude, location.longitude);            
       });  
     }, (err) => {  
       console.log("RASTREAMENTO BACKGROUND ERRO");
@@ -125,24 +131,29 @@ export class LocalizacaoProvider {
     // Run update inside of Angular's zone
     this.zone.run(() => {
       console.log("RASTREAMENTO BACKGROUND LOCALIZAÇÃO OBTIDA");
-      this.localizacao =new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      this.msg.mostrarMsg("Localização obtida em watch de background", 3000);
+      // this.localizacao =new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      this.atualizarLocalizacaoCondutor(position.coords.latitude, position.coords.longitude);                   
     });  
   });
   }
  
   pararRastreamentoBackGround() {
     console.log('stopTracking'); 
+    this.msg.mostrarMsg("Parar rastreamento background", 3000);
     this.backgroundGeolocation.finish();
     this.localizacaoObserver.unsubscribe(); 
     console.log("RASTREAMENTO BACKGROUND PARADO");
   }
 
   iniciarRastreamento(){
+    this.msg.mostrarMsg("Inciar rastreamento", 3000);
     if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
       this.iniciarRastreamentoBackGround();
     }
   }
   pararRastreamento(){
+    this.msg.mostrarMsg("Parar rastreamento", 3000);
     if(!this.platform.is('core')&&!this.platform.is('mobileweb')){
       this.pararRastreamentoBackGround();
     }

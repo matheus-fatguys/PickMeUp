@@ -3,7 +3,8 @@
     <ion-buttons end>      
       <button ion-button icon-only (click)="novo()"><ion-icon name="add-circle"></ion-icon></button>
       <!-- <button ion-button icon-only [disabled]="!roteiroSelecionado" (click)="compartilhar()"><ion-icon name="share-alt"></ion-icon></button> -->
-      <button ion-button icon-only  [disabled]="!podeIniciarRoteiro" (click)="iniciar()"><ion-icon name="play"></ion-icon></button>
+      <button ion-button icon-only  [disabled]="!podeReiniciarRoteiro" (click)="confirmarFinalizarRoteiro()"><ion-icon name="square"></ion-icon></button>
+      <button ion-button icon-only  [disabled]="!podeIniciarRoteiro&&!podeReiniciarRoteiro" (click)="iniciar()"><ion-icon name="play"></ion-icon></button>
     </ion-buttons>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
@@ -18,6 +19,7 @@
     <ion-item *ngFor="let roteiro of roteiros | async" 
     (click)="onSelect(roteiro);"
     [class.selected]="roteiro === roteiroSelecionado"
+    [class.em-andamento]="roteiro.id==roteiroEmExecucao?.id"
     [class.inativo]="roteiro != roteiroSelecionado && !roteiro.ativo"
     >          
         <ion-label> {{roteiro.nome}}</ion-label>     

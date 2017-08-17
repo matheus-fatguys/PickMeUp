@@ -34,7 +34,7 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
     this.geocoder.geocode( {address: local.endereco}, (destinations, status) => {
       
       if (status === google.maps.GeocoderStatus.OK) {
-        let d = destinations.slice(0,8); // show top 4 results
+        let d = destinations;//.slice(0,8); 
         for(var i=0;i<d.length;i++){
           this.locais[i]={} as Local;
           this.locais[i].endereco=d[i].formatted_address;
@@ -46,6 +46,16 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
         this.msg.mostrarErro("Destino desconhecido");
       }
     });
+  }
+
+  onCancel($event){
+    this.locais = [] as Local[];
+  }
+  limpar(){
+    this.local=null;
+    while(this.locais.length>0){
+      this.locais.pop();
+    }
   }
 
   onLocalSelecionado(local: Local){  

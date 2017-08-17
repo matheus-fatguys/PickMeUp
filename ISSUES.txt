@@ -24,9 +24,24 @@ ISSUE 7: usar a diretiva de mascara é sem colchetes no elemento e tem que impor
 
 ISSUE 8: mão de obra infeliz pra conseguir funcionar validação de formulário com childview no angular, tive que usar um delay[observable.debounce], só assim
 
+ISSUE 9: o nome da pasta com os sons dentro da pasta assets não pde ter o nome "audio", pois dá problema com o cordova que a remove do pacote construído
+
+
+ISSUE 10: 
+    10.1 - [FEITO] como a busca de dados no celular é mais lenta, ficava uma tela em branco  enquanto os dados do condutor e roteiro não baixavam, tenho que botar um indicativo de "loading..."
+    10.2  -  quando estava offline não detectou e não avisou, tenho que avisar que tá offline  : FirebaseDatabase.getInstance().getReference(".info/connected");
+            https://www.npmjs.com/package/angularfire2-offline
+             e pesquisar se o firebase faz algum cache local pra usar offline: FirebaseDatabase.getInstance().setPersistenceEnabled(true); https://firebase.google.com/docs/database/android/offline-capabilities?hl=pt-br
+    10.3 - a usabilidade no cadastro das conduções e associação ao roteiro nã tá legal, tenho que permtir a criação de uma condução dentro da tela de roteiro
+    10.4 - a usabilidade na localização de endereço não tá legal, tenho que mostrar o endereço no mapa pra ficar mais fácil pro usuário
+    10.5 - [FEITO] como criei o conceito de iniciar, parar e retomar roteiro, tenho que melhorar a interfae da tela de roteiros pra indicar o possível roteiro em execução no moemento
+            [FEITO] e incluir opção de encerrar roteiro nessa tela
+
+ISSUE 11: simulação localização não funciona no emulador, tenho que descobrir como fazer funcionar
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database
 
 
-tive que etrar na bios pra habilitar a virtualização da intel e instalar o intel haxm para emular o android
+tive que entrar na bios pra habilitar a virtualização da intel e instalar o intel haxm para emular o android
 localização do adb: C:\Users\Matheus\AppData\Local\Android\sdk\platform-tools
+
