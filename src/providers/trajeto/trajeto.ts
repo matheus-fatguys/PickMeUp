@@ -81,20 +81,22 @@ export class TrajetoProvider {
 
   definirLocais(roteiro: Roteiro){
       roteiro.conducoes.forEach(c=>{
-        if(!c.cancelada){
+        if(c.emAndamento){
           var lio=this.locais.findIndex(l=>{return l.endereco==c.origem.endereco});
-          var lid=this.locais.findIndex(l=>{return l.endereco==c.destino.endereco});
           if(lio<0){
             this.locais.push(c.origem);
           }
-          if(lid<0){
-            this.locais.push(c.destino);
-          }
           lio=this.origens.findIndex(l=>{return l.endereco==c.origem.endereco});
-          lid=this.destinos.findIndex(l=>{return l.endereco==c.destino.endereco});
           if(lio<0){
             this.origens.push(c.origem);
           }
+        }
+        if(c.embarcado){
+          var lid=this.locais.findIndex(l=>{return l.endereco==c.destino.endereco});
+          if(lid<0){
+            this.locais.push(c.destino);
+          }
+          lid=this.destinos.findIndex(l=>{return l.endereco==c.destino.endereco});
           if(lid<0){
             this.destinos.push(c.destino);
           }

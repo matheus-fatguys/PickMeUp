@@ -9,7 +9,7 @@ import { TrajetoProvider } from './../../providers/trajeto/trajeto';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { LocalizacaoProvider } from './../../providers/localizacao/localizacao';
-import { Platform, LoadingController } from 'ionic-angular';
+import { Platform, LoadingController, AlertController } from 'ionic-angular';
 import { Component, Input, OnDestroy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -29,6 +29,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
   private trajeto: Trajeto;  
   private mapa: google.maps.Map;
   private polylinePath :google.maps.Polyline;
+  private loading;
   @Output() onViagemIniciada= new EventEmitter<google.maps.Map>();
   @Output() onOrigemProxima= new EventEmitter<Conducao[]>();
   @Output() onDestinoProximo= new EventEmitter<Conducao[]>();
@@ -39,6 +40,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     public msg: MensagemProvider,
     public trajetoService: TrajetoProvider,
     public loadingCtrl: LoadingController,
+    private alertCtrl: AlertController,
     public audio:AudioProvider) {
 
       
@@ -46,13 +48,55 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     var roteiro:Roteiro=changes["roteiro"].currentValue;
-    if(this.fatguys.condutor.roteiroEmexecucao==null
-      ||!this.fatguys.condutor.roteiroEmexecucao.emAndamento
-      ||(this.fatguys.condutor.roteiroEmexecucao.emAndamento
-        &&roteiro.id==this.fatguys.condutor.roteiroEmexecucao.id)
+    if(this.fatguys.condutor!=null
+      &&(
+          this.fatguys.condutor.roteiroEmexecucao==null
+          ||!this.fatguys.condutor.roteiroEmexecucao.emAndamento
+          ||(this.fatguys.condutor.roteiroEmexecucao.emAndamento
+            &&roteiro.id==this.fatguys.condutor.roteiroEmexecucao.id
+          )
+      )
       ){
         this.unsubscribeObservables();
-        this.renderizarMapa(changes["roteiro"].currentValue);
+        var i=this.roteiro.conducoes.findIndex(
+          (c,i)=>{
+            return c.emAndamento||c.embarcado
+          }
+        )
+        if(i<0){
+          this.msg.mostrarMsg("Este roteiro não tem conduções a serem realizadas e será finalizado",3000);
+          this.fatguys.finalizarRoteiro(roteiro).then(
+            r=>{
+              let confirm = this.alertCtrl.create({
+              title: 'Iniciar Roteiro?',
+              message: 'Roteiro finalizado e pronto a ser iniciado',
+              buttons: [
+                {
+                  text: 'Cancelar',
+                  handler: () => {
+                    
+                  }
+                },
+                {
+                  text: 'Iniciar',
+                  handler: () => {
+                    this.renderizarMapa(changes["roteiro"].currentValue);
+                  }
+                }
+              ]
+            });
+            confirm.present();
+              
+            }
+          ).catch(
+            error=>{
+              this.msg.mostrarErro("Erro finalizando roteiro");
+            }
+          );
+        }
+        else{
+          this.renderizarMapa(changes["roteiro"].currentValue);
+        }
     }
     else{
       this.msg.mostrarErro("Você já tem outro roteiro em execução");
@@ -65,97 +109,113 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
 
   renderizarMapa(roteiro:Roteiro){
     // this.roteiro=roteiro;
-    this.fatguys.condutor.roteiroEmexecucao=roteiro;
+    // this.fatguys.condutor.roteiroEmexecucao=roteiro;
     if(this.roteiro.conducoes!=null&&this.roteiro.conducoes.length>0){
         try{          
         
-          let loading = this.loadingCtrl.create({
-            content: 'Salvando conduções...'
+          this.loading = this.loadingCtrl.create({
+            content: 'Salvando roteiro em execução...'
           });  
-          this.roteiro.conducoes.forEach(
-            c=>{
-              if(!c.cancelada){
-                c.emAndamento=true;
-                c.embarcado=false;
-                c.realizada=false;
+          if(this.fatguys.condutor.roteiroEmexecucao){
+            this.fatguys.reIniciarRoteiro(roteiro)
+            .then(
+              r=>{
+                this.setupTrajetoRoteiro();
               }
-            }
-          )      
-          this.fatguys.inciarRoteiro(roteiro)
-          .then(
-            r=>{
-              loading.setContent('Obtendo localização atual...');
-              console.log("VAI PEDIR LOCALIZAÇÃO");   
-              loading.present(loading);        
-              let obs=this.localizacaoService.iniciarGeolocalizacao()
-              obs.subscribe(
-                localizacao=>{
-                  this.localizacao=localizacao;
-                  loading.setContent('Calculanto trajeto da viagem...');
-                  let obs = this.trajetoService.calcularTrajeto(this.localizacao, this.roteiro);
-                  obs.subscribe(
-                        trajeto=>{                              
-                              this.trajetoService.mostrarTrajetoDoRoteiro(trajeto).then(
-                                ret=>{
-                                  if(ret){    
-                                    this.trajeto=trajeto;                    
-                                    this.fatguys.condutor.roteiroEmexecucao.trajeto=trajeto;                    
-                                    loading.setContent('Iniciando mapa...');
-                                    this.iniciarMapa(trajeto).then(
-                                      mapa=>{
-                                        loading.dismiss();
-                                        if(mapa){
-                                          this.mapa=mapa;
-                                          this.mapa.addListener('click', (localizacao) => {
-                                            this.fatguys.condutor.localizacao.latitude=localizacao.latLng.lat();
-                                            this.fatguys.condutor.localizacao.longitude=localizacao.latLng.lng();
-                                            this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
-                                          });
-                                          this.msg.mostrarMsg("Boa viagem, dirija com atenção!", 2000);
-                                          this.mostrarMarcacoes(trajeto);
-                                          this.mostrarCaminhoDoTrajeto(trajeto);
-                                          this.centralizarMapa(this.marcas);
-                                          this.adcionarEventListener();
-                                          this.iniciarMonitoracaoDeLocalizacaoCondutor();
-                                          this.iniciarMonitoramentoConduzidos();
-                                          this.onViagemIniciada.emit(this.mapa);
-                                        }
-                                      }
-                                    );
-                                  }
-                                }).catch(
-                                  error=>{                                
-                                    loading.dismiss();
-                                    this.msg.mostrarErro('Erro obtendo localização: ' + error);
-                                  }  
-                                );                      
-                        },
-                        error=>{
-                          loading.dismiss();
-                          this.msg.mostrarErro('Erro obtendo localização: ' + error);
-                        }
-                      );
-                      obs.first();                
-                },
-                error=>{
-                  loading.dismiss();
-                  this.msg.mostrarErro(error);
-                }
-              );
-              obs.first()
-            }
-          )
-          .catch(
-            error=>{
-              loading.dismiss();
-              this.msg.mostrarErro('Erro salvando conduções');
-            }
-          );        
+            )
+            .catch(
+              error=>{
+                this.loading.dismiss();
+                this.msg.mostrarErro('Erro salvando roteiro em execução');
+              }
+            );  
+          }
+          else{
+            this.fatguys.inciarRoteiro(roteiro)
+            .then(
+              r=>{
+                this.setupTrajetoRoteiro();
+              }
+            )
+            .catch(
+              error=>{
+                this.loading.dismiss();
+                this.msg.mostrarErro('Erro salvando roteiro em execução');
+              }
+            );        
+          }
         }
         catch(error){
           this.msg.mostrarErro(error);
         }
       }  
+  }
+
+
+  setupTrajetoRoteiro(){
+    this.loading.setContent('Obtendo localização atual...');
+    this.loading.present(this.loading);        
+    let obs=this.localizacaoService.iniciarGeolocalizacao()
+    obs.subscribe(
+      localizacao=>{
+        this.localizacao=localizacao;
+        this.loading.setContent('Calculanto trajeto da viagem...');
+        let obs = this.trajetoService.calcularTrajeto(this.localizacao, this.fatguys.condutor.roteiroEmexecucao);
+        obs.subscribe(
+              trajeto=>{      
+                    this.fatguys.condutor.roteiroEmexecucao.trajeto=trajeto;                        
+                    this.trajetoService.mostrarTrajetoDoRoteiro(trajeto).then(
+                      ret=>{
+                        if(ret){    
+                          this.trajeto=trajeto;                    
+                          this.loading.setContent('Iniciando mapa...');
+                          this.iniciarMapa(trajeto).then(
+                            mapa=>{
+                              this.loading.dismiss();
+                              if(mapa){
+                                this.mapa=mapa;
+                                this.mapa.addListener('click', (localizacao) => {
+                                  this.fatguys.condutor.localizacao.latitude=localizacao.latLng.lat();
+                                  this.fatguys.condutor.localizacao.longitude=localizacao.latLng.lng();
+                                  this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
+                                });
+                                this.msg.mostrarMsg("Boa viagem, dirija com atenção!", 2000);
+                                this.mostrarMarcacoes(trajeto);
+                                this.mostrarCaminhoDoTrajeto(trajeto);
+                                this.centralizarMapa(this.marcas);
+                                this.adcionarEventListener();
+                                this.iniciarMonitoracaoDeLocalizacaoCondutor();
+                                this.iniciarMonitoramentoConduzidos();
+                                this.onViagemIniciada.emit(this.mapa);
+                              }
+                            }
+                          ).catch(
+                            error=>{
+                              this.loading.dismiss();
+                              this.msg.mostrarErro('Erro inicando mapa: ' + error);
+                            }
+                          );
+                        }
+                      }).catch(
+                        error=>{                                
+                          this.loading.dismiss();
+                          this.msg.mostrarErro('Erro obtendo localização: ' + error);
+                        }  
+                      );                      
+              },
+              error=>{
+                this.loading.dismiss();
+                this.msg.mostrarErro('Erro calculando trajeto: ' + error);
+              }
+            );
+            obs.first();                
+      },
+      error=>{
+        this.loading.dismiss();
+        this.msg.mostrarErro(error);
+      }
+    );
+    obs.first();
   }
 
   verificarOrigemDestinoProximos(localizacao: google.maps.LatLng){
@@ -321,7 +381,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       dist = Math.acos(dist)
       dist = dist * 180/Math.PI
       dist = dist * 60 * 1.1515
-      dist = dist * 1.609344 
+      dist = dist * 1.609344
       return dist
 }
 

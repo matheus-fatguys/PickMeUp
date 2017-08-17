@@ -36,14 +36,38 @@ export class FatguysUberProvider {
     roteiro.conducoes.forEach(
       c=>{
         if(!c.cancelada){
-          c.emAndamento=false;
+          c.emAndamento=true;
           c.embarcado=false;
           c.interrompida=false;
+          c.realizada=false;
           c.inicio=null;
           c.fim=null;
-          c.inicio=null;
         }
       });
+    this.condutor.roteiroEmexecucao=roteiro;
+    let ref=this.salvarRoteiroEmexecucao();
+    ref.then(r=>{
+      this.salvarRoteiro(roteiro);
+    });
+    return ref;
+  }
+  reIniciarRoteiro(roteiro:Roteiro){
+    roteiro.emAndamento=true;
+    roteiro.interrompido=false;
+    roteiro.fim=null;
+
+    roteiro.conducoes.forEach(
+      c=>{
+        if(!c.cancelada&&!c.embarcado&&!c.realizada){
+          c.emAndamento=true;
+          c.inicio=null;
+          c.fim=null;
+        }
+        else{
+          c.emAndamento=false;
+        }
+      });
+    
     this.condutor.roteiroEmexecucao=roteiro;
     let ref=this.salvarRoteiroEmexecucao();
     ref.then(r=>{
@@ -58,7 +82,7 @@ export class FatguysUberProvider {
     roteiro.fim=new Date();
     roteiro.conducoes.forEach(
       c=>{
-        if(!c.cancelada&&!c.fim==null){
+        if(!c.cancelada&&!c.fim==null&&!c.realizada){
           c.emAndamento=false;
           c.embarcado=false;
           c.interrompida=true;
@@ -86,13 +110,17 @@ export class FatguysUberProvider {
           c.emAndamento=false;
           c.embarcado=false;
           c.interrompida=false;
+          c.realizada=true;
         }
       }
     )
     this.condutor.roteiroEmexecucao=roteiro;
-    let ref=this.salvarRoteiroEmexecucao();
+    
+    let ref=this.afd.object("/condutores/"+this.condutor.id+"/roteiroEmexecucao/").remove();
     ref.then(r=>{
-      this.salvarRoteiro(roteiro);
+      this.salvarRoteiro(roteiro).then(r=>{
+        this.afd.list("/condutores/"+this.condutor.id+"/roteiroRealizados/").push(this.condutor.roteiroEmexecucao);
+      })
     });
     return ref;
   }
