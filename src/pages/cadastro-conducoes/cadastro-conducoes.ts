@@ -60,7 +60,7 @@ export class CadastroConducoesPage  implements OnInit{
     }
     this.fatguys.excluirConducao(this.conducaoSelecionada).then(
       (r)=>{
-        this.msg.mostrarMsg("Exclusão realizada!");
+        this.msg.mostrarMsg("Exclusão realizada!", 3000);
       },
       e=>{
         this.msg.mostrarErro("Erro excluindo: "+e.message);  

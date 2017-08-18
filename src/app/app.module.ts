@@ -1,3 +1,4 @@
+import { ConducaoPageModule } from './../pages/conducao/conducao.module';
 import { MapaPopOverComponent } from './../components/mapa-pop-over/mapa-pop-over';
 import { NativeAudio } from '@ionic-native/native-audio';
 // import { TextMaskModule } from 'angular2-text-mask';
@@ -38,6 +39,7 @@ import { AudioProvider } from '../providers/audio/audio';
   ],
   imports: [
     ConducoesNaoAssociadasModalPageModule,
+    ConducaoPageModule,
     BrowserModule,
     HttpModule,
     AngularFireDatabaseModule,

@@ -24,19 +24,29 @@ export class MyApp {
     afAuth: AngularFireAuth,
     public fatguysService: FatguysUberProvider,
     public audio:AudioProvider) {
-
+      console.log("constructor MyApp");
     const authObserver = afAuth.authState.first().subscribe( user => {
+      console.log("constructor MyApp: user=>"+user);
               if (user!=null) {
-                this.fatguysService.obterCondutorPeloUsuarioLogado().subscribe(
-                  r=>{
-                    this.rootPage = 'CadastroRoteirosPage';
-                    //authObserver.unsubscribe()y2gh;
+                let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
+                console.log("constructor MyApp: ref=>"+ref);
+                if(ref!=null){
+                  let sub =
+                        ref.subscribe(
+                          r=>{
+                            console.log("constructor MyApp: r=>"+r);
+                            console.log(r);
+                            sub.unsubscribe();
+                            this.rootPage = 'HomePage';
+                            // this.rootPage = 'CadastroRoteirosPage';
+                            //authObserver.unsubscribe()y2gh;
+                          }
+                        );
+                  } else {
+                    console.log("constructor MyApp: redirecionaod a Login");
+                    this.rootPage = 'LoginPage';
                   }
-                );
-              } else {
-                this.rootPage = 'LoginPage';
-                //authObserver.unsubscribe();
-              }
+                }
             // authObserver.unsubscribe();
             });
     platform.ready().then(() => {

@@ -42,7 +42,11 @@ export class LogoutPage {
   sair(){
     this.auth.logout().then(r=>{
         // this.navCtrl.setRoot("LoginPage");
-        this.msg.mostrarMsg("Até logo, "+this.condutor.nome);
+        this.msg.mostrarMsg("Até logo, "+this.condutor.nome).onDidDismiss(
+          _=>{
+            this.navCtrl.setRoot("LoginPage");
+          }
+        );
     });
   }
 

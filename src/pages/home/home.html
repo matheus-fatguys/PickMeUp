@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-buttons start>
+    <!-- <ion-buttons start>
       <button [hidden]="!isPickupRequested" (click)="cancelPickup()">
         <ion-icon name="arrow-back"></ion-icon> Cancelar
       </button>
@@ -18,13 +18,16 @@
       <button (click)="map.centerLocation()">
         <ion-icon name="navigate"></ion-icon>
       </button>
-    </ion-buttons>
-
+    </ion-buttons> -->
+    <ion-title>      
+      <span [hidden]="isPickupRequested">HOME PAGE</span>
+    </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>  
-  <div class="map-wrapper">
+  <ion-item>HOME PAGE</ion-item>>
+  <!-- <div class="map-wrapper">
     <map #map  
     [isPickupRequested]="isPickupRequested"
     [destination]="destination"></map>
@@ -59,6 +62,6 @@
         CHEGADA EM APROXIMADAMENTE {{timeTillArrival}} MIN
       </ion-col>
     </ion-row>
-  </div>
+  </div> -->
 
 </ion-content>

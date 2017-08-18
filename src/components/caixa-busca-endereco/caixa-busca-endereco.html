@@ -5,7 +5,7 @@
         <button ion-button icon-only (click)="buscarLocal()"><ion-icon name="search"></ion-icon></button>
       </ion-avatar>
       <ion-label floating>{{rotulo}}</ion-label>
-      <ion-input type="text" name="origem"  [(ngModel)]="local.endereco"></ion-input>            
+      <ion-input type="text" disabled name="origem"  [(ngModel)]="local.endereco"></ion-input>            
     </ion-item>       
     <ion-item *ngFor="let l of locais" (click)="onLocalSelecionado(l)">
       {{l.endereco}}

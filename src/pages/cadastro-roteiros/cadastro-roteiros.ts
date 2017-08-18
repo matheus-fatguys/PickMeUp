@@ -14,11 +14,16 @@ import { IonicPage, NavController, NavParams, LoadingController, Loading, AlertC
 })
 export class CadastroRoteirosPage  implements OnInit, OnDestroy {
   ngOnDestroy(): void {
-    this.unsbscribeobservables();
-    // this.loading.dismiss();
+    console.log("ngOnDestroy CadastroRoteirosPage ");
+    this.unsbscribeobservables();    
   }
-  unsbscribeobservables(){
-    // this.condutorObserver.unsbscribe();
+  unsbscribeobservables(){    
+    if(this.subRoteiros!=null){
+      this.subRoteiros.unsubscribe();
+    }
+    // if(this.subCondutor!=null){
+    //   this.subCondutor.unsbscribe();
+    // }
   }
 
   private condutorObserver;
@@ -29,6 +34,9 @@ export class CadastroRoteirosPage  implements OnInit, OnDestroy {
   private podeIniciarRoteiro:boolean=false;
   private podeReiniciarRoteiro:boolean=false;
 
+  private subCondutor;
+  private subRoteiros;
+
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
     public fatguys: FatguysUberProvider,
@@ -36,48 +44,58 @@ export class CadastroRoteirosPage  implements OnInit, OnDestroy {
     public audio:AudioProvider,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController) {
+      console.log("constructor CadastroRoteirosPage");
   }
 
   ngOnInit(): void {
+    console.log("ngOnInit CadastroRoteirosPage");
     if(this.loading==null){      
       this.loading = this.loadingCtrl.create({
             content: 'Buscando condutor...'
           });
     }
-    this.loading.present().then(
-      _=>{
-          let ref=this.fatguys.obterCondutorPeloUsuarioLogado().first();
-          if(ref!=null){
-            let sub=ref.subscribe(
-                r=>{       
-                  if(this.fatguys.condutor==null) {
-                    this.loading.dismiss();
-                    return;
-                  }
-                  this.roteiroEmExecucao=this.fatguys.condutor.roteiroEmexecucao;  
+    // this.loading.present().then(
+    //   _=>{
+          // let ref=this.fatguys.obterCondutorPeloUsuarioLogado();
+          // if(ref!=null){
+            // this.subCondutor=ref.subscribe(
+            //     r=>{       
+                  // console.log("ngOnInit CadastroRoteirosPage r=>"+r);
+                  // console.log(r);
+                  console.log("ngOnInit CadastroRoteirosPage this.fatguys.condutor=>"+this.fatguys.condutor);
+                  console.log(this.fatguys.condutor);
+                  // if(this.fatguys.condutor==null) {
+                  //   this.loading.dismiss();
+                  //   return;
+                  // }
                   this.loading.setContent("Buscando roteiros...");
-                  this.roteiros=this.fatguys.obterRoteiros(r[0])
-                  this.roteiros.subscribe(
-                    r=>{
+                  this.roteiros=this.fatguys.obterRoteiros(this.fatguys.condutor);
+                  this.subRoteiros=this.roteiros.subscribe(
+                    roteiros=>{
+                      console.log("ngOnInit CadastroRoteirosPage roteiros=>"+roteiros);
+                      console.log(roteiros);
                       this.loading.dismiss();
+                      this.roteiroEmExecucao=this.fatguys.condutor.roteiroEmexecucao;  
+                      // this.subRoteiros.unsubscribe();
                     },
                     e=>{
                       this.loading.dismiss();
+                      // this.subRoteiros.unsubscribe();
                     }
                   );
-                  sub.unsubscribe();
-                },
-                error=>{
-                  this.loading.dismiss();
-                  this.msg.mostrarErro("Erro buscando roteiros: "+error);
-                }
-              )
-          }
-          else{
-            this.loading.dismiss();
-          }
-      }
-    );
+                  // this.subCondutor.unsubscribe();
+              //   },
+              //   error=>{
+              //     this.loading.dismiss();
+              //     this.msg.mostrarErro("Erro buscando roteiros: "+error);
+              //   }
+              // )
+          // }
+          // else{
+          //   this.loading.dismiss();
+          // }
+    //   }
+    // );
   }
 
   toggleAtivar(roteiro: Roteiro){
@@ -168,7 +186,7 @@ export class CadastroRoteirosPage  implements OnInit, OnDestroy {
     this.fatguys.excluirRoteiro(this.roteiroSelecionado).then(
       (r)=>{
         this.loading.dismiss();
-        this.msg.mostrarMsg("Exclusão realizada!");
+        this.msg.mostrarMsg("Exclusão realizada!", 3000);
       },
       e=>{
         this.loading.dismiss();

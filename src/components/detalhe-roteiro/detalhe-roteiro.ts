@@ -56,8 +56,10 @@ export class DetalheRoteiroComponent{
     let modal = this.modalCtrl.create(ConducoesNaoAssociadasModalPage, {roteiro: this.roteiro});
     modal.onDidDismiss(data => {
       console.log(data);
-      if(data!=null&&data.conducao!=null){
-        this.roteiro.conducoes.push(data.conducao);
+      if(data!=null&&data.conducoes!=null){
+        data.conducoes.forEach(c => {
+          this.roteiro.conducoes.push(c);          
+        });
         this.validar();
       }
     });
