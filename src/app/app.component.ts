@@ -25,19 +25,19 @@ export class MyApp {
     public fatguysService: FatguysUberProvider,
     public audio:AudioProvider) {
 
-    const authObserver = afAuth.authState.subscribe( user => {
-              // if (user!=null) {
-              //   this.fatguysService.obterCondutorPeloUsuarioLogado().subscribe(
-              //     r=>{
-              //       this.rootPage = 'CadastroRoteirosPage';
-              //       //authObserver.unsubscribe()y2gh;
-              //     }
-              //   );
-              // } else {
-              //   this.rootPage = 'LoginPage';
-              //   //authObserver.unsubscribe();
-              // }
-            this.rootPage='MapaSelecaoLocalPage'
+    const authObserver = afAuth.authState.first().subscribe( user => {
+              if (user!=null) {
+                this.fatguysService.obterCondutorPeloUsuarioLogado().subscribe(
+                  r=>{
+                    this.rootPage = 'CadastroRoteirosPage';
+                    //authObserver.unsubscribe()y2gh;
+                  }
+                );
+              } else {
+                this.rootPage = 'LoginPage';
+                //authObserver.unsubscribe();
+              }
+            // authObserver.unsubscribe();
             });
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

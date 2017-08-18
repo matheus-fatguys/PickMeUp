@@ -1,6 +1,8 @@
+import { MapaPopOverComponent } from './../mapa-pop-over/mapa-pop-over';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Local } from './../../models/local';
 import { Component, Input, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
+import { ModalController } from "ionic-angular";
 
 
 @Component({
@@ -15,7 +17,8 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
   @Output() onEnderecoSelecionado = new EventEmitter<Local>();
   locais:Local[];
 
-  constructor(public msg: MensagemProvider) {
+  constructor(public msg: MensagemProvider,
+    public modalCtrl: ModalController) {
     this.geocoder = new google.maps.Geocoder(); 
     this.locais=[] as Local[];
   }
@@ -25,7 +28,14 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
   }
   
   buscarLocal(){
-    this.buscar(this.local);
+    // this.buscar(this.local);
+    let modal = this.modalCtrl.create('MapaSelecaoLocalPage', {local:this.local});
+    modal.onDidDismiss(data => {
+      console.log(data.local);
+      this.local=data.local;
+      this.onEnderecoSelecionado.emit(this.local);
+    });
+    modal.present();
   }
 
   buscar(local: Local){

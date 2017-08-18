@@ -1,12 +1,8 @@
+import { Local } from './../../models/local';
+import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
-/**
- * Generated class for the MapaSelecaoLocalPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -14,25 +10,50 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'mapa-selecao-local.html',
 })
 export class MapaSelecaoLocalPage {
+  public local:Local;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController,
+    public viewCtrl:ViewController,
+    public navParams: NavParams,
+  public fatguys: FatguysUberProvider) {
+  }
+
+  confirmar(){
+    let data = { 'local': this.local };
+    this.viewCtrl.dismiss(data);;
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad MapaSelecaoLocalPage');
-    this.initAutocomplete();
+    this.local=this.navParams.get('local');
+    if(this.local==null||this.local.latitude==null){
+      let obs=this.fatguys.obterCondutorPeloUsuarioLogado()
+      let sub=obs.subscribe(
+        u=>{
+          
+          this.local=this.fatguys.condutor.localizacao as Local;
+          this.initAutocomplete(this.local)
+          sub.unsubscribe();
+        }
+      )
+    }
+    else{
+      this.initAutocomplete(this.local);        
+    }
   }
 
-  initAutocomplete() {
+  initAutocomplete(local:Local) {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
+          center: {lat: this.local.latitude, lng: this.local.longitude},
           zoom: 13,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          disableDefaultUI: true,
+          draggable:true
         });
 
         // Create the search box and link it to the UI element.
         var input = <HTMLInputElement>document.getElementById('pac-input');
         var searchBox = new google.maps.places.SearchBox(input);
+        
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
         // Bias the SearchBox results towards current map's viewport.
@@ -43,12 +64,16 @@ export class MapaSelecaoLocalPage {
         var markers = [];
         // Listen for the event fired when the user selects a prediction and retrieve
         // more details for that place.
+        let thisO=this;
         searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
 
           if (places.length == 0) {
             return;
           }
+          thisO.local.endereco=places[0].formatted_address;
+          thisO.local.latitude=places[0].geometry.location.lat();
+          thisO.local.longitude=places[0].geometry.location.lng();
 
           // Clear out the old markers.
           markers.forEach(function(marker) {
