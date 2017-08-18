@@ -1,3 +1,4 @@
+import { OfflinePageModule } from './../pages/offline/offline.module';
 import { ConducaoPageModule } from './../pages/conducao/conducao.module';
 import { MapaPopOverComponent } from './../components/mapa-pop-over/mapa-pop-over';
 import { NativeAudio } from '@ionic-native/native-audio';
@@ -40,6 +41,7 @@ import { AudioProvider } from '../providers/audio/audio';
   imports: [
     ConducoesNaoAssociadasModalPageModule,
     ConducaoPageModule,
+    OfflinePageModule,
     BrowserModule,
     HttpModule,
     AngularFireDatabaseModule,

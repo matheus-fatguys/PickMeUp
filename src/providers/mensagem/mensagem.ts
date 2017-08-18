@@ -36,6 +36,7 @@ export class MensagemProvider {
                   showCloseButton: tempo?false:true
                 });
       toast.present();
+      return toast;
   }
 
 }

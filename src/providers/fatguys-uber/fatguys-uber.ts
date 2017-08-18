@@ -1,3 +1,5 @@
+import { ModalController } from 'ionic-angular';
+import { MensagemProvider } from './../mensagem/mensagem';
 import { Observable, Subscription } from 'rxjs';
 import { Conducao } from './../../models/conducao';
 import { Roteiro } from './../../models/roteiro';
@@ -15,6 +17,8 @@ import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/databa
 @Injectable()
 export class FatguysUberProvider {
 
+  public conexao=null;
+
   public condutor: Condutor;
   public condutores: FirebaseListObservable<Condutor[]>;
   public conduzidos: FirebaseListObservable<Conduzido[]>;
@@ -22,10 +26,39 @@ export class FatguysUberProvider {
   public conducoesSubscription:Subscription;
 
   constructor(private afd: AngularFireDatabase,
-  private auth : AutenticacaoProvider) {
+  private auth : AutenticacaoProvider,
+  private msg: MensagemProvider,
+  private modal: ModalController) {
     this.condutores=this.afd.list("condutores");
     this.conduzidos=this.afd.list("conduzidos");    
     this.chaves=this.afd.list("chaves");
+    this.iniciarMonitaracaoConexao();
+  }
+
+
+  iniciarMonitaracaoConexao(){    
+    let conectado=this.conectado();
+      conectado.on("value",
+        c=>{
+          if(this.conexao==null){
+            this.conexao=true;
+            return;
+          }
+          if(!c.val()){
+            this.msg.mostrarErro("Você está sem conexão com a base!", 3000);
+          }
+          else{
+            if(!this.conexao) {
+              this.msg.mostrarErro("Conexão restabelecida!", 3000);
+            }
+          }
+          this.conexao=c.val();
+        }
+      )
+  }
+
+  conectado(){
+    return this.afd.database.ref(".info/connected");
   }
 
   inciarRoteiro(roteiro:Roteiro){
@@ -245,6 +278,24 @@ export class FatguysUberProvider {
     else{
       return this.afd.list("condutores/"+conducao.condutor+"/conducoes").update(conducao.id, conducao);
     }    
+  }
+
+  obterRoteirosAssociadosAConducao(conducao: Conducao){
+    // let ret =this.afd.list("condutores/"+conducao.condutor+"/roteiros/conducoes",{
+    //   query: {
+    //     orderByChild: "id",
+    //     equalTo: conducao.id
+    //   }
+    // });
+    // let ref =this.afd.database.ref("condutores/"+conducao.condutor+"/roteiros/conducoes/").orderByChild("id").equalTo(conducao.id);
+    // let ref =this.afd.database.ref("/condutores/-Kr2XRBVjGmF4XGSxTpO/roteiros/-KrrOFYAmv0AB13VYimL/conducoes").orderByChild("id").equalTo(conducao.id);
+    let ref =this.afd.database.ref("/condutores/-Kr2XRBVjGmF4XGSxTpO/roteiros").orderByChild("conducoes").equalTo(0);
+    ref.on("child_added",
+  r=>{
+    console.log(r.val());
+  })
+    // .equalTo(conducao.id);
+    return ref;
   }
 
   excluirConducao (conducao: Conducao){

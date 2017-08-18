@@ -23,16 +23,8 @@ export class CadastroConducoesPage  implements OnInit{
       this.obterConducoes();
   }
 
-  obterConducoes(){
-    let ref=this.fatguys.obterCondutorPeloUsuarioLogado();
-    if(ref!=null){
-      let sub = ref.subscribe(
-        conds=>{
-          // this.conducoes=this.fatguys.obterConducoes(conds[0]);
-          this.conducoes=this.fatguys.obterConducoesComConduzidos(conds[0]);
-        }
-      );
-    }    
+  obterConducoes(){   
+      this.conducoes=this.fatguys.obterConducoesComConduzidos(this.fatguys.condutor);   
   }
 
   ngOnInit(): void {
@@ -58,16 +50,36 @@ export class CadastroConducoesPage  implements OnInit{
     if(conducao!=null){
       this.conducaoSelecionada=conducao;
     }
-    this.fatguys.excluirConducao(this.conducaoSelecionada).then(
-      (r)=>{
-        this.msg.mostrarMsg("Exclusão realizada!", 3000);
-      },
-      e=>{
-        this.msg.mostrarErro("Erro excluindo: "+e.message);  
+
+    let sub =this.fatguys.obterRoteirosAssociadosAConducao(this.conducaoSelecionada)
+    .on("child_added",
+      r=>{
+        var ci=r.key;
+        var c=r.val();
+        console.log(ci);
+        console.log(c);
       }
-    ).catch(error=>{
-      this.msg.mostrarErro("Erro excluindo: "+error);
-    });
+    );
+    // .subscribe(
+    //   r=>{
+    //     if(r.length>0){
+    //         this.msg.mostrarErro("Não é possível excluir, existe(m) roteiro(s) associado(s) a essa condução");
+    //     }
+    //     else{
+    //         this.fatguys.excluirConducao(this.conducaoSelecionada).then(
+    //           (r)=>{
+    //             this.msg.mostrarMsg("Exclusão realizada!", 3000);
+    //           },
+    //           e=>{
+    //             this.msg.mostrarErro("Erro excluindo: "+e.message);  
+    //           }
+    //         ).catch(error=>{
+    //           this.msg.mostrarErro("Erro excluindo: "+error);
+    //         });
+    //     }
+    //   }
+    // )
+
   }
 
   dismiss() {

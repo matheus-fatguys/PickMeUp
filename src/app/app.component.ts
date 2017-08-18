@@ -1,3 +1,5 @@
+import { OfflinePage } from './../pages/offline/offline';
+import { MensagemProvider } from './../providers/mensagem/mensagem';
 import { AudioProvider } from './../providers/audio/audio';
 import { FatguysUberProvider } from './../providers/fatguys-uber/fatguys-uber';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -5,7 +7,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { Nav } from "ionic-angular";
+import { Nav, ModalController } from "ionic-angular";
 
 
 @Component({
@@ -23,33 +25,54 @@ export class MyApp {
     splashScreen: SplashScreen,
     afAuth: AngularFireAuth,
     public fatguysService: FatguysUberProvider,
+    public msg: MensagemProvider,
+    public modalCtrl: ModalController,
     public audio:AudioProvider) {
-      console.log("constructor MyApp");
-    const authObserver = afAuth.authState.first().subscribe( user => {
-      console.log("constructor MyApp: user=>"+user);
+      // console.log("constructor MyApp");
+      
+      // let conectado=this.fatguysService.conectado();
+      // conectado.subscribe(
+      //   e=>{
+      //     if(!e.value){
+      //       this.msg.mostrarErro("Você está sem conexão com a base!").onDidDismiss(
+      //         _=>{
+      //             let modal = this.modalCtrl.create(OfflinePage);
+      //             modal.onDidDismiss(data => {
+      //               if(data!=null&&data.conducao!=null){                
+      //                 this.rootPage = 'HomePage';
+      //               }
+      //             });  
+      //             modal.present();
+      //         }
+      //       );
+      //     }
+      //     else{
+      //       if(!this.fatguysService.conexao) {
+      //         this.msg.mostrarErro("Conexão restabelecida!", 1000);
+      //       }
+      //     }
+      //     this.fatguysService.conexao=e.value;
+      //   }
+      // )
+
+      const authObserver = afAuth.authState.first().subscribe( user => {
               if (user!=null) {
                 let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
-                console.log("constructor MyApp: ref=>"+ref);
                 if(ref!=null){
                   let sub =
                         ref.subscribe(
                           r=>{
-                            console.log("constructor MyApp: r=>"+r);
-                            console.log(r);
                             sub.unsubscribe();
                             this.rootPage = 'HomePage';
-                            // this.rootPage = 'CadastroRoteirosPage';
-                            //authObserver.unsubscribe()y2gh;
                           }
                         );
                   } else {
-                    console.log("constructor MyApp: redirecionaod a Login");
                     this.rootPage = 'LoginPage';
                   }
                 }
             // authObserver.unsubscribe();
             });
-    platform.ready().then(() => {
+      platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
