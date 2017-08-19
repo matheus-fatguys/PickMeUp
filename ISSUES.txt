@@ -14,7 +14,7 @@ ISSUE 3:
 queando uma IonicPage não reconhece um componente filho, insira em seu NgModule nos imports o ComponentsModule
 
 ISSUE 4: 
-VERIFICAR COMO SINCRONIZAR AS CONDUÇÕES ALTERADAS NA TELA DE CONDUÇÕES(do condutor) COM AS CONDUÇÕES NA TELA DE ROTEIRO(do roteiro)
+[FEITO] VERIFICAR COMO SINCRONIZAR AS CONDUÇÕES ALTERADAS NA TELA DE CONDUÇÕES(do condutor) COM AS CONDUÇÕES NA TELA DE ROTEIRO(do roteiro)
 
 ISSUE 5: encontrar um algoritmo para ordenar roteiros com diferentes destinos e origens
 
@@ -40,6 +40,8 @@ ISSUE 10:
 ISSUE 11: simulação localização não funciona no emulador, tenho que descobrir como fazer funcionar
 
 ISSUE 12: uma página modal deve estar incluída nos imports do módulo da aplicação (importar o módulo da página no app.module.ts)
+
+ISSUE 13: remodelar a base firebase tendo em conta o aprendizado sobre firebase e nosql
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database
 

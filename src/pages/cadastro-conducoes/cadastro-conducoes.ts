@@ -14,6 +14,7 @@ export class CadastroConducoesPage  implements OnInit{
 
   private conducoes;
   private conducaoSelecionada;
+  private subRoteiros;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -28,6 +29,14 @@ export class CadastroConducoesPage  implements OnInit{
   }
 
   ngOnInit(): void {
+  }
+  ngOnDestroy(): void {
+    this.unsubscribeObservables();
+  }
+  unsubscribeObservables(){
+    if(this.subRoteiros!=null){
+      this.subRoteiros.unsubscribe();
+    }
   }
 
   toggleAtivar(conducao: Conducao){
@@ -50,16 +59,46 @@ export class CadastroConducoesPage  implements OnInit{
     if(conducao!=null){
       this.conducaoSelecionada=conducao;
     }
-
-    let sub =this.fatguys.obterRoteirosAssociadosAConducao(this.conducaoSelecionada)
-    .on("child_added",
-      r=>{
-        var ci=r.key;
-        var c=r.val();
-        console.log(ci);
-        console.log(c);
+    
+    this.subRoteiros =this.fatguys.obterRoteiros(this.fatguys.condutor)
+    .subscribe(
+      rs=>{
+        // this.subRoteiros.unsubscribe();
+        var r=rs.findIndex(
+          (r,i)=>{
+            var c=r.conducoes.findIndex(c => {
+              return c.id==this.conducaoSelecionada.id;
+            });
+            return c>=0;
+          }
+        );
+        if(r>=0){
+          this.msg.mostrarErro("Essa condução tem roteiros associados. Para excluí-la, dessassocie-a dos roteiros primeiro");          
+        }
+        else{
+          this.fatguys.excluirConducao(this.conducaoSelecionada).then(
+            (r)=>{
+              this.msg.mostrarMsg("Exclusão realizada!", 3000);
+            },
+            e=>{
+              this.msg.mostrarErro("Erro excluindo: "+e.message);  
+            }
+          ).catch(error=>{
+            this.msg.mostrarErro("Erro excluindo: "+error);
+          });
+        }
       }
     );
+
+    // let sub =this.fatguys.obterRoteirosAssociadosAConducao(this.conducaoSelecionada)
+    // .on("child_added",
+    //   r=>{
+    //     var ci=r.key;
+    //     var c=r.val();
+    //     console.log(ci);
+    //     console.log(c);
+    //   }
+    // );
     // .subscribe(
     //   r=>{
     //     if(r.length>0){

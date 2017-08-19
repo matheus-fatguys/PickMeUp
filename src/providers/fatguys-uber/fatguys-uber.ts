@@ -280,23 +280,23 @@ export class FatguysUberProvider {
     }    
   }
 
-  obterRoteirosAssociadosAConducao(conducao: Conducao){
-    // let ret =this.afd.list("condutores/"+conducao.condutor+"/roteiros/conducoes",{
-    //   query: {
-    //     orderByChild: "id",
-    //     equalTo: conducao.id
-    //   }
-    // });
-    // let ref =this.afd.database.ref("condutores/"+conducao.condutor+"/roteiros/conducoes/").orderByChild("id").equalTo(conducao.id);
-    // let ref =this.afd.database.ref("/condutores/-Kr2XRBVjGmF4XGSxTpO/roteiros/-KrrOFYAmv0AB13VYimL/conducoes").orderByChild("id").equalTo(conducao.id);
-    let ref =this.afd.database.ref("/condutores/-Kr2XRBVjGmF4XGSxTpO/roteiros").orderByChild("conducoes").equalTo(0);
-    ref.on("child_added",
-  r=>{
-    console.log(r.val());
-  })
-    // .equalTo(conducao.id);
-    return ref;
-  }
+  // obterRoteirosAssociadosAConducao(conducao: Conducao){
+  //   // let ret =this.afd.list("condutores/"+conducao.condutor+"/roteiros/conducoes",{
+  //   //   query: {
+  //   //     orderByChild: "id",
+  //   //     equalTo: conducao.id
+  //   //   }
+  //   // });
+  //   // let ref =this.afd.database.ref("condutores/"+conducao.condutor+"/roteiros/conducoes/").orderByChild("id").equalTo(conducao.id);
+  //   // let ref =this.afd.database.ref("/condutores/-Kr2XRBVjGmF4XGSxTpO/roteiros/-KrrOFYAmv0AB13VYimL/conducoes").orderByChild("id").equalTo(conducao.id);
+  //   let ref =this.afd.database.ref("/condutores/-Kr2XRBVjGmF4XGSxTpO/roteiros").orderByChild("conducoes").equalTo(0);
+  //   ref.on("child_added",
+  // r=>{
+  //   console.log(r.val());
+  // })
+  //   // .equalTo(conducao.id);
+  //   return ref;
+  // }
 
   excluirConducao (conducao: Conducao){
     let ret =this.afd.list("condutores/"+conducao.condutor+"/conducoes").remove(conducao.id);      
