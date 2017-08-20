@@ -32,19 +32,21 @@ export class TrajetoProvider {
           var distanciaTotal=0;
           trajeto.pernas.forEach((perna, i) => {          
               opts.push({
-                  type: 'check',
-                  value: (1+i)+'- '+perna.local.endereco.substring(0,15)+'... ('+perna.tempo.texto+') - '+perna.distancia.texto,
-                  checked: false
+                  type: 'checkbox',
+                  // value: (1+i)+'- '+perna.local.endereco.substring(0,15)+'... ('+perna.tempo.texto+') - '+perna.distancia.texto,
+                  label: (1+i)+'- '+perna.local.endereco.substring(0,15)+'... ('+perna.tempo.texto+') - '+perna.distancia.texto,
+                  checked: true
                 });
             });  
           opts.push({
-                type: 'check',
-                value: 'Tot.: ('+trajeto.tempoTotal.texto+') - '+trajeto.distanciaTotal.texto,
-                checked: false
+                type: 'checkbox ',
+                // value: 'Tot.: ('+trajeto.tempoTotal.texto+') - '+trajeto.distanciaTotal.texto,
+                label: 'Tot.: ('+trajeto.tempoTotal.texto+') - '+trajeto.distanciaTotal.texto,
+                checked: true
               });
           let prompt = this.alertCtrl.create({
-          title: 'Iniciando Roteiro '+this.roteiro.nome,
-          message: 'Viagem:',
+          title: 'Trajeto: '+this.roteiro.nome,
+          // message: 'Trajeto:',
           inputs: opts,
           buttons: [{
             text: 'Ok',
