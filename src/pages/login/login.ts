@@ -53,10 +53,10 @@ export class LoginPage implements OnInit{
           .subscribe(condutor=>{
             ul.unsubscribe();
             if(condutor[0]){
-              this.msg.mostrarMsg("Bem vindo, "+ condutor[0].nome +"!", 3000);
-                      // .onDidDismiss(d=>{
-                      //     this.navCtrl.setRoot('HomePage');
-                      // });
+              this.msg.mostrarMsg("Bem vindo, "+ condutor[0].nome +"!", 3000)
+                      .onDidDismiss(d=>{
+                          this.navCtrl.setRoot('HomePage');
+                      });
             }
             else{
               this.msg.mostrarErro("Não foi possível obter dados do condutor!");

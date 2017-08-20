@@ -54,25 +54,36 @@ export class MyApp {
       //     this.fatguysService.conexao=e.value;
       //   }
       // )
-
+      console.log("subscribe no auth")
       const authObserver = afAuth.authState.first().subscribe( user => {
-              if (user!=null) {
-                let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
-                if(ref!=null){
+        console.log("user esá nulo")
+        if (user!=null) {
+          console.log("pegando ref para subscribe no condutor")
+          let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
+          console.log("pegou ref");
+          if(ref!=null){
+            console.log("subscribe no condutor")
                   let sub =
                         ref.subscribe(
                           r=>{
                             sub.unsubscribe();
+                            console.log("indo pra home page")
                             this.rootPage = 'HomePage';
                           }
                         );
-                  } else {
+                      } else {
+                        console.log("indo pra login page")
                     this.rootPage = 'LoginPage';
                   }
+                }
+                else{
+                  console.log("indo pra login page")
+                  this.rootPage = 'LoginPage';
                 }
             // authObserver.unsubscribe();
             });
       platform.ready().then(() => {
+        console.log("plataforma pronta")
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
@@ -94,7 +105,7 @@ export class MyApp {
     audio.preload('concluir-roteiro', 'assets/sound/353546__maxmakessounds__success.wav');
     audio.preload('conducao-cancelada', 'assets/sound/167337__willy-ineedthatapp-com__pup-alert.mp3');
     audio.preload('recalculando-trajeto', 'assets/sound/104026__rutgermuller__tires-squeaking.aif');
-    audio.play('bem-vindo');
+    audio.play('iniciar-roteiro');
   }
 
   openPage(page) {

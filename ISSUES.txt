@@ -49,3 +49,5 @@ JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-
 tive que entrar na bios pra habilitar a virtualização da intel e instalar o intel haxm para emular o android
 localização do adb: C:\Users\Matheus\AppData\Local\Android\sdk\platform-tools
 
+CORDOVA BACKGROUND GEOLOCATION: https://github.com/transistorsoft/cordova-background-geolocation-lt/blob/master/docs/README.md#wrench-geolocation-options
+
