@@ -4,10 +4,10 @@ import { AudioProvider } from './../providers/audio/audio';
 import { FatguysUberProvider } from './../providers/fatguys-uber/fatguys-uber';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Component, ViewChild } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, Loading } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { Nav, ModalController } from "ionic-angular";
+import { Nav, ModalController, LoadingController } from "ionic-angular";
 
 
 @Component({
@@ -17,17 +17,19 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage:any;
+  private loading:Loading ;
 
   pages: Array<{title: string, component: any, icon:string}>;
 
   constructor(platform: Platform, 
     statusBar: StatusBar, 
     splashScreen: SplashScreen,
-    afAuth: AngularFireAuth,
+    public afAuth: AngularFireAuth,
     public fatguysService: FatguysUberProvider,
     public msg: MensagemProvider,
     public modalCtrl: ModalController,
-    public audio:AudioProvider) {
+    public audio:AudioProvider,
+    public loadingCtrl: LoadingController) {
       // console.log("constructor MyApp");
       
       // let conectado=this.fatguysService.conectado();
@@ -62,26 +64,55 @@ export class MyApp {
           let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
           console.log("pegou ref");
           if(ref!=null){
-            console.log("subscribe no condutor")
-                  let sub =
-                        ref.subscribe(
-                          r=>{
-                            sub.unsubscribe();
+            console.log("subscribe no condutor");
+                  if(this.loading==null){      
+                    this.loading = this.loadingCtrl.create({
+                          content: 'Buscando condutor...'
+                        });
+                  }
+                  this.loading.present().then(
+                    _=>{
+                      let sub =
+                      ref.subscribe(
+                        r=>{
+                          sub.unsubscribe();
+                          this.loading.dismiss();
+                          if(r.length>0){
                             console.log("indo pra home page")
                             this.rootPage = 'HomePage';
                           }
-                        );
-                      } else {
-                        console.log("indo pra login page")
-                    this.rootPage = 'LoginPage';
-                  }
-                }
-                else{
-                  console.log("indo pra login page")
-                  this.rootPage = 'LoginPage';
-                }
-            // authObserver.unsubscribe();
-            });
+                          else{
+                            this.msg.mostrarErro("Esse usuário não possui um condutor associado",2000).onDidDismiss(
+                              _=>{
+                                this.afAuth.auth.signOut().then(
+                                  _=>{
+                                    this.rootPage = 'LoginPage';
+                                  }
+                                );
+                              }
+                            )
+                          }
+                        }
+                      );
+                    }
+                  )
+                  .catch(
+                    error=>{
+                      this.loading.dismiss();
+                      this.msg.mostrarErro("Erro obtendo dados do condutor logado");
+                    });
+                  
+          } else {
+            console.log("indo pra login page")
+            this.rootPage = 'LoginPage';
+          }
+        }
+        else{
+          console.log("indo pra login page")
+          this.rootPage = 'LoginPage';
+        }
+    // authObserver.unsubscribe();
+    });
       platform.ready().then(() => {
         console.log("plataforma pronta")
       // Okay, so the platform is ready and our plugins are available.

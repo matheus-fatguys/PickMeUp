@@ -3,7 +3,7 @@ import { Condutor } from './../../models/condutor';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { AutenticacaoProvider } from './../../providers/autenticacao/autenticacao';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Loading, LoadingController } from 'ionic-angular';
 
 
 
@@ -15,12 +15,14 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class LogoutPage {
 
   condutor={} as Condutor;
+  private loading:Loading ;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
     public auth:  AutenticacaoProvider,
     public fatguysService: FatguysUberProvider,
-    private msg : MensagemProvider) { 
+    private msg : MensagemProvider,
+    public loadingCtrl: LoadingController) { 
       let ref = this.fatguysService.obterCondutorPeloUsuarioLogado();
       if(ref!=null){
       let sub=ref.subscribe(r=>{
@@ -40,14 +42,27 @@ export class LogoutPage {
   }
 
   sair(){
-    this.auth.logout().then(r=>{
-        // this.navCtrl.setRoot("LoginPage");
-        this.msg.mostrarMsg("Até logo, "+this.condutor.nome).onDidDismiss(
-          _=>{
-            this.navCtrl.setRoot("LoginPage");
-          }
-        );
-    });
+    if(this.loading==null){      
+      this.loading = this.loadingCtrl.create({
+            content: 'Saindo...'
+          });
+    }
+    this.loading.present().then(
+      _=>{
+          this.auth.logout().then(r=>{
+              this.loading.dismiss();
+              this.msg.mostrarMsg("Até logo, "+this.condutor.nome).onDidDismiss(
+                _=>{
+                  this.navCtrl.setRoot("LoginPage");
+                }
+              );
+          }).catch(error => {
+            this.loading.dismiss();
+            this.msg.mostrarErro('Falha saindo: '+error);
+          });
+      }).catch(error => {
+        this.loading.dismiss();
+        this.msg.mostrarErro('Falha saindo: '+error);
+      });
   }
-
 }
