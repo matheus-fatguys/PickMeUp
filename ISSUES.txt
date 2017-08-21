@@ -31,7 +31,7 @@ ISSUE 10:
     10.1 - [FEITO] como a busca de dados no celular é mais lenta, ficava uma tela em branco  enquanto os dados do condutor e roteiro não baixavam, tenho que botar um indicativo de "loading..."
     10.2  -[FEITO]   quando estava offline não detectou e não avisou, tenho que avisar que tá offline  : FirebaseDatabase.getInstance().getReference(".info/connected");
             https://www.npmjs.com/package/angularfire2-offline
-             e pesquisar se o firebase faz algum cache local pra usar offline: FirebaseDatabase.getInstance().setPersistenceEnabled(true); https://firebase.google.com/docs/database/android/offline-capabilities?hl=pt-br
+             [RESOLVIDO](https://github.com/adriancarriger/angularfire2-offline) e pesquisar se o firebase faz algum cache local pra usar offline: FirebaseDatabase.getInstance().setPersistenceEnabled(true); https://firebase.google.com/docs/database/android/offline-capabilities?hl=pt-br
     10.3 - [FEITO] a usabilidade no cadastro das conduções e associação ao roteiro nã tá legal, tenho que permtir a criação de uma condução dentro da tela de roteiro
     10.4 -  [FEITO] a usabilidade na localização de endereço não tá legal, tenho que mostrar o endereço no mapa pra ficar mais fácil pro usuário
     10.5 - [FEITO] como criei o conceito de iniciar, parar e retomar roteiro, tenho que melhorar a interfae da tela de roteiros pra indicar o possível roteiro em execução no moemento
@@ -64,5 +64,6 @@ ISSUE 15: BUGS DOS TESTES EM VIDA REAL:
         15.6 - [RESOLVIDO] CRIAR MAIS DE UM RASTREAMENTO FAZENDO CONFUSÃO
 
 ISSUE 16: DECOBRIR PORQUE O ANDROID ESTÁ BLOQUEANDO A CHAMADA AO MAPS
-ISSUE 16: DAR OPÇÃO DE ESCOLHER NAVEGAR PELO MAS OU PELO WAZE AO CONDUTOR
-ISSUE 17: IMPLEMENTAR POSSIBILIDADE DE CRIAR A VOLTA DO ROTEIRO NO MOMENTO DE CADASTRAR
+ISSUE 16: [RESOLVIDO] DAR OPÇÃO DE ESCOLHER NAVEGAR PELO MAS OU PELO WAZE AO CONDUTOR
+ISSUE 17: [RESOLVIDO] IMPLEMENTAR POSSIBILIDADE DE CRIAR A VOLTA DO ROTEIRO NO MOMENTO DE CADASTRAR
+ISSUE 18: descobrir porque  app pergunta inúmeras vezes se o usuário quer embarcar, desembarcar, finalizar roteiro
