@@ -84,20 +84,24 @@ export class ViagemPage implements OnDestroy  {
   }
 
   navegar(){
-    var trajeto:Trajeto =this.fatguys.condutor.roteiroEmexecucao.trajeto;
-    // https://www.google.com/maps/dir/?api=1&origin=Paris,France&destination=Cherbourg,France&travelmode=driving&waypoints=Versailles,France%7CChartres,France%7CLe+Mans,France%7CCaen,France&waypoint_place_ids=ChIJdUyx15R95kcRj85ZX8H8OAU%7CChIJKzGHdEgM5EcR_OBTT3nQoEA%7CChIJG2LvQNCI4kcRKXNoAsPi1Mc%7CChIJ06tnGbxCCkgRsfNjEQMwUsc
-    // var t ='https://www.google.com/maps/dir/?api=1&origin='+this.fatguys.condutor.localizacao.latitude
-    var t ='maps: origin='+this.fatguys.condutor.localizacao.latitude
-    +','+this.fatguys.condutor.localizacao.longitude
-    +'&destination='+trajeto.pernas[trajeto.pernas.length-1].local.endereco
-    +'&travelmode=driving';
-    if(trajeto.pernas.length>1){
-      t+='&waypoints=';
-      for(var i = 0;i<trajeto.pernas.length-1;i++){
-          t+=trajeto.pernas[i].local.endereco+'%7C';
+    try {
+      var trajeto:Trajeto =this.fatguys.condutor.roteiroEmexecucao.trajeto;
+      // https://www.google.com/maps/dir/?api=1&origin=Paris,France&destination=Cherbourg,France&travelmode=driving&waypoints=Versailles,France%7CChartres,France%7CLe+Mans,France%7CCaen,France&waypoint_place_ids=ChIJdUyx15R95kcRj85ZX8H8OAU%7CChIJKzGHdEgM5EcR_OBTT3nQoEA%7CChIJG2LvQNCI4kcRKXNoAsPi1Mc%7CChIJ06tnGbxCCkgRsfNjEQMwUsc
+      // var t ='maps: origin='+this.fatguys.condutor.localizacao.latitude
+      var t ='https://www.google.com/maps/dir/?api=1&origin='+this.fatguys.condutor.localizacao.latitude
+      +','+this.fatguys.condutor.localizacao.longitude
+      +'&destination='+trajeto.pernas[trajeto.pernas.length-1].local.endereco
+      +'&travelmode=driving';
+      if(trajeto.pernas.length>1){
+        t+='&waypoints=';
+        for(var i = 0;i<trajeto.pernas.length-1;i++){
+            t+=trajeto.pernas[i].local.endereco+'%7C';
+        }
       }
+      window.open(t, '_system');      
+    } catch (error) {
+      this.msg.mostrarErro("Erro inicializando o maps: "+error);
     }
-    window.open(t, '_system');
   }
 
   centralizarMapaNoCondutor(){
