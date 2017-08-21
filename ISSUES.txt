@@ -43,6 +43,8 @@ ISSUE 12: uma página modal deve estar incluída nos imports do módulo da aplic
 
 ISSUE 13: remodelar a base firebase tendo em conta o aprendizado sobre firebase e nosql
 
+ISSUE 14: gerar a volta do roteiro na hora decadastrar, se o usuário pedir
+
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database
 
 
@@ -51,3 +53,4 @@ localização do adb: C:\Users\Matheus\AppData\Local\Android\sdk\platform-tools
 
 CORDOVA BACKGROUND GEOLOCATION: https://github.com/transistorsoft/cordova-background-geolocation-lt/blob/master/docs/README.md#wrench-geolocation-options
 
+SE der erro com o cordova sem encontrar o polyfill: npm install promise-polyfill --save-exact

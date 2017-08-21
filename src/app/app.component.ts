@@ -57,62 +57,81 @@ export class MyApp {
       //   }
       // )
       console.log("subscribe no auth")
-      const authObserver = afAuth.authState.first().subscribe( user => {
-        console.log("user esá nulo")
-        if (user!=null) {
-          console.log("pegando ref para subscribe no condutor")
-          let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
-          console.log("pegou ref");
-          if(ref!=null){
-            console.log("subscribe no condutor");
-                  if(this.loading==null){      
-                    this.loading = this.loadingCtrl.create({
-                          content: 'Buscando condutor...'
-                        });
-                  }
-                  this.loading.present().then(
-                    _=>{
-                      let sub =
-                      ref.subscribe(
-                        r=>{
-                          sub.unsubscribe();
-                          this.loading.dismiss();
-                          if(r.length>0){
-                            console.log("indo pra home page")
-                            this.rootPage = 'HomePage';
-                          }
-                          else{
-                            this.msg.mostrarErro("Esse usuário não possui um condutor associado",2000).onDidDismiss(
-                              _=>{
-                                this.afAuth.auth.signOut().then(
-                                  _=>{
-                                    this.rootPage = 'LoginPage';
-                                  }
-                                );
+      if(this.loading==null){      
+        this.loading = this.loadingCtrl.create({
+              content: 'Buscando usuário...'
+            });
+      }
+      this.loading.present().then(
+        _=>{
+          const authObserver = afAuth.authState.first().subscribe( user => {
+            console.log("user esá nulo")
+            if (user!=null) {
+              console.log("pegando ref para subscribe no condutor")
+              let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
+              console.log("pegou ref");
+              if(ref!=null){
+                console.log("subscribe no condutor");
+                      if(this.loading==null){      
+                        this.loading = this.loadingCtrl.create({
+                              content: 'Buscando condutor...'
+                            });
+                      }
+                      else{
+                        this.loading.setContent("Buscando condutor...");
+                      }
+                      this.loading.present().then(
+                        _=>{
+                          let sub =
+                          ref.subscribe(
+                            r=>{
+                              sub.unsubscribe();
+                              this.loading.dismiss();
+                              if(r.length>0){
+                                console.log("indo pra home page")
+                                this.rootPage = 'HomePage';
                               }
-                            )
-                          }
+                              else{
+                                this.msg.mostrarErro("Esse usuário não possui um condutor associado",2000).onDidDismiss(
+                                  _=>{
+                                    this.afAuth.auth.signOut().then(
+                                      _=>{
+                                        this.rootPage = 'LoginPage';
+                                      }
+                                    );
+                                  }
+                                )
+                              }
+                            }
+                          );
                         }
-                      );
-                    }
-                  )
-                  .catch(
-                    error=>{
-                      this.loading.dismiss();
-                      this.msg.mostrarErro("Erro obtendo dados do condutor logado");
-                    });
-                  
-          } else {
-            console.log("indo pra login page")
-            this.rootPage = 'LoginPage';
-          }
-        }
-        else{
-          console.log("indo pra login page")
-          this.rootPage = 'LoginPage';
-        }
-    // authObserver.unsubscribe();
-    });
+                      )
+                      .catch(
+                        error=>{
+                          this.loading.dismiss();
+                          this.msg.mostrarErro("Erro obtendo dados do condutor logado");
+                        });
+                      
+              } else {
+                this.loading.dismiss().then(
+                  _=>{
+                    console.log("indo pra login page")
+                    this.rootPage = 'LoginPage';
+                  }
+                )
+              }
+            }
+            else{
+              this.loading.dismiss().then(
+                _=>{
+                  console.log("indo pra login page")
+                  this.rootPage = 'LoginPage';
+                }
+              )
+            }
+        // authObserver.unsubscribe();
+        });
+      });
       platform.ready().then(() => {
         console.log("plataforma pronta")
       // Okay, so the platform is ready and our plugins are available.

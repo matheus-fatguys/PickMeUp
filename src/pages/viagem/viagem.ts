@@ -33,6 +33,7 @@ export class ViagemPage implements OnDestroy  {
   private roteiro={} as Roteiro;  
   @ViewChild(MapaCondutorComponent)  
   private mapaCtrl: MapaCondutorComponent;
+  private esperandoConfirmacao=false;
   
   
   constructor(public navCtrl: NavController, 
@@ -40,7 +41,8 @@ export class ViagemPage implements OnDestroy  {
     public fatguys: FatguysUberProvider,
     public localizacaoService: LocalizacaoProvider,
     public alertCtrl: AlertController,
-    public audio: AudioProvider
+    public audio: AudioProvider,
+    private msg: MensagemProvider
     ) {    
      let roteiro=this.navParams.get('roteiro');
       if(roteiro){
@@ -54,11 +56,17 @@ export class ViagemPage implements OnDestroy  {
   }
   
   onOrigemProxima($event){
+    if(this.esperandoConfirmacao){
+      return;
+    }
     this.origemProxima=true;
     this.confirmarConduzidoABordo($event);
   }
 
   onDestinoProximo($event){
+    if(this.esperandoConfirmacao){
+      return;
+    }
     this.destinoProximo=true;
     this.confirmarDeixouConduzidoNoDestino($event);
   }
@@ -78,7 +86,8 @@ export class ViagemPage implements OnDestroy  {
   navegar(){
     var trajeto:Trajeto =this.fatguys.condutor.roteiroEmexecucao.trajeto;
     // https://www.google.com/maps/dir/?api=1&origin=Paris,France&destination=Cherbourg,France&travelmode=driving&waypoints=Versailles,France%7CChartres,France%7CLe+Mans,France%7CCaen,France&waypoint_place_ids=ChIJdUyx15R95kcRj85ZX8H8OAU%7CChIJKzGHdEgM5EcR_OBTT3nQoEA%7CChIJG2LvQNCI4kcRKXNoAsPi1Mc%7CChIJ06tnGbxCCkgRsfNjEQMwUsc
-    var t ='https://www.google.com/maps/dir/?api=1&origin='+this.fatguys.condutor.localizacao.latitude
+    // var t ='https://www.google.com/maps/dir/?api=1&origin='+this.fatguys.condutor.localizacao.latitude
+    var t ='maps: origin='+this.fatguys.condutor.localizacao.latitude
     +','+this.fatguys.condutor.localizacao.longitude
     +'&destination='+trajeto.pernas[trajeto.pernas.length-1].local.endereco
     +'&travelmode=driving';
@@ -100,14 +109,27 @@ export class ViagemPage implements OnDestroy  {
   }
 
   pararViagem(){
-    this.viagemIniciada=false;
-    this.localizacaoService.pararRastreamento();
-    this.fatguys.interromperRoteiro(this.roteiro).then(
-      r=>{
-        this.audio.play('interromper-roteiro');
-        this.navCtrl.setRoot('CadastroRoteirosPage');
+    try {
+      this.esperandoConfirmacao=false;
+      this.viagemIniciada=false;
+      this.localizacaoService.pararRastreamento();
+      if(this.roteiro.trajeto!=null&&this.roteiro.trajeto.pernas!=null){
+        this.roteiro.trajeto.pernas.forEach(
+          p=>{
+            p.caminho=null;
+          }
+        )
       }
-    )
+      this.fatguys.interromperRoteiro(this.roteiro).then(
+        r=>{
+          this.audio.play('interromper-roteiro');
+          this.navCtrl.setRoot('CadastroRoteirosPage');
+        }
+      )
+      
+    } catch (error) {
+      this.msg.mostrarErro("erro parando roteiro: "+error);
+    }
   }
 
   confirmarPararViagem(){
@@ -133,6 +155,7 @@ export class ViagemPage implements OnDestroy  {
   }
 
   conduzidoEmbarcou(conducoes:Conducao[]){
+    this.esperandoConfirmacao=false;
     conducoes.forEach(
       c=>{
         c.cancelada=false;
@@ -154,6 +177,7 @@ export class ViagemPage implements OnDestroy  {
     this.fatguys.salvarConducoesDoRoteiro(this.roteiro);
   }
   conduzidoDesembarcou(conducoes:Conducao[]){
+    this.esperandoConfirmacao=false;
     conducoes.forEach(
       c=>{
         c.cancelada=false;
@@ -179,6 +203,7 @@ export class ViagemPage implements OnDestroy  {
   }
 
   roteiroFinalizado(){
+    this.localizacaoService.pararRastreamento();
     this.audio.play('concluir-roteiro');
     this.fatguys.finalizarRoteiro(this.roteiro).then(
       r=>{
