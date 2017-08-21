@@ -1,3 +1,4 @@
+import { AngularFireOfflineDatabase, AfoListObservable } from 'angularfire2-offline';
 import { ModalController } from 'ionic-angular';
 import { MensagemProvider } from './../mensagem/mensagem';
 import { Observable, Subscription } from 'rxjs';
@@ -20,12 +21,12 @@ export class FatguysUberProvider {
   public conexao=null;
 
   public condutor: Condutor;
-  public condutores: FirebaseListObservable<Condutor[]>;
-  public conduzidos: FirebaseListObservable<Conduzido[]>;
-  public chaves: FirebaseListObservable<Chave[]>;
+  public condutores: AfoListObservable<Condutor[]>;
+  public conduzidos: AfoListObservable<Conduzido[]>;
+  public chaves: AfoListObservable<Chave[]>;
   public conducoesSubscription:Subscription;
 
-  constructor(private afd: AngularFireDatabase,
+  constructor(private afd: AngularFireOfflineDatabase,
   private auth : AutenticacaoProvider,
   private msg: MensagemProvider,
   private modal: ModalController) {
@@ -38,13 +39,13 @@ export class FatguysUberProvider {
 
   iniciarMonitaracaoConexao(){    
     let conectado=this.conectado();
-      conectado.on("value",
+      conectado.subscribe(
         c=>{
           if(this.conexao==null){
             this.conexao=true;
             return;
           }
-          if(!c.val()){
+          if(!c){
             this.msg.mostrarErro("Você está sem conexão com a base!", 3000);
           }
           else{
@@ -52,13 +53,13 @@ export class FatguysUberProvider {
               this.msg.mostrarErro("Conexão restabelecida!", 3000);
             }
           }
-          this.conexao=c.val();
+          this.conexao=c;
         }
       )
   }
 
   conectado(){
-    return this.afd.database.ref(".info/connected");
+    return this.afd.object(".info/connected");
   }
 
   inciarRoteiro(roteiro:Roteiro){
@@ -197,12 +198,12 @@ export class FatguysUberProvider {
   obterConducoesComConduzidos (condutor: Condutor){    
     
     // Compose an observable based on the conducoes
-    let conducoesComConduzido = this.afd.list("/condutores/"+condutor.id+"/conducoes/", {
+    let conducoesComConduzido = Observable.from(this.afd.list("/condutores/"+condutor.id+"/conducoes/", {
       query: {
         orderByChild: "condutor",
         equalTo: condutor.id
       }
-    })
+    }))
     /// Each time the conducoes emits, switch to unsubscribe/ignore
     // any pending conduzido queries:
     .switchMap(conducoes => {
@@ -231,12 +232,12 @@ export class FatguysUberProvider {
 
   obterConducoesDoRoteiroComConduzidos(roteiro: Roteiro){
       // Compose an observable based on the conducoes
-    let conducoesComConduzido = this.afd.list("/condutores/"+roteiro.condutor+"/roteiros/"+roteiro.id+"/conducoes/", {
+    let conducoesComConduzido = Observable.from(this.afd.list("/condutores/"+roteiro.condutor+"/roteiros/"+roteiro.id+"/conducoes/", {
       query: {
         orderByChild: "condutor",
         equalTo: roteiro.condutor
       }
-    })
+    }))
     /// Each time the conducoes emits, switch to unsubscribe/ignore
     // any pending conduzido queries:
     .switchMap(conducoes => {

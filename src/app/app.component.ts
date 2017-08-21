@@ -85,7 +85,12 @@ export class MyApp {
                           let sub =
                           ref.subscribe(
                             r=>{
-                              sub.unsubscribe();
+                              if(sub!=null){
+                                sub.unsubscribe();
+                              }
+                              else{
+                                console.log("sub não existe");
+                              }
                               this.loading.dismiss();
                               if(r.length>0){
                                 console.log("indo pra home page")

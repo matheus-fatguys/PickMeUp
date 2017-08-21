@@ -1,3 +1,4 @@
+import { AngularFireOfflineModule } from 'angularfire2-offline';
 import { OfflinePageModule } from './../pages/offline/offline.module';
 import { ConducaoPageModule } from './../pages/conducao/conducao.module';
 import { MapaPopOverComponent } from './../components/mapa-pop-over/mapa-pop-over';
@@ -46,6 +47,7 @@ import { AudioProvider } from '../providers/audio/audio';
     HttpModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    AngularFireOfflineModule,
     FormsModule,   
     // TextMaskModule, 
     AngularFireModule.initializeApp(firebaseConfig),
