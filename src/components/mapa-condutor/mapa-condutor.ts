@@ -399,10 +399,10 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       var rtheta = Math.PI * theta/180
       var dist = Math.sin(rlat1) * Math.sin(rlat2) + Math.cos(rlat1) * Math.cos(rlat2) * Math.cos(rtheta);
       if(dist>1){
-        dist=-2;
+        dist=1;
       }
       if(dist<-1){
-        dist=+2;
+        dist=-1;
       }
       dist = Math.acos(dist)
       dist = dist * 180/Math.PI
