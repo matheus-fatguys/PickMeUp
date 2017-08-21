@@ -1,3 +1,4 @@
+import { Conducao } from './../../models/conducao';
 import { AudioProvider } from './../../providers/audio/audio';
 import { DetalheRoteiroComponent } from './../../components/detalhe-roteiro/detalhe-roteiro';
 import { Condutor } from './../../models/condutor';
@@ -5,7 +6,7 @@ import { Roteiro } from './../../models/roteiro';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 
 
 @IonicPage()
@@ -25,6 +26,7 @@ export class RoteiroPage {
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams,
+    public alertCtrl: AlertController,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
       let roteiro=this.navParams.get('roteiro');
@@ -55,16 +57,21 @@ export class RoteiroPage {
   }
 
   salvar(){
-    let ref= this.fatguys.obterCondutorPeloUsuarioLogado().subscribe(
-      r=>{
-        this.roteiro.condutor=r[0].id;
-        this.salvarRoteiro();
-        ref.unsubscribe();
-      }
-    )   
+    if(this.roteiro.id==null){
+      this.perguntarSobreVolta();
+    }
+    else{
+      let ref= this.fatguys.obterCondutorPeloUsuarioLogado().subscribe(
+        r=>{
+          this.roteiro.condutor=r[0].id;
+          this.salvarRoteiro();
+          ref.unsubscribe();
+        }
+      ) 
+    } 
   }
 
-  salvarRoteiro(){
+  salvarRoteiro(){    
     let sub = this.fatguys.salvarRoteiro(this.roteiro).then(
       r=>{
         this.msg.mostrarMsg("Dados salvos!", 3000).onDidDismiss(d=>{
@@ -76,6 +83,45 @@ export class RoteiroPage {
     ).catch(error=>{
         this.msg.mostrarMsg("Erro salvando : "+error);
       }); 
+  }
+
+  perguntarSobreVolta(){
+    let confirm = this.alertCtrl.create({
+      title: 'Roteiro de Volta',
+      message: 'Gerar roteiro de volta também?',
+      buttons: [
+        {
+          text: 'Não',
+          handler: () => {
+            this.roteiro.condutor=this.fatguys.condutor.id;
+            this.salvarRoteiro();
+          }
+        },
+        {
+          text: 'Sim',
+          handler: () => {
+            this.salvarRoteiroIdaVolta();
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
+
+  salvarRoteiroIdaVolta(){
+    this.roteiro.condutor=this.fatguys.condutor.id;
+    let sub = this.fatguys.salvarRoteiroIdaVolta(this.roteiro).then(
+      r=>{
+        this.msg.mostrarMsg("Dados salvos!", 3000).onDidDismiss(d=>{
+          if(this.navCtrl.canGoBack()){
+            this.navCtrl.pop();
+          }
+        });
+      }
+    ).catch(error=>{
+        this.msg.mostrarMsg("Erro salvando : "+error);
+      }); 
+
   }
 
   iniciar(){

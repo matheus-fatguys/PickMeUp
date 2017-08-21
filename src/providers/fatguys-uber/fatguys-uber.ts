@@ -360,7 +360,27 @@ export class FatguysUberProvider {
   }
 
  salvarRoteiro (roteiro: Roteiro){
-       
+    if(roteiro.domingo==null){
+      roteiro.domingo=false;
+    }
+    if(roteiro.segunda==null){
+      roteiro.segunda=false;
+    }
+    if(roteiro.terca==null){
+      roteiro.terca=false;
+    }
+    if(roteiro.quarta==null){
+      roteiro.quarta=false;
+    }
+    if(roteiro.quinta==null){
+      roteiro.quinta=false;
+    }
+    if(roteiro.sexta==null){
+      roteiro.sexta=false;
+    }
+    if(roteiro.sabado==null){
+      roteiro.sabado=false;
+    }
     if(!roteiro.id){
       return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").push(roteiro).then(
         ref => {
@@ -371,6 +391,83 @@ export class FatguysUberProvider {
     }
     else{
       return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").update(roteiro.id, roteiro);
+    }    
+  }
+ salvarRoteiroIdaVolta (roteiro: Roteiro){
+    if(roteiro.domingo==null){
+      roteiro.domingo=false;
+    }
+    if(roteiro.segunda==null){
+      roteiro.segunda=false;
+    }
+    if(roteiro.terca==null){
+      roteiro.terca=false;
+    }
+    if(roteiro.quarta==null){
+      roteiro.quarta=false;
+    }
+    if(roteiro.quinta==null){
+      roteiro.quinta=false;
+    }
+    if(roteiro.sexta==null){
+      roteiro.sexta=false;
+    }
+    if(roteiro.sabado==null){
+      roteiro.sabado=false;
+    }
+
+    let roteiroVolta:Roteiro={} as Roteiro;
+    roteiroVolta.condutor=roteiro.condutor;
+    roteiroVolta.domingo=roteiro.domingo;
+    roteiroVolta.segunda=roteiro.segunda;
+    roteiroVolta.terca=roteiro.terca;
+    roteiroVolta.quarta=roteiro.quarta;
+    roteiroVolta.quinta=roteiro.quinta;
+    roteiroVolta.sexta=roteiro.sexta;
+    roteiroVolta.sabado=roteiro.sabado;
+    roteiroVolta.hora=roteiro.hora;
+    roteiroVolta.nome=roteiro.nome+"[VOLTA]";
+    roteiro.nome+="[IDA]";
+    let conducoesVolta:Conducao[]=[] as Conducao[];
+    roteiro.conducoes.forEach(
+      c=>{
+        var cond:Conducao= {} as Conducao;
+        cond.origem=c.destino;
+        cond.destino=c.origem;
+        cond.condutor=c.condutor;
+        cond.conduzido=c.conduzido;
+        conducoesVolta.push(cond);
+      }
+    )
+    roteiroVolta.conducoes=conducoesVolta;
+       
+    if(!roteiro.id){
+      return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").push(roteiro).then(
+        ref => {
+          roteiro.id=ref.key;
+          this.salvarRoteiro(roteiroVolta).then(
+            r=>{
+              roteiroVolta.conducoes.forEach(c => {
+                this.salvarConducao(c);
+              });
+            }
+          )
+          return this.afd.list("condutores/"+roteiro.condutor+"/roteiros").update(roteiro.id,roteiro);
+        }
+      ) 
+    }
+    else{
+      let ret =this.afd.list("condutores/"+roteiro.condutor+"/roteiros").update(roteiro.id, roteiro);
+      ret.then(r=>{
+        this.salvarRoteiro(roteiroVolta).then(
+            r=>{
+              roteiroVolta.conducoes.forEach(c => {
+                this.salvarConducao(c);
+              });
+            }
+          )
+      })
+      return ret;
     }    
   }
 

@@ -74,7 +74,11 @@ export class CadastroRoteirosPage  implements OnInit, OnDestroy {
                     roteiros=>{
                       console.log("ngOnInit CadastroRoteirosPage roteiros=>"+roteiros);
                       console.log(roteiros);
-                      this.loading.dismiss();
+                      try {
+                        this.loading.dismiss();                        
+                      } catch (error) {
+                        
+                      }
                       this.roteiroEmExecucao=this.fatguys.condutor.roteiroEmexecucao;  
                       // this.subRoteiros.unsubscribe();
                     },
@@ -178,24 +182,26 @@ export class CadastroRoteirosPage  implements OnInit, OnDestroy {
     if(roteiro!=null){
       this.roteiroSelecionado=roteiro;
     }
-    // this.loading = this.loadingCtrl.create({
-    //         content: 'Excluindo roteiro...'
-    //       });
-    this.loading.setContent("Excluindo roteiro...");
-    this.loading.present(this.loading);
-    this.fatguys.excluirRoteiro(this.roteiroSelecionado).then(
-      (r)=>{
-        this.loading.dismiss();
-        this.msg.mostrarMsg("Exclusão realizada!", 3000);
-      },
-      e=>{
-        this.loading.dismiss();
-        this.msg.mostrarErro("Erro excluindo: "+e.message);  
+    this.loading = this.loadingCtrl.create({
+            content: 'Excluindo roteiro...'
+          });
+    // this.loading.setContent("Excluindo roteiro...");
+    this.loading.present().then(
+      _=>{
+        this.fatguys.excluirRoteiro(this.roteiroSelecionado).then(
+          (r)=>{
+            this.msg.mostrarMsg("Exclusão realizada!", 3000);
+          },
+          e=>{
+            this.loading.dismiss();
+            this.msg.mostrarErro("Erro excluindo: "+e.message);  
+          }
+        ).catch(error=>{
+          this.loading.dismiss();
+          this.msg.mostrarErro("Erro excluindo: "+error);
+        });
       }
-    ).catch(error=>{
-      this.loading.dismiss();
-      this.msg.mostrarErro("Erro excluindo: "+error);
-    });
+    );
   }
 
   finalizarRoteiro(){     
