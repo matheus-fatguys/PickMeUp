@@ -43,7 +43,7 @@ ISSUE 12: uma página modal deve estar incluída nos imports do módulo da aplic
 
 ISSUE 13: remodelar a base firebase tendo em conta o aprendizado sobre firebase e nosql
 
-ISSUE 14: gerar a volta do roteiro na hora decadastrar, se o usuário pedir
+ISSUE 14: [RESOLVIDO] gerar a volta do roteiro na hora decadastrar, se o usuário pedir
 
 JOIN NO FIREBASE : https://stackoverflow.com/questions/41755579/how-to-get-do-a-join-in-angularfire2-database
 
