@@ -59,6 +59,7 @@ export class ViagemPage implements OnDestroy  {
     if(this.esperandoConfirmacao){
       return;
     }
+    this.esperandoConfirmacao=true;
     this.origemProxima=true;
     this.confirmarConduzidoABordo($event);
   }
@@ -67,6 +68,7 @@ export class ViagemPage implements OnDestroy  {
     if(this.esperandoConfirmacao){
       return;
     }
+    this.esperandoConfirmacao=true;
     this.destinoProximo=true;
     this.confirmarDeixouConduzidoNoDestino($event);
   }
@@ -156,7 +158,6 @@ export class ViagemPage implements OnDestroy  {
 
   pararViagem(){
     try {
-      this.esperandoConfirmacao=false;
       this.viagemIniciada=false;
       this.localizacaoService.pararRastreamento();
       if(this.roteiro.trajeto!=null&&this.roteiro.trajeto.pernas!=null){
@@ -168,6 +169,7 @@ export class ViagemPage implements OnDestroy  {
       }
       this.fatguys.interromperRoteiro(this.roteiro).then(
         r=>{
+          this.esperandoConfirmacao=false;
           this.audio.play('interromper-roteiro');
           this.navCtrl.setRoot('CadastroRoteirosPage');
         }
@@ -201,7 +203,6 @@ export class ViagemPage implements OnDestroy  {
   }
 
   conduzidoEmbarcou(conducoes:Conducao[]){
-    this.esperandoConfirmacao=false;
     conducoes.forEach(
       c=>{
         c.cancelada=false;
@@ -220,7 +221,10 @@ export class ViagemPage implements OnDestroy  {
       }
     );
 
-    this.fatguys.salvarConducoesDoRoteiro(this.roteiro);
+    this.fatguys.salvarConducoesDoRoteiro(this.roteiro)
+    .then(_=>{
+      this.esperandoConfirmacao=false;
+    });
   }
   conduzidoDesembarcou(conducoes:Conducao[]){
     this.esperandoConfirmacao=false;
@@ -238,6 +242,7 @@ export class ViagemPage implements OnDestroy  {
       r=>{
         var i=this.roteiro.conducoes.findIndex(
           c=>{
+            this.esperandoConfirmacao=false;
             return !c.realizada&&!c.cancelada;
           }
         )
