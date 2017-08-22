@@ -30,32 +30,6 @@ export class MyApp {
     public modalCtrl: ModalController,
     public audio:AudioProvider,
     public loadingCtrl: LoadingController) {
-      // console.log("constructor MyApp");
-      
-      // let conectado=this.fatguysService.conectado();
-      // conectado.subscribe(
-      //   e=>{
-      //     if(!e.value){
-      //       this.msg.mostrarErro("Você está sem conexão com a base!").onDidDismiss(
-      //         _=>{
-      //             let modal = this.modalCtrl.create(OfflinePage);
-      //             modal.onDidDismiss(data => {
-      //               if(data!=null&&data.conducao!=null){                
-      //                 this.rootPage = 'HomePage';
-      //               }
-      //             });  
-      //             modal.present();
-      //         }
-      //       );
-      //     }
-      //     else{
-      //       if(!this.fatguysService.conexao) {
-      //         this.msg.mostrarErro("Conexão restabelecida!", 1000);
-      //       }
-      //     }
-      //     this.fatguysService.conexao=e.value;
-      //   }
-      // )
       console.log("subscribe no auth")
       if(this.loading==null){      
         this.loading = this.loadingCtrl.create({
@@ -81,10 +55,11 @@ export class MyApp {
                         this.loading.setContent("Buscando condutor...");
                       }
                       this.loading.present().then(
-                        _=>{
-                          let sub =
+                        _=>{                          
+                          const sub =
                           ref.subscribe(
                             r=>{
+                              this.fatguysService.condutor=r[0];
                               if(sub!=null){
                                 sub.unsubscribe();
                               }

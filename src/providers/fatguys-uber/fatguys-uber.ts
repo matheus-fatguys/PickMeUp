@@ -545,9 +545,9 @@ export class FatguysUberProvider {
         equalTo: user.uid
       }
     })
-    obs.subscribe(condutor=>{
-            this.condutor=condutor[0];
-    });  
+    // obs.subscribe(condutor=>{
+    //         this.condutor=condutor[0];
+    // });  
     return obs;
   }
 
