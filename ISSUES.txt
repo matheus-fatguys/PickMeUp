@@ -66,6 +66,8 @@ ISSUE 15: BUGS DOS TESTES EM VIDA REAL:
 ISSUE 16: DECOBRIR PORQUE O ANDROID ESTÁ BLOQUEANDO A CHAMADA AO MAPS (testar incluir em config.xml <allow-intent href="maps:*" />)
 ISSUE 16: [RESOLVIDO] DAR OPÇÃO DE ESCOLHER NAVEGAR PELO MAS OU PELO WAZE AO CONDUTOR
 ISSUE 17: [RESOLVIDO] IMPLEMENTAR POSSIBILIDADE DE CRIAR A VOLTA DO ROTEIRO NO MOMENTO DE CADASTRAR
-ISSUE 18: descobrir porque  app pergunta inúmeras vezes se o usuário quer embarcar, desembarcar, finalizar roteiro
+ISSUE 18: [RESOLVIDO] descobrir porque  app pergunta inúmeras vezes se o usuário quer embarcar, desembarcar, finalizar roteiro
 ISSUE 19: tela branca na incialização (estar rodar com ionic run android --prod e alterações em config.xml https://forum.ionicframework.com/t/after-splash-screen-display-white-screen-long-time/80162/24)
 ISSUE 20: por opção de informar embarque e desembarque manualmente
+ISSUE 21: [RESOLVIDO] corrigir erro ao finalizar o roteiro (First argument contains a function in property 'condutores.-KqxJ0RK98MlTMrQn1Ct.roteiros.-Kqztl2jCRUm73O1DK5H.trajeto.pernas.0.caminho.0.lat' with contents: function (){return a} Error: Firebase.update failed: First argument contains a function in property )
+ISSUE 22: DESCORBRIR O QUE É ESSE ERRO: Uncaught (in promise): DataCloneError: Failed to execute 'put' on 'IDBObjectStore': function (){return a} could not be cloned

@@ -61,7 +61,7 @@ export class ViagemPage implements OnDestroy  {
     }
 
     let c=conducoes.findIndex(c=>{
-      return !c.emAndamento;
+      return c.emAndamento;
     })
 
     if(c<0){
@@ -79,7 +79,7 @@ export class ViagemPage implements OnDestroy  {
     }
 
     let c=conducoes.findIndex(c=>{
-      return !c.embarcado;
+      return c.embarcado;
     })
 
     if(c<0){
@@ -295,8 +295,8 @@ export class ViagemPage implements OnDestroy  {
 
   confirmarDeixouConduzidoNoDestino(conducoes:Conducao[]){
     let confirm = this.alertCtrl.create({
-      title: 'Conduzido a Bordo',
-      message: "Marque os conduzidos desembarcaram agora",
+      title: 'Desembarque',
+      message: "Marque os conduzidos que desembarcaram agora",
       buttons: [
         {
           text: 'Cancelar',

@@ -150,6 +150,13 @@ export class FatguysUberProvider {
     )
     this.condutor.roteiroEmexecucao=roteiro;
     this.condutor.roteiroEmexecucao=null;
+    if(roteiro.trajeto!=null&&roteiro.trajeto.pernas!=null){
+      roteiro.trajeto.pernas.forEach(
+        p=>{
+          p.caminho=null;
+        }
+      )
+    }
     
     let ref=this.afd.object("/condutores/"+this.condutor.id+"/roteiroEmexecucao/").remove();
     ref.then(r=>{
