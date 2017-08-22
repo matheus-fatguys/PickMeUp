@@ -62,6 +62,7 @@ export class LoginPage implements OnInit{
               .subscribe(condutor=>{
                 ul.unsubscribe();
                 this.loading.dismiss();
+                this.fatguysService.condutor=condutor[0];
                 if(condutor[0]){
                   this.msg.mostrarMsg("Bem vindo, "+ condutor[0].nome +"!", 3000)
                           .onDidDismiss(d=>{

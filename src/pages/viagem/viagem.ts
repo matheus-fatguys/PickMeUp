@@ -55,22 +55,40 @@ export class ViagemPage implements OnDestroy  {
     this.viagemIniciada=true;
   }
   
-  onOrigemProxima($event){
+  onOrigemProxima(conducoes:Array<Conducao>){
     if(this.esperandoConfirmacao){
       return;
     }
+
+    let c=conducoes.findIndex(c=>{
+      return !c.emAndamento;
+    })
+
+    if(c<0){
+      return;
+    }
+
     this.esperandoConfirmacao=true;
     this.origemProxima=true;
-    this.confirmarConduzidoABordo($event);
+    this.confirmarConduzidoABordo(conducoes);
   }
 
-  onDestinoProximo($event){
+  onDestinoProximo(conducoes:Array<Conducao>){
     if(this.esperandoConfirmacao){
       return;
     }
+
+    let c=conducoes.findIndex(c=>{
+      return !c.embarcado;
+    })
+
+    if(c<0){
+      return;
+    }
+
     this.esperandoConfirmacao=true;
     this.destinoProximo=true;
-    this.confirmarDeixouConduzidoNoDestino($event);
+    this.confirmarDeixouConduzidoNoDestino(conducoes);
   }
 
   ngOnDestroy(): void {

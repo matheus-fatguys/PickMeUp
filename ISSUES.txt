@@ -63,7 +63,9 @@ ISSUE 15: BUGS DOS TESTES EM VIDA REAL:
         15.5 - [RESOLVIDO] CONTINUAR RASTREANDO EM BACKGROUND COM A APLICAÇÃO EM FOREGROUND
         15.6 - [RESOLVIDO] CRIAR MAIS DE UM RASTREAMENTO FAZENDO CONFUSÃO
 
-ISSUE 16: DECOBRIR PORQUE O ANDROID ESTÁ BLOQUEANDO A CHAMADA AO MAPS
+ISSUE 16: DECOBRIR PORQUE O ANDROID ESTÁ BLOQUEANDO A CHAMADA AO MAPS (testar incluir em config.xml <allow-intent href="maps:*" />)
 ISSUE 16: [RESOLVIDO] DAR OPÇÃO DE ESCOLHER NAVEGAR PELO MAS OU PELO WAZE AO CONDUTOR
 ISSUE 17: [RESOLVIDO] IMPLEMENTAR POSSIBILIDADE DE CRIAR A VOLTA DO ROTEIRO NO MOMENTO DE CADASTRAR
 ISSUE 18: descobrir porque  app pergunta inúmeras vezes se o usuário quer embarcar, desembarcar, finalizar roteiro
+ISSUE 19: tela branca na incialização (estar rodar com ionic run android --prod e alterações em config.xml https://forum.ionicframework.com/t/after-splash-screen-display-white-screen-long-time/80162/24)
+ISSUE 20: por opção de informar embarque e desembarque manualmente

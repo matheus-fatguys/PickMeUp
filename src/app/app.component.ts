@@ -23,14 +23,49 @@ export class MyApp {
 
   constructor(platform: Platform, 
     statusBar: StatusBar, 
-    splashScreen: SplashScreen,
+    private splashScreen: SplashScreen,
     public afAuth: AngularFireAuth,
     public fatguysService: FatguysUberProvider,
     public msg: MensagemProvider,
     public modalCtrl: ModalController,
     public audio:AudioProvider,
     public loadingCtrl: LoadingController) {
-      console.log("subscribe no auth")
+      
+      platform.ready().then(() => {
+        console.log("plataforma pronta")
+      // Okay, so the platform is ready and our plugins are available.
+      // Here you can do any higher level native things you might need.
+      statusBar.styleDefault();
+      // splashScreen.hide();
+      this.iniciarAplicacao();
+    });
+
+    // used for an example of ngFor and navigation
+    this.pages = [
+      { title: 'Condutor', component: 'CondutorPage', icon:'person' },
+      { title: 'Conduzidos', component: 'CadastroConduzidosPage', icon:'people' },
+      { title: 'Conduções', component: 'CadastroConducoesPage', icon:'git-network' },
+      { title: 'Roteiros', component: 'CadastroRoteirosPage', icon:'git-compare' },
+      { title: 'Sair', component: 'LogoutPage', icon:'log-out' }
+    ];
+
+    audio.preload('bem-vindo', 'assets/sound/399523__amateurj__banjo.ogg');
+    audio.preload('iniciar-roteiro', 'assets/sound/338954__inspectorj__car-ignition-exterior-a.wav');
+    audio.preload('interromper-roteiro', 'assets/sound/185744__enric592__turning-off-engine.wav');
+    audio.preload('concluir-roteiro', 'assets/sound/353546__maxmakessounds__success.wav');
+    audio.preload('conducao-cancelada', 'assets/sound/167337__willy-ineedthatapp-com__pup-alert.mp3');
+    audio.preload('recalculando-trajeto', 'assets/sound/104026__rutgermuller__tires-squeaking.aif');
+    audio.play('iniciar-roteiro');
+  }
+
+  openPage(page) {
+    // Reset the content nav to have just this page
+    // we wouldn't want the back button to show in this scenario
+    this.nav.setRoot(page.component);
+  }
+
+  iniciarAplicacao(){
+    console.log("subscribe no auth")
       if(this.loading==null){      
         this.loading = this.loadingCtrl.create({
               content: 'Buscando usuário...'
@@ -38,13 +73,14 @@ export class MyApp {
       }
       this.loading.present().then(
         _=>{
-          const authObserver = afAuth.authState.first().subscribe( user => {
+          const authObserver = this.afAuth.authState.first().subscribe( user => {
+            this.splashScreen.hide();
             console.log("user esá nulo")
             if (user!=null) {
               console.log("pegando ref para subscribe no condutor")
               let ref= this.fatguysService.obterCondutorPeloUsuarioLogado();
               console.log("pegou ref");
-              if(ref!=null){
+              if(ref!=null){                
                 console.log("subscribe no condutor");
                       if(this.loading==null){      
                         this.loading = this.loadingCtrl.create({
@@ -55,8 +91,8 @@ export class MyApp {
                         this.loading.setContent("Buscando condutor...");
                       }
                       this.loading.present().then(
-                        _=>{                          
-                          const sub =
+                        _=>{
+                          let sub =
                           ref.subscribe(
                             r=>{
                               this.fatguysService.condutor=r[0];
@@ -112,36 +148,7 @@ export class MyApp {
         // authObserver.unsubscribe();
         });
       });
-      platform.ready().then(() => {
-        console.log("plataforma pronta")
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
-      splashScreen.hide();
-    });
-
-    // used for an example of ngFor and navigation
-    this.pages = [
-      { title: 'Condutor', component: 'CondutorPage', icon:'person' },
-      { title: 'Conduzidos', component: 'CadastroConduzidosPage', icon:'people' },
-      { title: 'Conduções', component: 'CadastroConducoesPage', icon:'git-network' },
-      { title: 'Roteiros', component: 'CadastroRoteirosPage', icon:'git-compare' },
-      { title: 'Sair', component: 'LogoutPage', icon:'log-out' }
-    ];
-
-    audio.preload('bem-vindo', 'assets/sound/399523__amateurj__banjo.ogg');
-    audio.preload('iniciar-roteiro', 'assets/sound/338954__inspectorj__car-ignition-exterior-a.wav');
-    audio.preload('interromper-roteiro', 'assets/sound/185744__enric592__turning-off-engine.wav');
-    audio.preload('concluir-roteiro', 'assets/sound/353546__maxmakessounds__success.wav');
-    audio.preload('conducao-cancelada', 'assets/sound/167337__willy-ineedthatapp-com__pup-alert.mp3');
-    audio.preload('recalculando-trajeto', 'assets/sound/104026__rutgermuller__tires-squeaking.aif');
-    audio.play('iniciar-roteiro');
   }
 
-  openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
-  }
 }
 

@@ -258,7 +258,10 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       }
     )
     if(origens.length>0){
-      this.onOrigemProxima.emit(origens);
+      // this.onOrigemProxima.emit(origens);
+      setInterval(()=>{
+        this.onOrigemProxima.emit(origens);
+      }, 500)
     }
     if(destinos.length>0){
       this.onDestinoProximo.emit(destinos);
