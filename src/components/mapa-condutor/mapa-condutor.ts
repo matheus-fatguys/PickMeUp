@@ -188,11 +188,11 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
                               this.loading.dismiss();
                               if(mapa){
                                 this.mapa=mapa;
-                                this.mapa.addListener('click', (localizacao) => {
-                                  this.fatguys.condutor.localizacao.latitude=localizacao.latLng.lat();
-                                  this.fatguys.condutor.localizacao.longitude=localizacao.latLng.lng();
-                                  this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
-                                });
+                                // this.mapa.addListener('click', (localizacao) => {
+                                //   this.fatguys.condutor.localizacao.latitude=localizacao.latLng.lat();
+                                //   this.fatguys.condutor.localizacao.longitude=localizacao.latLng.lng();
+                                //   this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
+                                // });
                                 this.msg.mostrarMsg("Boa viagem, dirija com atenção!", 2000);
                                 this.mostrarMarcacoes(trajeto);
                                 this.mostrarCaminhoDoTrajeto(trajeto);
@@ -600,9 +600,9 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     popup.open(this.mapa, marcaLocal);
     google.maps.event.addListener(marcaLocal, 'click', () => {
       popup.open(this.mapa, marcaLocal);
-      this.fatguys.condutor.localizacao.latitude=localizacao.lat();
-      this.fatguys.condutor.localizacao.longitude=localizacao.lng();
-      this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
+      // this.fatguys.condutor.localizacao.latitude=localizacao.lat();
+      // this.fatguys.condutor.localizacao.longitude=localizacao.lng();
+      // this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor);
     });
 
     conduzidos.forEach(c => {
