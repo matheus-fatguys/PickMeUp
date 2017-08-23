@@ -49,7 +49,7 @@ export class LocalizacaoProvider {
               this.registrarListenersDeBackForeGround();
             }
             console.log("!!!!!!!!vai pedir a posição")
-            this.geolocation.getCurrentPosition()
+            this.geolocation.getCurrentPosition({timeout:10000, enableHighAccuracy: true})
             .then(resp=>{          
                   var localizacao = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
                   this.atualizarLocalizacaoCondutor(resp.coords.latitude, resp.coords.longitude);                   

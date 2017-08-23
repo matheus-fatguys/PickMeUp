@@ -41,6 +41,16 @@
           <button class=" mapa-controles" ion-button icon-only  (click)="confirmarPararViagem()"><ion-icon name="hand"></ion-icon></button>
         </button>
       </ion-row> 
+       <ion-row *ngIf="viagemIniciada"> 
+        <button >
+          <button class=" mapa-controles" ion-button icon-only  (click)="informarEmbarcados()"><ion-icon name="checkmark"></ion-icon></button>
+        </button>
+      </ion-row> 
+       <ion-row *ngIf="viagemIniciada"> 
+        <button >
+          <button class=" mapa-controles" ion-button icon-only  (click)="informarDesembarcados()"><ion-icon name="done-all"></ion-icon></button>
+        </button>
+      </ion-row> 
        <!-- <ion-row *ngIf="origemProxima" > 
          <button >
           <button class=" mapa-controles"ion-button icon-only (click)="confirmarConduzidoABordo()"><ion-icon name="person-add"></ion-icon></button>

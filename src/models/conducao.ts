@@ -14,5 +14,7 @@ export interface Conducao {
     interrompida?:boolean,
     inicio?:Date,
     fim?:Date,
-    cancelamentoNotificado?:boolean
+    cancelamentoNotificado?:boolean,
+    status?:StatusConducao
 }
+export enum StatusConducao{EmAndamento, Embarcado, Finalizada, Cancelada, Inicial}

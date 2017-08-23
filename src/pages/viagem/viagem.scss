@@ -27,6 +27,8 @@ page-viagem {
   .mapa-controles {
     text-align: center;
     background: linear-gradient(transparent, map-get($colors , light ));
+    height: 50px;
+    width: 50px;
   }
 
 }

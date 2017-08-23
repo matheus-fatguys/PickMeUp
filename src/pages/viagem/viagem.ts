@@ -384,5 +384,94 @@ export class ViagemPage implements OnDestroy  {
     confirm.present();
   }
 
+  informarEmbarcados(){
+    let confirm = this.alertCtrl.create({
+      title: 'Informar Embarcados',
+      message: "",
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+            
+          }
+        },
+        {
+          text: 'OK',
+          handler: (opcoes) => {
+            var cs=[];
+            opcoes.forEach(o => {
+              var co=this.roteiro.conducoes.find(
+                c=>{
+                  return c.id==o;
+                }
+              )
+              if(co!=null){
+                cs.push(co);
+              }
+            });
+            this.conduzidoEmbarcou(cs);
+          }
+        }
+      ]
+    });
+
+    this.roteiro.conducoes.forEach(
+      c=>{
+        confirm.addInput({
+          type: 'checkbox',
+          label: c.conduzidoVO.nome,
+          value: c.id,
+          checked: c.embarcado
+        });
+      }
+    )
+
+    confirm.present();
+  }
+  informarDesembarcados(){
+    let confirm = this.alertCtrl.create({
+      title: 'Informar Desembarcados',
+      message: "",
+      buttons: [
+        {
+          text: 'Cancelar',
+          handler: () => {
+            
+          }
+        },
+        {
+          text: 'OK',
+          handler: (opcoes) => {
+            var cs=[];
+            opcoes.forEach(o => {
+              var co=this.roteiro.conducoes.find(
+                c=>{
+                  return c.id==o;
+                }
+              )
+              if(co!=null){
+                cs.push(co);
+              }
+            });
+            this.conduzidoDesembarcou(cs);
+          }
+        }
+      ]
+    });
+
+    this.roteiro.conducoes.forEach(
+      c=>{
+        confirm.addInput({
+          type: 'checkbox',
+          label: c.conduzidoVO.nome,
+          value: c.id,
+          checked: c.realizada
+        });
+      }
+    )
+
+    confirm.present();
+  }
+
 }
 

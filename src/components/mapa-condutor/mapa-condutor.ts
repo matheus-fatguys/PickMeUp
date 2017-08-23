@@ -9,7 +9,7 @@ import { TrajetoProvider } from './../../providers/trajeto/trajeto';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
 import { LocalizacaoProvider } from './../../providers/localizacao/localizacao';
-import { Platform, LoadingController, AlertController, NavController } from 'ionic-angular';
+import { Platform, LoadingController, AlertController } from 'ionic-angular';
 import { Component, Input, OnDestroy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -35,7 +35,6 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
   @Output() onDestinoProximo= new EventEmitter<Conducao[]>();
 
   constructor(public platform: Platform,
-    public navCtrl: NavController, 
     public localizacaoService: LocalizacaoProvider,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider,
@@ -77,11 +76,12 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
           }
         )
         if(i<0){
+          this.msg.mostrarMsg("Este roteiro não tem conduções a serem realizadas e será finalizado",3000);
           this.fatguys.finalizarRoteiro(roteiro).then(
             r=>{
               let confirm = this.alertCtrl.create({
-              title: 'Iniciar Roteiro',
-              message: 'Iníciar o Roteiro?',
+              title: 'Iniciar Roteiro?',
+              message: 'Roteiro finalizado e pronto a ser iniciado',
               buttons: [
                 {
                   text: 'Cancelar',
@@ -213,7 +213,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
                       }).catch(
                         error=>{                                
                           this.loading.dismiss();
-                          this.msg.mostrarErro('Erro obtendo localização: ' + error);
+                          this.msg.mostrarErro('Erro obtendo localização: ' + error.message);
                         }  
                       );                      
               },
@@ -228,7 +228,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       error=>{
         subGeo.unsubscribe();
         this.loading.dismiss();
-        this.msg.mostrarErro(error);
+        this.msg.mostrarErro("Erro obtendo localização: "+error.message);
+        this.iniciarMapa(null);
       }
     );
     obs.first();
@@ -259,9 +260,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     )
     if(origens.length>0){
       this.onOrigemProxima.emit(origens);
-      // setInterval(()=>{
-      //   this.onOrigemProxima.emit(origens);
-      // }, 500)
+      
+      setInterval(this.onOrigemProxima.emit(origens),1000)
     }
     if(destinos.length>0){
       this.onDestinoProximo.emit(destinos);
