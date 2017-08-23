@@ -45,15 +45,15 @@ export class FatguysUberProvider {
             this.conexao=true;
             return;
           }
-          if(!c){
+          if(!c.$value){
             this.msg.mostrarErro("Você está sem conexão com a base!", 3000);
           }
           else{
             if(!this.conexao) {
-              this.msg.mostrarErro("Conexão restabelecida!", 3000);
+              this.msg.mostrarErro("Conexão com a base restabelecida!", 3000);
             }
           }
-          this.conexao=c;
+          this.conexao=c.$value;
         }
       )
   }

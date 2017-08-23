@@ -54,25 +54,30 @@ export class CadastroRoteirosPage  implements OnInit, OnDestroy {
             content: 'Buscando condutor...'
           });
     }
-    console.log("ngOnInit CadastroRoteirosPage this.fatguys.condutor=>"+this.fatguys.condutor);
-    console.log(this.fatguys.condutor);
-    this.loading.setContent("Buscando roteiros...");
-    this.roteiros=this.fatguys.obterRoteiros(this.fatguys.condutor);
-    this.subRoteiros=this.roteiros.subscribe(
-      roteiros=>{
-        console.log("ngOnInit CadastroRoteirosPage roteiros=>"+roteiros);
-        console.log(roteiros);
-        try {
-          this.loading.dismiss();                        
-        } catch (error) {
-          
+    // console.log("ngOnInit CadastroRoteirosPage this.fatguys.condutor=>"+this.fatguys.condutor);
+    // console.log(this.fatguys.condutor);
+    if(this.fatguys.condutor==null){      
+      this.navCtrl.setRoot('LoginPage');
+    }
+    else{
+      this.loading.setContent("Buscando roteiros...");
+      this.roteiros=this.fatguys.obterRoteiros(this.fatguys.condutor);
+      this.subRoteiros=this.roteiros.subscribe(
+        roteiros=>{
+          console.log("ngOnInit CadastroRoteirosPage roteiros=>"+roteiros);
+          console.log(roteiros);
+          try {
+            this.loading.dismiss();                        
+          } catch (error) {
+            
+          }
+          this.roteiroEmExecucao=this.fatguys.condutor.roteiroEmexecucao;  
+        },
+        e=>{
+          this.loading.dismiss();
         }
-        this.roteiroEmExecucao=this.fatguys.condutor.roteiroEmexecucao;  
-      },
-      e=>{
-        this.loading.dismiss();
-      }
-    );     
+      );
+    }     
   }
 
   toggleAtivar(roteiro: Roteiro){

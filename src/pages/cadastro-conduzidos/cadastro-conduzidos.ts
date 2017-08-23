@@ -2,7 +2,7 @@ import { Chave } from './../../models/chave';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { Conduzido } from './../../models/conduzido';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 @IonicPage()
@@ -10,10 +10,11 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   selector: 'page-cadastro-conduzidos',
   templateUrl: 'cadastro-conduzidos.html',
 })
-export class CadastroConduzidosPage implements OnInit {
+export class CadastroConduzidosPage implements OnInit, OnDestroy {
   
   private conduzidos;
   private conduzidoSelecionado:Conduzido;
+  private conduzidosSubscription;
 
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -22,14 +23,23 @@ export class CadastroConduzidosPage implements OnInit {
   }
 
   ngOnInit(): void {
-    let ref=this.fatguys.obterCondutorPeloUsuarioLogado();
-    if(ref!=null){
-      let sub = ref.subscribe(
-        conds=>{
-          this.conduzidos=this.fatguys.obterConduzidos(conds[0]);
-        }
-      );
+    if(this.fatguys.condutor==null){      
+      this.navCtrl.setRoot('LoginPage');
+    }
+    else{
+      this.obterConduzidos();
     }    
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeObservables();
+  }
+  unsubscribeObservables(){
+    
+  }
+
+  obterConduzidos(){
+      this.conduzidos=this.fatguys.obterConduzidos(this.fatguys.condutor);
   }
 
   toggleAtivar(conduzido: Conduzido){

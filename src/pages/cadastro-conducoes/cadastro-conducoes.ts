@@ -1,7 +1,7 @@
 import { Conducao } from './../../models/conducao';
 import { MensagemProvider } from './../../providers/mensagem/mensagem';
 import { FatguysUberProvider } from './../../providers/fatguys-uber/fatguys-uber';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
 @IonicPage()
@@ -9,7 +9,7 @@ import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angul
   selector: 'page-cadastro-conducoes',
   templateUrl: 'cadastro-conducoes.html',
 })
-export class CadastroConducoesPage  implements OnInit{
+export class CadastroConducoesPage  implements OnInit, OnDestroy {
 
 
   private conducoes;
@@ -21,7 +21,6 @@ export class CadastroConducoesPage  implements OnInit{
     public viewCtrl: ViewController,
     public fatguys: FatguysUberProvider,
     public msg: MensagemProvider) {
-      this.obterConducoes();
   }
 
   obterConducoes(){   
@@ -29,6 +28,12 @@ export class CadastroConducoesPage  implements OnInit{
   }
 
   ngOnInit(): void {
+    if(this.fatguys.condutor==null){      
+      this.navCtrl.setRoot('LoginPage');
+    }
+    else{
+      this.obterConducoes();
+    }
   }
   ngOnDestroy(): void {
     this.unsubscribeObservables();
