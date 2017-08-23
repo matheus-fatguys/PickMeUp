@@ -1,8 +1,8 @@
 {
-    "name": "PickMeUp",
+    "name": "T2Condutor",
     "version": "0.0.1",
-    "author": "Ionic Framework",
-    "homepage": "http://ionicframework.com/",
+    "author": "Matheus Araujo - Fatguys",
+    "homepage": "http://fatguys.com.br/",
     "private": true,
     "scripts": {
         "clean": "ionic-app-scripts clean",
@@ -58,7 +58,7 @@
         "ionic": "3.8.1",
         "typescript": "2.3.4"
     },
-    "description": "An Ionic project",
+    "description": "T2 - Módulo Condutor",
     "cordova": {
         "plugins": {
             "cordova-plugin-geolocation": {},
