@@ -430,19 +430,27 @@ export class ViagemPage implements OnDestroy  {
         }
       ]
     });
-
+    let tem:boolean=false;
     this.roteiro.conducoes.forEach(
       c=>{
-        confirm.addInput({
-          type: 'checkbox',
-          label: c.conduzidoVO.nome,
-          value: c.id,
-          checked: c.embarcado
-        });
+        if(!c.cancelada&&c.emAndamento){
+          tem=true;
+          confirm.addInput({
+            type: 'checkbox',
+            label: c.conduzidoVO.nome,
+            value: c.id,
+            checked: c.embarcado
+          });
+        }
       }
     )
 
-    confirm.present();
+    if(tem){
+      confirm.present();
+    }
+    else{
+      this.msg.mostrarMsg("Ninguém a embarcar");
+    }
   }
   informarDesembarcados(){
     let confirm = this.alertCtrl.create({
@@ -474,19 +482,26 @@ export class ViagemPage implements OnDestroy  {
         }
       ]
     });
-
+    let tem:boolean=false;
     this.roteiro.conducoes.forEach(
       c=>{
-        confirm.addInput({
-          type: 'checkbox',
-          label: c.conduzidoVO.nome,
-          value: c.id,
-          checked: c.realizada
-        });
+        if(!c.cancelada&&c.embarcado){
+          tem=true;
+          confirm.addInput({
+            type: 'checkbox',
+            label: c.conduzidoVO.nome,
+            value: c.id,
+            checked: c.realizada
+          });
+        }
       }
     )
-
-    confirm.present();
+    if(tem){
+      confirm.present();
+    }
+    else{
+      this.msg.mostrarMsg("Ninguém desembarcar");
+    }
   }
 
 }
