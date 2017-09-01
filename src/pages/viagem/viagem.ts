@@ -255,7 +255,7 @@ export class ViagemPage implements OnDestroy  {
       }
     );
 
-    this.fatguys.salvarConducoesDoRoteiro(this.roteiro)
+    this.fatguys.salvarConducoesDoRoteiroEmAndamento(this.roteiro)
     .then(_=>{
       this.esperandoConfirmacao=false;
     });
@@ -272,7 +272,7 @@ export class ViagemPage implements OnDestroy  {
         console.log(c);
       }
     )
-    this.fatguys.salvarConducoesDoRoteiro(this.roteiro).then(
+    this.fatguys.salvarConducoesDoRoteiroEmAndamento(this.roteiro).then(
       r=>{
         var i=this.roteiro.conducoes.findIndex(
           c=>{

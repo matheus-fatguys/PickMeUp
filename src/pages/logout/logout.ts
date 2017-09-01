@@ -51,7 +51,7 @@ export class LogoutPage {
       _=>{
           this.auth.logout().then(r=>{
               this.loading.dismiss();
-              this.msg.mostrarMsg("Até logo, "+this.condutor.nome).onDidDismiss(
+              this.msg.mostrarMsg("Até logo, "+this.condutor.nome, 3000).onDidDismiss(
                 _=>{
                   this.navCtrl.setRoot("LoginPage");
                 }

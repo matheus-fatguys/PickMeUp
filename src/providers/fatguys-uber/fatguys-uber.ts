@@ -171,6 +171,9 @@ export class FatguysUberProvider {
   salvarConducoesDoRoteiro(roteiro:Roteiro){   
     return this.afd.object("/condutores/"+roteiro.condutor+"/roteiros/"+roteiro.id+"/conducoes/").set(roteiro.conducoes);
   }
+  salvarConducoesDoRoteiroEmAndamento(roteiro:Roteiro){   
+    return this.afd.object("/condutores/"+roteiro.condutor+"/roteiroEmexecucao/conducoes/").set(roteiro.conducoes);
+  }
   atualizarLocalizacaoCondutor(condutor:Condutor){   
     return this.afd.object("/condutores/"+condutor.id+"/localizacao/").set(condutor.localizacao);
   }
