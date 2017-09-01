@@ -71,3 +71,24 @@ ISSUE 19: tela branca na incialização (estar rodar com ionic run android --pro
 ISSUE 20: [RESOLVIDO] por opção de informar embarque e desembarque manualmente
 ISSUE 21: [RESOLVIDO] corrigir erro ao finalizar o roteiro (First argument contains a function in property 'condutores.-KqxJ0RK98MlTMrQn1Ct.roteiros.-Kqztl2jCRUm73O1DK5H.trajeto.pernas.0.caminho.0.lat' with contents: function (){return a} Error: Firebase.update failed: First argument contains a function in property )
 ISSUE 22: DESCORBRIR O QUE É ESSE ERRO: Uncaught (in promise): DataCloneError: Failed to execute 'put' on 'IDBObjectStore': function (){return a} could not be cloned
+
+ISSUE 23: IMPLEMENTAR NOTIFICATIONS
+This worked for me, sending notifications from the Firebase console.
+
+All you need is to add these 3 plugins
+
+⁠⁠⁠ionic plugin add cordova-plugin-inappbrowser
+ionic plugin add cordova-plugin-fcm
+ionic plugin add cordova-plugin-velda-devicefeedback
+And go to Firebase Console27
+
+Create New Project
+Add a Name to your project
+Select which platform you like (ios/android)
+Add your Package Name which is the id of your app, (you can see it in your config.xml something like id="com.ionicframework.someTest123") It will give you a file google-services.json
+Paste it in the platforms/android/ directory
+Then run ionic build android on your CLI
+And you can now go to Notifications Page > New Message Make sure to select the app (id of the app) you added before sending push notification.
+Now I just need to work out how to send notifications from the app.
+
+see https://www.npmjs.com/package/cordova-plugin-fcm186

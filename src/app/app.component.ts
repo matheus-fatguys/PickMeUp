@@ -8,6 +8,7 @@ import { Platform, Loading } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Nav, ModalController, LoadingController } from "ionic-angular";
+import { NotificacaoProvider } from "../providers/notificacao/notificacao";
 
 
 @Component({
@@ -29,7 +30,8 @@ export class MyApp {
     public msg: MensagemProvider,
     public modalCtrl: ModalController,
     public audio:AudioProvider,
-    public loadingCtrl: LoadingController) {
+    public loadingCtrl: LoadingController,
+    public notificacao: NotificacaoProvider) {
       
       platform.ready().then(() => {
         console.log("plataforma pronta")
@@ -148,6 +150,7 @@ export class MyApp {
         // authObserver.unsubscribe();
         });
       });
+      this.notificacao.inicarNotificacoes();
   }
 
 }

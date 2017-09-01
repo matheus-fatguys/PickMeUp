@@ -33,6 +33,7 @@ import { AutenticacaoProvider } from '../providers/autenticacao/autenticacao';
 import { TrajetoProvider } from '../providers/trajeto/trajeto';
 import { LocalizacaoProvider } from '../providers/localizacao/localizacao';
 import { AudioProvider } from '../providers/audio/audio';
+import { NotificacaoProvider } from '../providers/notificacao/notificacao';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import { AudioProvider } from '../providers/audio/audio';
     TrajetoProvider,
     LocalizacaoProvider,
     NativeAudio,
-    AudioProvider
+    AudioProvider,
+    NotificacaoProvider
   ]
 })
 export class AppModule {}

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "477635249872",
+    "firebase_url": "https://fatguysuber-8da6a.firebaseio.com",
+    "project_id": "fatguysuber-8da6a",
+    "storage_bucket": "fatguysuber-8da6a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477635249872:android:857d9b4678164b75",
+        "android_client_info": {
+          "package_name": "br.com.fatguys.T2.condutor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "477635249872-sgt9m8gd3hrgr5513ia5130u9861di1k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu4X7RxGNFoF0hcDueYfCxaIpIZH3GM3Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
