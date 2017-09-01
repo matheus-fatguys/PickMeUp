@@ -1,6 +1,6 @@
 {
-  "name": "FatguysUber",
-  "app_id": "35480bd2",
+  "name": "T2-Condutor",
+  "app_id": "ce4dfbeb",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
