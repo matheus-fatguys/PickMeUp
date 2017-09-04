@@ -92,3 +92,32 @@ And you can now go to Notifications Page > New Message Make sure to select the a
 Now I just need to work out how to send notifications from the app.
 
 see https://www.npmjs.com/package/cordova-plugin-fcm186
+
+ISSUE 24: RESOVER BUILD PRO ANDROIDINCOMPATIBILIDADE ENTRE O PLUGIN FIREBASE, 
+BACKGROUNDGEOLOCATION E GRADLE CORDOVA
+Step 1 (for FCM Plugin)
+Comment out these lines in the FCMPlugin.gradle file.
+
+classpath 'com.google.gms:google-services:3.0.0'
+apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
+Step 2 (for FCM Plugin)
+Change the plugin.xml of the FCM plugin to use a different version, in my situation 9.8.0.
+
+<framework src="com.google.firebase:firebase-core:9.8.0" />
+<framework src="com.google.firebase:firebase-messaging:9.8.0" />
+Step 3 (for Background-Geolocation-Plugin)
+Change the plugin.xml of the Geolocation plugin to use a different version, in my situation 9.8.0 instead of "+".
+
+<framework src="com.google.android.gms:play-services-location:9.8.0" />
+Step 4
+Remove and re-add plattform.
+
+Step 5 (build.gradle file of the android platform folder)
+Add this line to the classpath section
+
+classpath 'com.google.gms:google-services:3.1.0'
+And add this line below the dependencies, nearly at the bottom of the file
+apply plugin: 'com.google.gms.google-services'
+
+também tive que remover o plugin do FCM e adcionar como segue:
+ionic cordova plugin add git+https://github.com/lp1bp/cordova-plugin-fcm.git

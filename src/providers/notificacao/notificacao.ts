@@ -1,63 +1,83 @@
-import { Platform } from 'ionic-angular';
+import { FatguysUberProvider } from './../fatguys-uber/fatguys-uber';
+import { Platform, AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
 
-declare var FCMPlugin;
+declare var FCMPlugin:IFCMPlugin;
 @Injectable()
 export class NotificacaoProvider {
-  applicationServerPublicKey ='AAAAbzVHhtA:APA91bFNU44_U-dCe8SV50-WkY3XxgxkGSgRUFNO190IXxyHRIkaTVAbRFAd8TaIGznPL58VyWKhKs_gZpdEHR5ECGXF8fbrMzFjfCLhe3Bzc0KHDM7qkWpQruu4gcyb3mt2GCPkruk0';
-  constructor(public platform: Platform) {
-   
+  
+  constructor(public platform: Platform,
+              public alertCtrl: AlertController,
+              public fatguys: FatguysUberProvider
+            ) {
   }
 
-  inicarNotificacoes(){
+  iniciarNotificacoes(){
     this.platform.ready().then(() => {
+
       if(typeof(FCMPlugin) !== "undefined"){
-        FCMPlugin.getToken(function(t){
-          console.log("Use this token for sending device specific messages\nToken: " + t);
-        }, function(e){
-          console.log("Uh-Oh!\n"+e);
-        });
 
-        FCMPlugin.getToken(
-          (t) => {
-            console.log("FCMPlugin.getToken");
-            console.log(t);
-          },
-          (e) => {
-            console.log(e);
+        FCMPlugin.subscribeToTopic('condutores_'+this.fatguys.condutor.id);
+        // ,
+        //   success=>this.showAlert("subscribeToTopic [condutores_"+this.fatguys.condutor.id+"]: "+success),
+        //   error=> this.showAlert("subscribeToTopic error: \n"+JSON.stringify(error)));
+
+        // FCMPlugin.onTokenRefresh(token=>{
+        //   this.showAlert("onTokenRefresh\nToken: " + token);
+        // });
+
+        FCMPlugin.getToken(token=>{
+          try {
+            // this.showAlert("getToken Token: \n" + token);
+            this.saveDeviceToken(token);            
+          } catch (error) {
+            this.showAlert("getToken error:\n"+JSON.stringify(error))
           }
-        );
+          // this.msg.mostrarMsg("getToken\nToken: " + token);
+        }, error=>{
+          console.error("getToken error:\n"+JSON.stringify(error));
+        });
+        
 
-        FCMPlugin.onNotification(function(d){
+        FCMPlugin.onNotification(d=>{
           if(d.wasTapped){  
-            // Background recieval (Even if app is closed),
-            //   bring up the message in UI
-            console.log("recebeu notificação BACKGROUND");
+            this.showAlert('onNotification BACKGROUND:\n'+JSON.stringify(d));
           } else {
-            // Foreground recieval, update UI or what have you...
-            console.log("recebeu notificação FOREGROUND");
+            this.showAlert('onNotification FOREGROUND:\n'+JSON.stringify(d));
           }
-        }, function(msg){
-          // No problemo, registered callback
-          console.log("msg: "+msg);
-          console.log(msg);
-        }, function(err){
-          console.log("Arf, no good mate... " + err);
-          console.error(err);
+        }, sucess=>{
+          // this.showAlert("onNotification sucess:\n"+sucess);
+          console.log(sucess);
+        }, error=>{
+          // this.showAlert("onNotification error:\n"+JSON.stringify(error));
+          console.error(error);
         });
-      } 
-      else {
-        console.log("Notifications disabled, only provided in Android/iOS environment");
-        if ('serviceWorker' in navigator && 'PushManager' in window) {
-            console.log('Service Worker and Push is supported');
-        } 
-        else {
-          console.warn('Push messaging is not supported');
-        }
       }
     });
   }
 
+  showAlert(msg:string){
+    console.log(msg);
+    let confirm = this.alertCtrl.create({
+      title: msg,
+      message: "",
+      buttons: [        
+        {
+          text: 'OK',
+          handler: (opcoes) => {            
+            
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
+
+  saveDeviceToken(token:string){
+    this.fatguys.atualizarTokenCondutor(token)
+    // .then(_=>this.showAlert("succesfully saved token: "+token))
+    // .catch(error=> this.showAlert("error saving token: "+token+"\n"+error));
+  }
+
+  
 }

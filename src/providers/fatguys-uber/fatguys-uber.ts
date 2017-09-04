@@ -36,6 +36,10 @@ export class FatguysUberProvider {
     this.iniciarMonitaracaoConexao();
   }
 
+  atualizarTokenCondutor(token:string){
+    return this.afd.object("/condutores/"+this.condutor.id+"/token").set(token);
+  }
+
 
   iniciarMonitaracaoConexao(){    
     let conectado=this.conectado();

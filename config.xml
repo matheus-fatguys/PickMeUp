@@ -3,7 +3,7 @@
     <name>T2 Condutor</name>
     <description>Módulo do Condutor</description>
     <author email="matheussa@yahoo.com" href="http://fatguys.com.br/">Fatguys Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.0.8:8100" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-intent href="http://*/*" />
@@ -96,16 +96,13 @@
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
     </platform>
     <allow-navigation href="http://192.168.0.4:8100" />
+    <allow-navigation href="http://192.168.0.8:8100" />
     <engine name="android" spec="^6.2.3" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-fcm" spec="^2.1.2" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
-    <plugin name="cordova-plugin-inappbrowser" spec="^1.7.1" />
-    <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.2.5">
-        <variable name="ACCOUNT_TYPE" value="$PACKAGE_NAME.account" />
-        <variable name="CONTENT_AUTHORITY" value="$PACKAGE_NAME" />
-    </plugin>
+    <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.2.5" />
     <plugin name="cordova-plugin-nativeaudio" spec="^3.0.9" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
     <plugin name="cordova-plugin-statusbar" spec="^2.2.2" />

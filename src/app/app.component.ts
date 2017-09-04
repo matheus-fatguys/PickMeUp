@@ -34,11 +34,13 @@ export class MyApp {
     public notificacao: NotificacaoProvider) {
       
       platform.ready().then(() => {
+        splashScreen.hide();
+        statusBar.styleDefault();
+        
+
         console.log("plataforma pronta")
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
-      // splashScreen.hide();
       this.iniciarAplicacao();
     });
 
@@ -66,7 +68,7 @@ export class MyApp {
     this.nav.setRoot(page.component);
   }
 
-  iniciarAplicacao(){
+  iniciarAplicacao(){    
     console.log("subscribe no auth")
       if(this.loading==null){      
         this.loading = this.loadingCtrl.create({
@@ -97,7 +99,8 @@ export class MyApp {
                           let sub =
                           ref.subscribe(
                             r=>{
-                              this.fatguysService.condutor=r[0];
+                              this.fatguysService.condutor=r[0];  
+                              this.notificacao.iniciarNotificacoes();                            
                               if(sub!=null){
                                 sub.unsubscribe();
                               }
@@ -150,7 +153,7 @@ export class MyApp {
         // authObserver.unsubscribe();
         });
       });
-      this.notificacao.inicarNotificacoes();
+      
   }
 
 }

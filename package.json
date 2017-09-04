@@ -37,7 +37,6 @@
         "cordova-plugin-device": "^1.1.4",
         "cordova-plugin-fcm": "^2.1.2",
         "cordova-plugin-geolocation": "^2.4.3",
-        "cordova-plugin-inappbrowser": "^1.7.1",
         "cordova-plugin-mauron85-background-geolocation": "^2.2.5",
         "cordova-plugin-nativeaudio": "^3.0.9",
         "cordova-plugin-splashscreen": "^4.0.3",
@@ -70,13 +69,9 @@
             "cordova-plugin-statusbar": {},
             "cordova-plugin-whitelist": {},
             "ionic-plugin-keyboard": {},
-            "cordova-plugin-mauron85-background-geolocation": {
-                "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
-                "CONTENT_AUTHORITY": "$PACKAGE_NAME"
-            },
             "cordova-plugin-nativeaudio": {},
-            "cordova-plugin-fcm": {},
-            "cordova-plugin-inappbrowser": {}
+            "cordova-plugin-mauron85-background-geolocation": {},
+            "cordova-plugin-fcm": {}
         },
         "platforms": [
             "android"

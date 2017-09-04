@@ -42,6 +42,13 @@ export class MapaSelecaoLocalPage {
   }
 
   initAutocomplete(local:Local) {
+        if(this.local==null||this.local.latitude==null){
+          if(this.local==null){
+            this.local={}as Local;
+          }
+          this.local.latitude=-13;
+          this.local.longitude=-38;
+        }
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: this.local.latitude, lng: this.local.longitude},
           zoom: 13,

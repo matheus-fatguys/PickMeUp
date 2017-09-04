@@ -58,11 +58,11 @@ export class RegistrarPage {
   async registrar(){
     try {
       
-      if(this.loading==null){      
+      // if(this.loading==null){      
         this.loading = this.loadingCtrl.create({
               content: 'Registrando...'
             });
-      }
+      // }
       this.loading.present().then(
         _=>{          
           let resultado = this.fatguysService.registrarCondutor(this.condutor, this.usuario).then(

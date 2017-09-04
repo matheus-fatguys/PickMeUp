@@ -49,11 +49,11 @@ export class LoginPage implements OnInit{
         this.msg.mostrarErro("Verifique o preenchimmento dos campos");
         return;
       }
-      if(this.loading==null){      
+      // if(this.loading==null){      
         this.loading = this.loadingCtrl.create({
               content: 'Logando...'
             });
-      }
+      // }
       this.loading.present().then(
         _=>{
           this.auth.logar(this.usuario).then(
