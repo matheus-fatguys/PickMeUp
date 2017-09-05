@@ -75,7 +75,7 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
             return c.emAndamento||c.embarcado
           }
         )
-        if(i<0){
+        if(i<0&&this.roteiro.fim!=null){
           this.msg.mostrarMsg("Este roteiro não tem conduções a serem realizadas e será finalizado",3000);
           this.fatguys.finalizarRoteiro(roteiro).then(
             r=>{

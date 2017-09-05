@@ -1,3 +1,4 @@
+import { Local } from './../../models/local';
 import { Condutor } from './../../models/condutor';
 import { FatguysUberProvider } from './../fatguys-uber/fatguys-uber';
 import { Platform } from 'ionic-angular';
@@ -78,18 +79,23 @@ export class LocalizacaoProvider {
 
   atualizarLocalizacaoCondutor(lat, lng){
     if(this.fatguys.condutor!=null){
-      if(this.fatguys.condutor.localizacao.latitude==lat
-      &&this.fatguys.condutor.localizacao.longitude==lng){
+
+      if(this.fatguys.condutor.localizacao!=null
+        &&this.fatguys.condutor.localizacao.latitude==lat
+        &&this.fatguys.condutor.localizacao.longitude==lng){
         console.log("MESMA Localização, ENTÕ NÃO PRECISA SALVAR");
         return;
       }
       if(this.fatguys.condutor.localizacao==null){
-        this.fatguys.condutor.localizacao={latitude:lat, longitude:lng};
+        this.fatguys.condutor.localizacao={} as Local      
+        this.fatguys.condutor.localizacao.latitude=lat;
+        this.fatguys.condutor.localizacao.longitude=lng;
       }
       else{
         this.fatguys.condutor.localizacao.latitude=lat;
         this.fatguys.condutor.localizacao.longitude=lng;                  
       }
+      
       this.fatguys.atualizarLocalizacaoCondutor(this.fatguys.condutor).then(
         p=>{
           // this.msg.mostrarMsg("Localização do condutor salva", 3000);

@@ -64,8 +64,12 @@ export class CadastroConducoesPage  implements OnInit, OnDestroy {
     if(conducao!=null){
       this.conducaoSelecionada=conducao;
     }
-    
-    this.subRoteiros =this.fatguys.obterRoteiros(this.fatguys.condutor)
+    if(this.subRoteiros!=null){
+      this.subRoteiros.unsubscribe();
+      this.subRoteiros=null;
+    }
+    this.subRoteiros =(this.fatguys.obterRoteiros(this.fatguys.condutor) as any)
+    .take(1)
     .subscribe(
       rs=>{
         // this.subRoteiros.unsubscribe();
@@ -95,34 +99,6 @@ export class CadastroConducoesPage  implements OnInit, OnDestroy {
       }
     );
 
-    // let sub =this.fatguys.obterRoteirosAssociadosAConducao(this.conducaoSelecionada)
-    // .on("child_added",
-    //   r=>{
-    //     var ci=r.key;
-    //     var c=r.val();
-    //     console.log(ci);
-    //     console.log(c);
-    //   }
-    // );
-    // .subscribe(
-    //   r=>{
-    //     if(r.length>0){
-    //         this.msg.mostrarErro("Não é possível excluir, existe(m) roteiro(s) associado(s) a essa condução");
-    //     }
-    //     else{
-    //         this.fatguys.excluirConducao(this.conducaoSelecionada).then(
-    //           (r)=>{
-    //             this.msg.mostrarMsg("Exclusão realizada!", 3000);
-    //           },
-    //           e=>{
-    //             this.msg.mostrarErro("Erro excluindo: "+e.message);  
-    //           }
-    //         ).catch(error=>{
-    //           this.msg.mostrarErro("Erro excluindo: "+error);
-    //         });
-    //     }
-    //   }
-    // )
 
   }
 

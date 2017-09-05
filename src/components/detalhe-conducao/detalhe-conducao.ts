@@ -19,6 +19,7 @@ export class DetalheConducaoComponent {
   onChangeConducaoValida = new EventEmitter<any>();  
   public form:FormGroup;
   private subscription;
+  private cnduzidosSub;
 
   private rotuloOrigem="Origem:";
   private rotuloDestino="Destino:";
@@ -45,9 +46,9 @@ export class DetalheConducaoComponent {
   }
 
   ngOnInit(): void {
-    let ref=this.fatguys.obterCondutorPeloUsuarioLogado();
+    let ref=(this.fatguys.obterCondutorPeloUsuarioLogado() as any).take(1);
     if(ref!=null){
-      let sub = ref.subscribe(
+      this.cnduzidosSub = ref.subscribe(
         conds=>{
           this.conduzidos=this.fatguys.obterConduzidos(conds[0]);
         }
@@ -72,7 +73,8 @@ export class DetalheConducaoComponent {
   isValida(){
     return this.form.valid
             &&this.conducao.origem!=null
-            &&this.conducao.destino!=null;
+            &&this.conducao.destino!=null
+            &&this.conducao.origem!=this.conducao.destino;
   }
 
   validar(){
@@ -85,6 +87,9 @@ export class DetalheConducaoComponent {
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
+    if(this.cnduzidosSub!=null){
+      this.cnduzidosSub.unsubscribe();
+    }
   }
 
 }
