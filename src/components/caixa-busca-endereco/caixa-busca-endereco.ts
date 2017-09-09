@@ -14,7 +14,7 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
   private geocoder;
   @Input() local:Local={} as Local;
   @Input() rotulo:string="Endereço";
-  @Output() onEnderecoSelecionado = new EventEmitter<Local>();
+  @Output() onEnderecoSelecionado = new EventEmitter<Evento>();
   locais:Local[];
 
   constructor(public msg: MensagemProvider,
@@ -33,7 +33,7 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
     modal.onDidDismiss(data => {
       console.log(data.local);
       this.local=data.local;
-      this.onEnderecoSelecionado.emit(this.local);
+      this.onLocalSelecionado(this.local);
     });
     modal.present();
   }
@@ -72,8 +72,13 @@ export class CaixaBuscaEnderecoComponent implements OnChanges{
 
   onLocalSelecionado(local: Local){  
     this.local=local;
-    this.onEnderecoSelecionado.emit(this.local);
+    let evento={rotulo:this.rotulo, local:this.local} as Evento;
+    this.onEnderecoSelecionado.emit(evento);
     this.locais = [];
   }
 
+}
+interface Evento{
+  rotulo: string,
+  local: Local
 }

@@ -1,3 +1,4 @@
+import { Local } from './../../models/local';
 import { Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
@@ -61,12 +62,26 @@ export class DetalheConducaoComponent {
   }
 
   onEnderecoOrigemSelecionado($event){
-    this.conducao.origem=$event;
+    if($event.rotulo!=this.rotuloOrigem){
+      return;
+    }
+    this.conducao.origem=this.clonarLocal($event.local);
     this.validar();
   }
 
+  clonarLocal(local:Local):Local{
+    let clone:Local={} as Local;
+    clone.endereco=local.endereco;
+    clone.latitude=local.latitude;
+    clone.longitude=local.longitude;
+    return clone;
+  }
+
   onEnderecoDestinoSelecionado($event){
-    this.conducao.destino=$event;
+    if($event.rotulo!=this.rotuloDestino){
+      return;
+    }
+    this.conducao.destino=this.clonarLocal($event.local);
     this.validar();
   }
 
