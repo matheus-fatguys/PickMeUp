@@ -1,3 +1,5 @@
+import { Rastreio } from './../../models/rastreio';
+import { Coordenada } from './../../models/coordenada';
 import { Local } from './../../models/local';
 import { Condutor } from './../../models/condutor';
 import { FatguysUberProvider } from './../fatguys-uber/fatguys-uber';
@@ -10,6 +12,7 @@ import { Observable, Subscription } from 'rxjs';
 
 @Injectable()
 export class LocalizacaoProvider {
+  
 
   private frequenciaRastreamento=10000;
 
@@ -76,9 +79,22 @@ export class LocalizacaoProvider {
     );    
     return obs;
   }
+  
+  logarRastreamento(lat, lng){
+    let dataHora= new Date();
+    if(this.fatguys.condutor.roteiroEmexecucao!=null){
+      let rastreio={
+        dataHora:dataHora.getTime(), 
+        coordenada:{latitude:lat, longitude:lng} as Coordenada
+      } as Rastreio;
+      this.fatguys.registrarPosicaoDoCondutorDuranteRoteiro(this.fatguys.condutor, rastreio);
+    }
+  }
 
   atualizarLocalizacaoCondutor(lat, lng){
     if(this.fatguys.condutor!=null){
+
+      this.logarRastreamento(lat, lng);
 
       if(this.fatguys.condutor.localizacao!=null
         &&this.fatguys.condutor.localizacao.latitude==lat
@@ -101,7 +117,7 @@ export class LocalizacaoProvider {
           // this.msg.mostrarMsg("Localização do condutor salva", 3000);
           // this.msg.mostrarMsg('LocalizaçãoProvider: Localização do condutor salva:  ' + this.fatguys.condutor.localizacao.latitude + ',' + this.fatguys.condutor.localizacao.longitude, 4000);  
           console.log('LocalizaçãoProvider: Localização do condutor salva:  ' + this.fatguys.condutor.localizacao.latitude + ',' + this.fatguys.condutor.localizacao.longitude, 4000);  
-          console.log("Localização do condutor salva");
+          console.log("Localização do condutor salva");          
         }
       )
       .catch(

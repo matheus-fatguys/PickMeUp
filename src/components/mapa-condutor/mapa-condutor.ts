@@ -516,7 +516,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
       perna=>{
         perna.caminho.forEach(
           p=>{
-            path.push(p);
+            let latLng= new google.maps.LatLng(p.latitude, p.longitude);
+            path.push(latLng);
           });
       }
     );

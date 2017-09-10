@@ -1,3 +1,5 @@
+import { Rastreio } from './../../models/rastreio';
+import { Coordenada } from './../../models/coordenada';
 import { AngularFireOfflineDatabase, AfoListObservable } from 'angularfire2-offline';
 import { ModalController } from 'ionic-angular';
 import { MensagemProvider } from './../mensagem/mensagem';
@@ -153,21 +155,42 @@ export class FatguysUberProvider {
       }
     )
     this.condutor.roteiroEmexecucao=roteiro;
+    let roteiroEmexecucao=this.condutor.roteiroEmexecucao;
     this.condutor.roteiroEmexecucao=null;
-    if(roteiro.trajeto!=null&&roteiro.trajeto.pernas!=null){
-      roteiro.trajeto.pernas.forEach(
-        p=>{
-          p.caminho=null;
-        }
-      )
-    }
+    // if(roteiro.trajeto!=null&&roteiro.trajeto.pernas!=null){
+    //   roteiro.trajeto.pernas.forEach(
+    //     p=>{
+    //       p.caminho=null;
+    //     }
+    //   )
+    // }
+
+    let ref = this.afd.list("roteirosRealizados/"+roteiroEmexecucao.condutor+"/").push(roteiroEmexecucao);
+    ref.then(
+      r=>{
+        console.log(roteiroEmexecucao);
+        console.log(r);
+        console.log("roteiro realizado salvo");
+          this.salvarRoteiro(roteiro).then(r=>{
+            console.log(r);
+            console.log("roteiro salvo");
+            this.afd.object("/condutores/"+this.condutor.id+"/roteiroEmexecucao/").remove().then(
+              r=>{
+                console.log("roteiro em execução removido");
+              }
+            )
+            .catch(error=>{
+              console.error("erro removendo roteiro em execução")
+              console.error(error);
+            });
+          })
+      }
+    )
+    .catch(error=>{
+      console.error("erro salvando roteiro realizado")
+      console.error(error)
+    });    
     
-    let ref=this.afd.object("/condutores/"+this.condutor.id+"/roteiroEmexecucao/").remove();
-    ref.then(r=>{
-      this.salvarRoteiro(roteiro).then(r=>{
-        this.afd.list("/condutores/"+this.condutor.id+"/roteiroRealizados/").push(this.condutor.roteiroEmexecucao);
-      })
-    });
     return ref;
   }
 
@@ -180,6 +203,14 @@ export class FatguysUberProvider {
   }
   atualizarLocalizacaoCondutor(condutor:Condutor){   
     return this.afd.object("/condutores/"+condutor.id+"/localizacao/").set(condutor.localizacao);
+  }
+  registrarPosicaoDoCondutorDuranteRoteiro(condutor:Condutor, rastreio: Rastreio){ 
+    if(this.condutor.roteiroEmexecucao!=null
+    &&this.condutor.roteiroEmexecucao.rastreamento==null){
+      this.condutor.roteiroEmexecucao.rastreamento=[] as Rastreio[];
+    }
+    this.condutor.roteiroEmexecucao.rastreamento.push(rastreio);
+    return this.afd.list("/condutores/"+condutor.id+"/roteiroEmexecucao/rastreamento/").push(rastreio);
   }
   atualizarLocalizacaoSimuladaCondutor(condutor:Condutor){   
     return this.afd.object("/condutores/"+condutor.id+"/localizacaoSimulada/").set(condutor.localizacaoSimulada);
