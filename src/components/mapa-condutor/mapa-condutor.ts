@@ -317,7 +317,8 @@ export class MapaCondutorComponent implements OnDestroy, OnChanges {
     let obs = this.trajetoService.calcularTrajeto(localizacao, this.roteiro);
     obs.subscribe(
       trajeto=>{ 
-        this.fatguys.condutor.roteiroEmexecucao.trajeto=trajeto;
+        
+        this.fatguys.salvarTrajetoDoRoteiroEmExecucao(trajeto);
         this.polylinePath.setMap(null);
         this.mostrarCaminhoDoTrajeto(trajeto);
         

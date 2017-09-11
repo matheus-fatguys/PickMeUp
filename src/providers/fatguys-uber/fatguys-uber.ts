@@ -1,3 +1,4 @@
+import { Trajeto } from './../../models/trajeto';
 import { Rastreio } from './../../models/rastreio';
 import { Coordenada } from './../../models/coordenada';
 import { AngularFireOfflineDatabase, AfoListObservable } from 'angularfire2-offline';
@@ -194,6 +195,11 @@ export class FatguysUberProvider {
     return ref;
   }
 
+  salvarTrajetoDoRoteiroEmExecucao(trajeto:Trajeto){
+    this.condutor.roteiroEmexecucao.trajeto=trajeto;
+    // return this.afd.object("/condutores/"+this.condutor.id+"/roteiroEmexecucao/conducoes/").set(roteiro.conducoes);
+  }
+
  
   salvarConducoesDoRoteiro(roteiro:Roteiro){   
     return this.afd.object("/condutores/"+roteiro.condutor+"/roteiros/"+roteiro.id+"/conducoes/").set(roteiro.conducoes);
@@ -205,12 +211,12 @@ export class FatguysUberProvider {
     return this.afd.object("/condutores/"+condutor.id+"/localizacao/").set(condutor.localizacao);
   }
   registrarPosicaoDoCondutorDuranteRoteiro(condutor:Condutor, rastreio: Rastreio){ 
-    if(this.condutor.roteiroEmexecucao!=null
-    &&this.condutor.roteiroEmexecucao.rastreamento==null){
+   if(this.condutor.roteiroEmexecucao.rastreamento==null){
       this.condutor.roteiroEmexecucao.rastreamento=[] as Rastreio[];
     }
     this.condutor.roteiroEmexecucao.rastreamento.push(rastreio);
-    return this.afd.list("/condutores/"+condutor.id+"/roteiroEmexecucao/rastreamento/").push(rastreio);
+    let indice=this.condutor.roteiroEmexecucao.rastreamento.length-1;
+    return this.afd.object("/condutores/"+condutor.id+"/roteiroEmexecucao/rastreamento/"+indice).set(rastreio);
   }
   atualizarLocalizacaoSimuladaCondutor(condutor:Condutor){   
     return this.afd.object("/condutores/"+condutor.id+"/localizacaoSimulada/").set(condutor.localizacaoSimulada);
